@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
-    class Nodecs
+    class Node
     {
+        private Zone zone;
     }
 }

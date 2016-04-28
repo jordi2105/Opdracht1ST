@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
-    class Player
+    class Player : Creature
     {
     }
 }

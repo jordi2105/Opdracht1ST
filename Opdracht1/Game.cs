@@ -8,5 +8,11 @@ namespace Opdracht1
 {
     class Game
     {
+        private Dungeon dungeon;
+        private Player player;
+        private List<Pack> packs;
+        private List<Item> items;
+
+
     }
 }
