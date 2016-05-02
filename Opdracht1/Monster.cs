@@ -8,5 +8,11 @@ namespace Opdracht1
 {
     class Monster : Creature
     {
+        public Pack pack;
+        public Monster()
+        {
+            AttackRating = 5;
+            HitPoints = 14;
+        }
     }
 }
