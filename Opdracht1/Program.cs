@@ -10,7 +10,11 @@ namespace Opdracht1
     {
         static void Main(string[] args)
         {
+            Random random = new Random();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            Dungeon dungeon = dungeonGenerator.generate(1);
 
+            int i = 0;
         }
     }
 }

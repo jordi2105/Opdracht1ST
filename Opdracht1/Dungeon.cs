@@ -15,5 +15,10 @@ namespace Opdracht1
         {
             return null;
         }
+
+        public int getLevel()
+        {
+            return this.level;
+        }
     }
 }

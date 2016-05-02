@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Creature.cs" />
     <Compile Include="Dungeon.cs" />
+    <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="HealingPotion.cs" />
     <Compile Include="Item.cs" />
