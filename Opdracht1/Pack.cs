@@ -16,7 +16,7 @@ namespace Opdracht1
             monsters = new List<Monster>();
             for(int i = 0; i < n; i++)
             {
-                Monster monster = new Monster();
+                Monster monster = new Monster(this);
                 monsters.Add(monster);
             }
         }

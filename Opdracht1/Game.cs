@@ -12,6 +12,8 @@ namespace Opdracht1
         private Player player;
         private List<Pack> packs;
         private List<Item> items;
+
+        
         
 
 

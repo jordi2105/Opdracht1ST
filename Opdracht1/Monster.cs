@@ -9,8 +9,9 @@ namespace Opdracht1
     class Monster : Creature
     {
         public Pack pack;
-        public Monster()
+        public Monster(Pack pack)
         {
+            this.pack = pack;
             AttackRating = 5;
             HitPoints = 14;
         }

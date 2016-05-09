@@ -9,8 +9,6 @@ namespace Opdracht1
     abstract class Creature
     {
         int attackRating, hitPoints;
-        Node currentLocation;
-        public abstract bool hpBelowZero;
         public int HitPoints
         {
             get

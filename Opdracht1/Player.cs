@@ -11,11 +11,13 @@ namespace Opdracht1
         int killPoints = 0, hpMax = 100;
         bool timeCrystalActive;
         List<Item> bag;
-        public Player ()
+        Node currentNode;
+        public Player(Node currentNode)
         {
             AttackRating = 5;
             HitPoints = hpMax;
-            bag = new List<Item>(); 
+            bag = new List<Item>();
+            this.currentNode = currentNode;
         }
 
         public void attack(Monster monster)
@@ -42,20 +44,29 @@ namespace Opdracht1
             
         }
 
-        public void getCommand(string command)
+        public bool getCommand(string command, Node node, Item item, bool usedOnBridge)
         {
             string[] temp = command.Split();
             switch(temp[0])
             {
                 case "move":
+                    currentNode = node;
                     break;
                 case "use-item":
+                    if (item.GetType() == typeof(HealingPotion))
+                        useHealingPotion();
+                    else
+                    {
+                        useTimeCrystal(usedOnBridge);
+                        if(usedOnBridge) return true;
+                    }
                     break;
                 case "retreat":
                     break;
                 default: break;
 
-            }    
+            }
+            return false;
         }
 
         void useHealingPotion()
@@ -67,7 +78,7 @@ namespace Opdracht1
         {
             if(usedOnBridge)
             {
-
+                
             }
             else
             {
