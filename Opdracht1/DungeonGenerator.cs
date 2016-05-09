@@ -10,6 +10,7 @@ namespace Opdracht1
     class DungeonGenerator
     {
         private Random random;
+        private List<Node> nodes;
     
         public DungeonGenerator(Random random)
         {
@@ -31,63 +32,102 @@ namespace Opdracht1
 
         private Zone createNewZone(Dungeon dungeon)
         {
-            List<Node> nodes = new List<Node>();
+            this.nodes = new List<Node>();
 
-            Node startingNode = this.createNodeTree(nodes);
-            Node endNode = this.chooseEndNode(nodes, startingNode);
+            Node startingNode = this.createNodeTree();
+            Node endNode = this.chooseEndNode(startingNode);
 
-            return new Zone(nodes, startingNode, endNode);
+            return new Zone(this.nodes, startingNode, endNode);
         }
 
-        private Node chooseEndNode(List<Node> nodes, Node startingNode)
+        private Node createNodeTree()
         {
-            Node node = nodes[this.random.Next(nodes.Count())];
-            if (!node.Equals(startingNode)) {
-                return node;
-            }
+            Node node = new Node(this.nodes.Count);
+            this.nodes.Add(node);
 
-            return this.chooseEndNode(nodes, startingNode);
-        }
-
-        private Node createNodeTree(List<Node> nodes)
-        {
-            Node node = new Node();
-            nodes.Add(node);
-
-            if (nodes.Count > 10) {
-                return node;
-            }
-
-            int numNeighbours = this.random.Next(0, 5);
-            for (int j = 0; j < numNeighbours; j++) {
-                node.addNeighbour(this.getNeighbour(node, nodes));
+            int num = this.getNumNeighbours();
+            for (int i = 0; i < num; i++) {
+                Node neighbour = this.getNeighbour(node);
+                node.addNeighbour(neighbour);
             }
 
             return node;
         }
 
-        private Node getNeighbour(Node node, List<Node> nodes)
+        private int getNumNeighbours()
         {
-            int count = nodes.Count;
-            if (count < 2) {
-                return this.createNodeTree(nodes);
+            if (this.nodes.Count > 5) {
+                return 0;
             }
 
-            int coin = this.random.Next(2);
-            if (coin == 0) {
-                return this.createNodeTree(nodes);
-            }
-            
-            Node neighbour = nodes[this.random.Next(count)];
-            if (neighbour == node) {
-                return this.createNodeTree(nodes);
-            }
-
-            if (neighbour.NumNeighbours() > 3) {
-                return this.createNodeTree(nodes);
-            }
-
-            return neighbour;
+            return this.random.Next(
+                this.getMinNeighbours(), 
+                this.getMaxNeighbours()
+            );
         }
+
+        private int getMinNeighbours()
+        {
+            if (this.nodes.Count > 2) {
+                return 0;
+            }
+
+            return 1;
+        }
+
+        private int getMaxNeighbours()
+        {
+            return Math.Min(5, 11 - this.nodes.Count);
+        }
+
+        private Node getNeighbour(Node node)
+        {
+            int count = this.nodes.Count;
+            if (count < 3 | this.random.Next(2) == 0) {
+                return this.createNodeTree();
+            }
+
+            List<Node> possibleNeighbours = this.findPossibleNeighbours(node);
+            int numChoices = possibleNeighbours.Count;
+            if (numChoices == 0) {
+                return this.createNodeTree();
+            }
+
+            return possibleNeighbours[this.random.Next(numChoices)];
+        }
+
+        private List<Node> findPossibleNeighbours(Node node)
+        {
+            return this.nodes.FindAll(neighbour => this.isValidNeighbour(node, neighbour));
+        }
+
+        private bool isValidNeighbour(Node node, Node neighbour)
+        {
+            if (neighbour.Equals(node)) {
+                return false;
+            }
+
+            if (neighbour.numNeighbours() > 3) {
+                return false;
+            }
+
+            if (node.hasNeighbour(neighbour)) {
+                return false;
+            }
+
+            return true;
+        }
+
+
+        private Node chooseEndNode(Node startingNode)
+        {
+            Node node = this.nodes[this.random.Next(this.nodes.Count())];
+            if (!node.Equals(startingNode)) {
+                return node;
+            }
+
+            return this.chooseEndNode(startingNode);
+        }
+
     }
 }
