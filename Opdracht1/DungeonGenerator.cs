@@ -18,27 +18,25 @@ namespace Opdracht1
 
         public Dungeon generate(int level)
         {
-            Dungeon dungeon = new Dungeon();
+            Dungeon dungeon = new Dungeon(level);
             int numZones = level + 1;
             Zone[] zones = new Zone[numZones];
 
             for (int i = 0; i < numZones; i++) {
-                this.createNewZone(dungeon);
+                dungeon.addZone(this.createNewZone(dungeon));
             }
 
             return dungeon;
         }
 
-        private void createNewZone(Dungeon dungeon)
+        private Zone createNewZone(Dungeon dungeon)
         {
             List<Node> nodes = new List<Node>();
 
             Node startingNode = this.createNodeTree(nodes);
             Node endNode = this.chooseEndNode(nodes, startingNode);
 
-            Zone zone = new Zone(dungeon, nodes, startingNode, endNode);
-            
-            
+            return new Zone(nodes, startingNode, endNode);
         }
 
         private Node chooseEndNode(List<Node> nodes, Node startingNode)

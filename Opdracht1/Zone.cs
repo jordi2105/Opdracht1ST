@@ -9,12 +9,14 @@ namespace Opdracht1
     class Zone
     {
         private Dungeon dungeon;
+
+        private List<Node> nodes;
         private Node startNode;
         private Node endNode;
 
-        public Zone(Dungeon dungeon, List<Node> nodes, Node startNode, Node endNode)
+        public Zone(List<Node> nodes, Node startNode, Node endNode)
         {
-            this.dungeon = dungeon;
+            this.nodes = nodes;
             this.startNode = startNode;
             this.endNode = endNode;
         }

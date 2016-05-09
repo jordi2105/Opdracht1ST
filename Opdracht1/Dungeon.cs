@@ -8,8 +8,14 @@ namespace Opdracht1
 {
     class Dungeon
     {
-        private Zone[] zones;
+        private List<Zone> zones;
         private int level;
+
+        public Dungeon(int level)
+        {
+            this.zones = new List<Zone>();
+            this.level = level;
+        }
 
         private Node[] shortestpath(Node u, Node v)
         {
@@ -19,6 +25,11 @@ namespace Opdracht1
         public int getLevel()
         {
             return this.level;
+        }
+
+        public void addZone(Zone zone)
+        {
+            this.zones.Add(zone);
         }
     }
 }
