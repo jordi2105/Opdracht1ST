@@ -11,8 +11,9 @@ namespace Opdracht1
         List<Monster> monsters;
         Node currentNode;
         
-        public Pack(int n)
+        public Pack(int n, Node node)
         {
+            this.currentNode = node;
             monsters = new List<Monster>();
             for(int i = 0; i < n; i++)
             {
@@ -20,6 +21,8 @@ namespace Opdracht1
                 monsters.Add(monster);
             }
         }
+
+        
 
         public List<Monster> Monsters
         {

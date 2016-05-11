@@ -14,11 +14,20 @@ namespace Opdracht1
         private Dungeon dungeon;
         private List<Pack> packs;
         private List<Item> items;
+        
 
         public Game(DungeonGenerator dungeonGenerator)
         {
+
+            player = new Player();
             this.dungeonGenerator = dungeonGenerator;
+            nextDungeon();
+            player.move(dungeon.getZones()[0].getStartNode());
+            //ItemSpawner itemSpawner
+            
         }
+
+        
 
         public void nextDungeon()
         {

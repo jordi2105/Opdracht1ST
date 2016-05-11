@@ -12,6 +12,8 @@ namespace Opdracht1
         private Random random;
         private List<Node> nodes;
         public int number = 0;
+        private int M = 10, N = 6, O = 40;
+        private int zoneCounter = 1;
 
         public DungeonGenerator(Random random)
         {
@@ -27,6 +29,7 @@ namespace Opdracht1
             for (int i = 0; i < numZones; i++)
             {
                 Zone zone = this.createNewZone(dungeon);
+                zoneCounter++;
                 foreach (Node node in zone.getNodes())
                 {
                     List<Node> newNeighbours = node.getNeighbours().Distinct().ToList();
@@ -43,10 +46,37 @@ namespace Opdracht1
                     }
                     zone.getStartNode().addNeighbour(node);
                 }
+                zone = spawnMonsters(dungeon, zone);
                 dungeon.addZone(zone);
             }
 
+            
+
             return dungeon;
+        }
+
+
+        private Zone spawnMonsters(Dungeon dungeon, Zone zone)
+        {
+            int L = dungeon.getLevel();
+            int maxMonstersInNode = M * (L + 1);
+            int numberOfMonsters = (2 * zone.getZoneNumber() * O) / (L * (L + 1));
+            int monstersLeft = numberOfMonsters;
+            while(monstersLeft > 0)
+            {
+                int index = random.Next(1, nodes.Count());
+                Node node = nodes[index];
+                if(node != zone.getEndNode())
+                {
+                    int count = random.Next(1, maxMonstersInNode);
+                    Pack pack = new Pack(count, node);
+                    node.addPack(pack);
+                    monstersLeft -= count;
+                }
+                
+               
+            }
+            return zone;
         }
 
         private Zone createNewZone(Dungeon dungeon)
@@ -56,7 +86,7 @@ namespace Opdracht1
             Node startingNode = this.createNodeTree();
             Node endNode = this.chooseEndNode(startingNode);
 
-            return new Zone(nodes, startingNode, endNode);
+            return new Zone(nodes, startingNode, endNode, zoneCounter);
         }
 
         private Node createNodeTree()

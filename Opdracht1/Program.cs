@@ -12,7 +12,9 @@ namespace Opdracht1
         {
             Random random = new Random();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
-            Dungeon dungeon = dungeonGenerator.generate(1);
+            Game game = new Game(dungeonGenerator);
+            
+            //Dungeon dungeon = dungeonGenerator.generate(1);
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Opdracht1
     {
         private List<Zone> zones;
         private int level;
+        
 
         public Dungeon(int level)
         {
@@ -30,6 +31,11 @@ namespace Opdracht1
         public void addZone(Zone zone)
         {
             this.zones.Add(zone);
+        }
+
+        public List<Zone> getZones()
+        {
+            return zones;
         }
     }
 }

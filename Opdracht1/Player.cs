@@ -12,13 +12,19 @@ namespace Opdracht1
         bool timeCrystalActive;
         List<Item> bag;
         Node currentNode;
-        public Player(Node currentNode)
+        public Player()
         {
             AttackRating = 5;
             HitPoints = hpMax;
             bag = new List<Item>();
-            this.currentNode = currentNode;
         }
+
+        public void move(Node node)
+        {
+            currentNode = node;
+        }
+
+
 
         public void attack(Monster monster)
         {

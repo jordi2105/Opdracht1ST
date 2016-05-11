@@ -12,11 +12,18 @@ namespace Opdracht1
         private int number;
         private Zone zone;
         private List<Node> neighbours;
+        private List<Pack> packs;
 
         public Node(int number)
         {
+            packs = new List<Pack>();
             this.number = number;
             this.neighbours = new List<Node>();
+        }
+
+        public void addPack(Pack pack)
+        {
+            packs.Add(pack);
         }
 
         public void setZone(Zone zone)
