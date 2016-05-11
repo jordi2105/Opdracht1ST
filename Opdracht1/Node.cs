@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
+    [Serializable]
     class Node
     {
         private int number;
