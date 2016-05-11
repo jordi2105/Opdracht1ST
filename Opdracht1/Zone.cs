@@ -20,5 +20,19 @@ namespace Opdracht1
             this.startNode = startNode;
             this.endNode = endNode;
         }
+
+        public List<Node> getNodes()
+        {
+            return nodes;
+        }
+
+        public Node getStartNode()
+        {
+            return startNode;
+        }
+
+        
+
+            
     }
 }

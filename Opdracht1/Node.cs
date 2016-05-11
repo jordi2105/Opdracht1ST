@@ -9,13 +9,13 @@ namespace Opdracht1
 {
     class Node
     {
-        private int count;
+        private int number;
         private Zone zone;
         private List<Node> neighbours;
 
-        public Node(int count)
+        public Node(int number)
         {
-            this.count = count;
+            this.number = number;
             this.neighbours = new List<Node>();
         }
 
@@ -38,6 +38,26 @@ namespace Opdracht1
         public bool hasNeighbour(Node neighbour)
         {
             return this.neighbours.Contains(neighbour);
+        }
+
+        public int getNumber()
+        {
+            return number;
+        }
+
+        public List<Node> getNeighbours()
+        {
+            return neighbours;
+        }
+
+        public void removeNeighbour(Node neighbour)
+        {
+            neighbours.Remove(neighbour);
+        }
+
+        public void setNeightbours(List<Node> neighbours)
+        {
+            this.neighbours = neighbours;
         }
     }
 }

@@ -7,13 +7,13 @@ using Opdracht1;
 
 namespace Opdracht1
 {
-    class DungeonGenerator
+    class DungeonGenerator2
     {
         private Random random;
         private List<Node> nodes;
         public int number = 0;
-
-        public DungeonGenerator(Random random)
+    
+        public DungeonGenerator2(Random random)
         {
             this.random = random;
         }
@@ -24,7 +24,7 @@ namespace Opdracht1
             int numZones = level + 1;
             Zone[] zones = new Zone[numZones];
 
-            for (int i = 0; i < numZones; i++)
+            for (int i = 0; i < numZones; i++) 
             {
                 Zone zone = this.createNewZone(dungeon);
                 foreach (Node node in zone.getNodes())
@@ -32,11 +32,11 @@ namespace Opdracht1
                     List<Node> newNeighbours = node.getNeighbours().Distinct().ToList();
                     node.setNeightbours(newNeighbours);
                 }
-                if (zone.getStartNode().getNeighbours().Count() == 1)
+                if(zone.getStartNode().getNeighbours().Count() == 1)
                 {
                     int index = random.Next(1, nodes.Count());
                     Node node = nodes[index];
-                    while (node == zone.getStartNode())
+                    while(node == zone.getStartNode())
                     {
                         index++;
                         node = nodes[index];
@@ -66,8 +66,7 @@ namespace Opdracht1
             this.nodes.Add(node);
 
             int num = this.getNumNeighbours();
-            for (int i = 0; i < num; i++)
-            {
+            for (int i = 0; i < num; i++) {
                 Node neighbour = this.getNeighbour(node);
                 node.addNeighbour(neighbour);
             }
@@ -77,21 +76,19 @@ namespace Opdracht1
 
         private int getNumNeighbours()
         {
-            if (this.nodes.Count > 5)
-            {
+            if (this.nodes.Count > 5) {
                 return 0;
             }
 
             return this.random.Next(
-                this.getMinNeighbours(),
+                this.getMinNeighbours(), 
                 this.getMaxNeighbours()
             );
         }
 
         private int getMinNeighbours()
         {
-            if (this.nodes.Count > 2)
-            {
+            if (this.nodes.Count > 2) {
                 return 0;
             }
 
@@ -106,15 +103,13 @@ namespace Opdracht1
         private Node getNeighbour(Node node)
         {
             int count = this.nodes.Count;
-            if (count < 3 | this.random.Next(2) == 0)
-            {
+            if (count < 3 | this.random.Next(2) == 0) {
                 return this.createNodeTree();
             }
 
             List<Node> possibleNeighbours = this.findPossibleNeighbours(node);
             int numChoices = possibleNeighbours.Count;
-            if (numChoices == 0)
-            {
+            if (numChoices == 0) {
                 return this.createNodeTree();
             }
 
@@ -128,18 +123,15 @@ namespace Opdracht1
 
         private bool isValidNeighbour(Node node, Node neighbour)
         {
-            if (neighbour.Equals(node))
-            {
+            if (neighbour.Equals(node)) {
                 return false;
             }
 
-            if (neighbour.numNeighbours() > 3)
-            {
+            if (neighbour.numNeighbours() > 3) {
                 return false;
             }
 
-            if (node.hasNeighbour(neighbour))
-            {
+            if (node.hasNeighbour(neighbour)) {
                 return false;
             }
 
@@ -150,8 +142,7 @@ namespace Opdracht1
         private Node chooseEndNode(Node startingNode)
         {
             Node node = this.nodes[this.random.Next(this.nodes.Count())];
-            if (!node.Equals(startingNode) && node.numNeighbours() >= 2)
-            {
+            if (!node.Equals(startingNode) && node.numNeighbours() >= 2) {
                 return node;
             }
 
