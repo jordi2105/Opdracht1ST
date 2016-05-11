@@ -8,27 +8,47 @@ namespace Opdracht1
 {
     class Pack
     {
-        private List<Monster> monsters;
-        private Node currentNode;
-
-        void pack(int n)
+        List<Monster> monsters;
+        Node currentNode;
+        
+        public Pack(int n)
         {
             monsters = new List<Monster>();
             for(int i = 0; i < n; i++)
             {
-                Monster monster = new Monster();
+                Monster monster = new Monster(this);
                 monsters.Add(monster);
             }
         }
 
-        void move(Node u)
+        public List<Monster> Monsters
+        {
+            get
+            {
+                return this.monsters;
+            }
+            set
+            {
+                this.monsters = value;
+            }
+        }
+
+        public void removeMonster(Monster monster)
+        {
+            this.monsters.IndexOf(monster);
+        }
+
+        void move(Node u) 
         {
             currentNode = u;
         }
 
-        void attack(Node x)
+        void attack(Player player)
         {
-
+            foreach(Monster monster in monsters)
+            {
+                player.HitPoints -= monster.AttackRating;
+            }
         }
 
     }
