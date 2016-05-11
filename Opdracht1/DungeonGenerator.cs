@@ -30,7 +30,7 @@ namespace Opdracht1
             {
                 Zone zone = this.createNewZone(dungeon);
 
-                this.removeDoubles(zone);
+                this.removeDoubles(dungeon, zone);
                 dungeon.addZone(zone);
             }
 
@@ -45,23 +45,24 @@ namespace Opdracht1
             int maxMonstersInNode = M * (L + 1);
             int numberOfMonsters = (2 * zone.getZoneNumber() * O) / (L * (L + 1));
             int monstersLeft = numberOfMonsters;
-            while(monstersLeft > 0)
+            while (monstersLeft > 0)
             {
                 int index = random.Next(1, nodes.Count());
                 Node node = nodes[index];
-                if(node != zone.getEndNode())
+                if (node != zone.getEndNode())
                 {
                     int count = random.Next(1, maxMonstersInNode);
                     Pack pack = new Pack(count, node);
                     node.addPack(pack);
                     monstersLeft -= count;
                 }
-                
-               
+
+
             }
             return zone;
+        }
 
-        private void removeDoubles(Zone zone)
+        private void removeDoubles(Dungeon dungeon, Zone zone)
         {
             foreach (Node node in zone.getNodes()) {
                 List<Node> newNeighbours = node.getNeighbours().Distinct().ToList();
@@ -75,6 +76,7 @@ namespace Opdracht1
                     node = this.nodes[index];
                 }
                 zone.getStartNode().addNeighbour(node);
+                zone = spawnMonsters(dungeon, zone);
             }
         }
 

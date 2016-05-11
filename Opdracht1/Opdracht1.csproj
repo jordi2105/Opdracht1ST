@@ -48,6 +48,7 @@
     <Compile Include="GameSerializer.cs" />
     <Compile Include="HealingPotion.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="ItemSpawner.cs" />
     <Compile Include="Monster.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Pack.cs" />

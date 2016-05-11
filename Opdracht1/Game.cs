@@ -23,12 +23,9 @@ namespace Opdracht1
 
             player = new Player();
             this.dungeonGenerator = dungeonGenerator;
-<<<<<<< HEAD
             nextDungeon();
             player.move(dungeon.getZones()[0].getStartNode());
             //ItemSpawner itemSpawner
-            
-=======
             this.gameSerializer = gameSerializer;
         }
 
@@ -51,7 +48,6 @@ namespace Opdracht1
             this.items = loadedGame.items;
 
             return true;
->>>>>>> 1a73a0bbf93c78a20b340431e329f0c614380a1b
         }
 
         
