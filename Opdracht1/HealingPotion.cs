@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
+    [Serializable]
     class HealingPotion : Item
     {
+        public int hitPoints { get; }
+
+        public HealingPotion(int hitPoints)
+        {
+            this.hitPoints = hitPoints;
+        }
     }
 }

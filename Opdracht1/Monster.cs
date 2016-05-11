@@ -13,8 +13,8 @@ namespace Opdracht1
         public Monster(Pack pack)
         {
             this.pack = pack;
-            AttackRating = 5;
-            HitPoints = 14;
+            this.AttackRating = 5;
+            this.HitPoints = 14;
         }
     }
 }

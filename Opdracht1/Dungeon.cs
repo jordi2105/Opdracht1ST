@@ -9,9 +9,8 @@ namespace Opdracht1
     [Serializable]
     class Dungeon
     {
-        private List<Zone> zones;
-
-        private int level;
+        public List<Zone> zones { get; }
+        public int level { get; }
         
         public Dungeon(int level)
         {
@@ -34,9 +33,6 @@ namespace Opdracht1
             this.zones.Add(zone);
         }
 
-        public List<Zone> getZones()
-        {
-            return this.zones;
-        }
+        
     }
 }

@@ -15,11 +15,11 @@ namespace Opdracht1
         public Pack(int n, Node node)
         {
             this.currentNode = node;
-            monsters = new List<Monster>();
+            this.monsters = new List<Monster>();
             for(int i = 0; i < n; i++)
             {
                 Monster monster = new Monster(this);
-                monsters.Add(monster);
+                this.monsters.Add(monster);
             }
         }
 
@@ -44,12 +44,12 @@ namespace Opdracht1
 
         void move(Node u) 
         {
-            currentNode = u;
+            this.currentNode = u;
         }
 
         void attack(Player player)
         {
-            foreach(Monster monster in monsters)
+            foreach(Monster monster in this.monsters)
             {
                 player.HitPoints -= monster.AttackRating;
             }

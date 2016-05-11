@@ -9,21 +9,28 @@ namespace Opdracht1
     [Serializable]
     class Game
     {
-        [NonSerialized] private DungeonGenerator dungeonGenerator;
-        [NonSerialized] private GameSerializer gameSerializer;
+        [NonSerialized] private readonly DungeonGenerator dungeonGenerator;
+        [NonSerialized] private readonly GameSerializer gameSerializer;
+        [NonSerialized] private readonly MonsterSpawner monsterSpawner;
+        [NonSerialized] private readonly ItemSpawner itemSpawner;
 
-        private Player player;
         private Dungeon dungeon;
+        private Player player;
 
-        public Game(DungeonGenerator dungeonGenerator, GameSerializer gameSerializer)
-        {
-
-            player = new Player();
+        public Game(
+            DungeonGenerator dungeonGenerator, 
+            GameSerializer gameSerializer, 
+            MonsterSpawner monsterSpawner,
+            ItemSpawner itemSpawner
+        ){
             this.dungeonGenerator = dungeonGenerator;
-            nextDungeon();
-            player.move(dungeon.getZones()[0].getStartNode());
-            //ItemSpawner itemSpawner
             this.gameSerializer = gameSerializer;
+            this.monsterSpawner = monsterSpawner;
+            this.itemSpawner = itemSpawner;
+
+            this.player = new Player();
+            this.nextDungeon();
+            this.player.move(this.dungeon.zones[0].startNode);
         }
 
         public void save(string fileName)
@@ -45,11 +52,11 @@ namespace Opdracht1
             return true;
         }
 
-        
-
         public void nextDungeon()
         {
             this.dungeon = this.dungeonGenerator.generate(this.nextDungeonLevel());
+            this.monsterSpawner.spawn(this.dungeon);
+            this.itemSpawner.spawn(this.dungeon.zones, this.player.HitPoints);
         }
 
         private int nextDungeonLevel()

@@ -12,7 +12,7 @@ namespace Opdracht1
         private Random random;
         private List<Node> nodes;
         public int number = 0;
-        private int M = 10, N = 6, O = 40;
+
         private int zoneCounter = 1;
 
         public DungeonGenerator(Random random)
@@ -34,49 +34,23 @@ namespace Opdracht1
                 dungeon.addZone(zone);
             }
 
-            
-
             return dungeon;
-        }
-
-        private Zone spawnMonsters(Dungeon dungeon, Zone zone)
-        {
-            int L = dungeon.getLevel();
-            int maxMonstersInNode = M * (L + 1);
-            int numberOfMonsters = (2 * zone.getZoneNumber() * O) / (L * (L + 1));
-            int monstersLeft = numberOfMonsters;
-            while (monstersLeft > 0)
-            {
-                int index = random.Next(1, nodes.Count());
-                Node node = nodes[index];
-                if (node != zone.getEndNode())
-                {
-                    int count = random.Next(1, maxMonstersInNode);
-                    Pack pack = new Pack(count, node);
-                    node.addPack(pack);
-                    monstersLeft -= count;
-                }
-
-
-            }
-            return zone;
         }
 
         private void removeDoubles(Dungeon dungeon, Zone zone)
         {
-            foreach (Node node in zone.getNodes()) {
-                List<Node> newNeighbours = node.getNeighbours().Distinct().ToList();
-                node.setNeightbours(newNeighbours);
+            foreach (Node node in zone.nodes) {
+                List<Node> newNeighbours = node.neighbours.Distinct().ToList();
+                node.neighbours = newNeighbours;
             }
-            if (zone.getStartNode().getNeighbours().Count() == 1) {
+            if (zone.startNode.neighbours.Count == 1) {
                 int index = this.random.Next(1, this.nodes.Count());
                 Node node = this.nodes[index];
-                while (node == zone.getStartNode()) {
+                while (node == zone.startNode) {
                     index++;
                     node = this.nodes[index];
                 }
-                zone.getStartNode().addNeighbour(node);
-                zone = spawnMonsters(dungeon, zone);
+                zone.startNode.neighbours.Add(node);
             }
         }
 
@@ -87,20 +61,20 @@ namespace Opdracht1
             Node startingNode = this.createNodeTree();
             Node endNode = this.chooseEndNode(startingNode);
 
-            return new Zone(nodes, startingNode, endNode, zoneCounter);
+            return new Zone(this.nodes, startingNode, endNode, this.zoneCounter);
         }
 
         private Node createNodeTree()
         {
-            Node node = new Node(number);
-            number++;
+            Node node = new Node(this.number);
+            this.number++;
             this.nodes.Add(node);
 
             int num = this.getNumNeighbours();
             for (int i = 0; i < num; i++)
             {
                 Node neighbour = this.getNeighbour(node);
-                node.addNeighbour(neighbour);
+                node.neighbours.Add(neighbour);
             }
 
             return node;
@@ -164,12 +138,12 @@ namespace Opdracht1
                 return false;
             }
 
-            if (neighbour.numNeighbours() > 3)
+            if (neighbour.neighbours.Count > 3)
             {
                 return false;
             }
 
-            if (node.hasNeighbour(neighbour))
+            if (node.neighbours.Contains(neighbour))
             {
                 return false;
             }
@@ -177,11 +151,10 @@ namespace Opdracht1
             return true;
         }
 
-
         private Node chooseEndNode(Node startingNode)
         {
             Node node = this.nodes[this.random.Next(this.nodes.Count())];
-            if (!node.Equals(startingNode) && node.numNeighbours() >= 2)
+            if (!node.Equals(startingNode) && node.neighbours.Count >= 2)
             {
                 return node;
             }

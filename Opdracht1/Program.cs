@@ -15,11 +15,13 @@ namespace Opdracht1
         {
             Random random = new Random();
             BinaryFormatter formatter = new BinaryFormatter();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
-            
-            GameSerializer gameSerializer = new GameSerializer(formatter);
 
-            Game game = new Game(dungeonGenerator, gameSerializer);
+            Game game = new Game(
+                new DungeonGenerator(random), 
+                new GameSerializer(formatter), 
+                new MonsterSpawner(random), 
+                new ItemSpawner(random)
+            );
 
             game.nextDungeon();
             string fileName = Directory.GetCurrentDirectory() + "my_first_save.save";
