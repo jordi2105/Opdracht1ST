@@ -13,8 +13,6 @@ namespace Opdracht1
             Random random = new Random();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
             Dungeon dungeon = dungeonGenerator.generate(1);
-
-            int i = 0;
         }
     }
 }

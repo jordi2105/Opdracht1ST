@@ -15,7 +15,6 @@ namespace Opdracht1
         private List<Pack> packs;
         private List<Item> items;
 
-<<<<<<< HEAD
         public Game(DungeonGenerator dungeonGenerator)
         {
             this.dungeonGenerator = dungeonGenerator;
@@ -24,8 +23,6 @@ namespace Opdracht1
         public void nextDungeon()
         {
             this.dungeon = this.dungeonGenerator.generate(this.nextDungeonLevel());
-
-            int i = 0;
         }
 
         private int nextDungeonLevel()
@@ -33,11 +30,6 @@ namespace Opdracht1
             if (this.dungeon == null) {
                 return 1;
             }
-=======
-        
-        
-
->>>>>>> master
 
             return this.dungeon.getLevel() + 1;
         }
