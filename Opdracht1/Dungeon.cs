@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
+    [Serializable]
     class Dungeon
     {
         private List<Zone> zones;

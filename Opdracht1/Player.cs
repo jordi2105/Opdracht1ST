@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
+    [Serializable]
     class Player : Creature
     {
         int killPoints = 0, hpMax = 100;

@@ -29,24 +29,8 @@ namespace Opdracht1
             for (int i = 0; i < numZones; i++)
             {
                 Zone zone = this.createNewZone(dungeon);
-                zoneCounter++;
-                foreach (Node node in zone.getNodes())
-                {
-                    List<Node> newNeighbours = node.getNeighbours().Distinct().ToList();
-                    node.setNeightbours(newNeighbours);
-                }
-                if (zone.getStartNode().getNeighbours().Count() == 1)
-                {
-                    int index = random.Next(1, nodes.Count());
-                    Node node = nodes[index];
-                    while (node == zone.getStartNode())
-                    {
-                        index++;
-                        node = nodes[index];
-                    }
-                    zone.getStartNode().addNeighbour(node);
-                }
-                zone = spawnMonsters(dungeon, zone);
+
+                this.removeDoubles(zone);
                 dungeon.addZone(zone);
             }
 
@@ -54,7 +38,6 @@ namespace Opdracht1
 
             return dungeon;
         }
-
 
         private Zone spawnMonsters(Dungeon dungeon, Zone zone)
         {
@@ -77,6 +60,22 @@ namespace Opdracht1
                
             }
             return zone;
+
+        private void removeDoubles(Zone zone)
+        {
+            foreach (Node node in zone.getNodes()) {
+                List<Node> newNeighbours = node.getNeighbours().Distinct().ToList();
+                node.setNeightbours(newNeighbours);
+            }
+            if (zone.getStartNode().getNeighbours().Count() == 1) {
+                int index = this.random.Next(1, this.nodes.Count());
+                Node node = this.nodes[index];
+                while (node == zone.getStartNode()) {
+                    index++;
+                    node = this.nodes[index];
+                }
+                zone.getStartNode().addNeighbour(node);
+            }
         }
 
         private Zone createNewZone(Dungeon dungeon)

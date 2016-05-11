@@ -45,6 +45,7 @@
     <Compile Include="Dungeon.cs" />
     <Compile Include="DungeonGenerator.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameSerializer.cs" />
     <Compile Include="HealingPotion.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Monster.cs" />
