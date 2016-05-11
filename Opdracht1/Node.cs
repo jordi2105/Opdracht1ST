@@ -10,67 +10,18 @@ namespace Opdracht1
     [Serializable]
     class Node
     {
-        private int number;
-        private Zone zone;
-        private List<Node> neighbours;
-        private List<Pack> packs;
+        public int number { get; }
+        public Zone zone { get; set; }
+        public List<Pack> packs { get; }
+        public List<Node> neighbours { get; set; }
+        public List<Item> items { get; set; }
 
         public Node(int number)
         {
-            packs = new List<Pack>();
             this.number = number;
+            this.packs = new List<Pack>();
+            this.items = new List<Item>();
             this.neighbours = new List<Node>();
-        }
-        
-        public List<Pack> getPacks()
-        {
-            return packs;
-        }
-
-        public void addPack(Pack pack)
-        {
-            packs.Add(pack);
-        }
-
-        public void setZone(Zone zone)
-        {
-            this.zone = zone;
-        }
-
-        public void addNeighbour(Node neighbour)
-        {
-            this.neighbours.Add(neighbour);
-            neighbour.neighbours.Add(this);
-        }
-
-        public int numNeighbours()
-        {
-            return this.neighbours.Count;
-        }
-
-        public bool hasNeighbour(Node neighbour)
-        {
-            return this.neighbours.Contains(neighbour);
-        }
-
-        public int getNumber()
-        {
-            return number;
-        }
-
-        public List<Node> getNeighbours()
-        {
-            return neighbours;
-        }
-
-        public void removeNeighbour(Node neighbour)
-        {
-            neighbours.Remove(neighbour);
-        }
-
-        public void setNeightbours(List<Node> neighbours)
-        {
-            this.neighbours = neighbours;
         }
 
         public void use(Item item)
@@ -78,16 +29,16 @@ namespace Opdracht1
 
         }
 
-        public void doCombat(Pack p, Player player)
+        public void doCombat(Pack pack, Player player)
         {
             Console.WriteLine("Combat has begon");
-            while(p.Monsters.Count() > 0 && player.HitPoints >= 0)
-                doCombatRound(p, player);
+            while(pack.Monsters.Count() > 0 && player.HitPoints >= 0)
+                doCombatRound(pack, player);
             
-            if(p.Monsters.Count() == 0)
+            if(pack.Monsters.Count() == 0)
             {
                 Console.WriteLine("Pack is dead");
-                packs.Remove(p);
+                packs.Remove(pack);
             }
 
             

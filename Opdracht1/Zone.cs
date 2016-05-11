@@ -9,43 +9,17 @@ namespace Opdracht1
     [Serializable]
     class Zone
     {
-        private Dungeon dungeon;
-        private int zoneNumber;
+        public List<Node> nodes { get; }
+        public int number { get; }
+        public Node startNode { get; }
+        public  Node endNode { get; }
 
-        private List<Node> nodes;
-        private Node startNode;
-        private Node endNode;
-
-        public Zone(List<Node> nodes, Node startNode, Node endNode, int zoneNumber)
+        public Zone(List<Node> nodes, Node startNode, Node endNode, int number)
         {
             this.nodes = nodes;
             this.startNode = startNode;
             this.endNode = endNode;
-            this.zoneNumber = zoneNumber;
+            this.number = number;
         }
-
-        public int getZoneNumber()
-        {
-            return zoneNumber;
-        }
-
-        public List<Node> getNodes()
-        {
-            return nodes;
-        }
-
-        public Node getStartNode()
-        {
-            return startNode;
-        }
-
-        public Node getEndNode()
-        {
-            return endNode;
-        }
-
-        
-
-            
     }
 }

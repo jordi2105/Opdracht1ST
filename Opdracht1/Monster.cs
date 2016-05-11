@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
+    [Serializable]
     class Monster : Creature
     {
         public Pack pack;
         public Monster(Pack pack)
         {
             this.pack = pack;
-            AttackRating = 5;
-            HitPoints = 14;
+            this.AttackRating = 5;
+            this.HitPoints = 14;
         }
     }
 }

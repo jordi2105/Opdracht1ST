@@ -9,40 +9,39 @@ namespace Opdracht1
     [Serializable]
     class Player : Creature
     {
-        int killPoints = 0, hpMax = 100;
-        bool timeCrystalActive;
-        List<Item> bag;
-        Node currentNode;
+        private const int MaxHp = 100;
+
+        private int killPoints;
+        private bool timeCrystalActive;
+        private List<Item> bag;
+        public Node currentNode { get; private set; }
+
+
         public Player()
         {
-            AttackRating = 30;
-            HitPoints = hpMax;
-            bag = new List<Item>();
+            this.killPoints = 0;
+            this.AttackRating = 5;
+            this.HitPoints = MaxHp;
+            this.bag = new List<Item>();
         }
 
         public void move(Node node)
         {
-            currentNode = node;
+            this.currentNode = node;
         }
-
-        public Node getCurrentNode()
-        {
-            return currentNode;
-        }
-
 
 
         public void attack(Monster monster)
         {
-            if (timeCrystalActive)
+            if (this.timeCrystalActive)
             {
-                foreach (Monster _monster in monster.pack.Monsters)
+                foreach (Monster monsters in monster.pack.Monsters)
                 {
-                    _monster.HitPoints -= this.AttackRating;
+                    monsters.HitPoints -= this.AttackRating;
                     if (monster.HitPoints < 0)
                     {
                         monster.pack.removeMonster(monster);
-                        killPoints++;
+                        this.killPoints++;
                     }
                 }
             }
@@ -52,7 +51,7 @@ namespace Opdracht1
                 if (monster.HitPoints < 0)
                 {
                     monster.pack.removeMonster(monster);
-                    killPoints++;
+                    this.killPoints++;
                 }
             }
             
@@ -64,14 +63,14 @@ namespace Opdracht1
             switch(temp[0])
             {
                 case "move":
-                    currentNode = node;
+                    this.currentNode = node;
                     break;
                 case "use-item":
                     if (item.GetType() == typeof(HealingPotion))
-                        useHealingPotion();
+                        this.useHealingPotion();
                     else
                     {
-                        useTimeCrystal(usedOnBridge);
+                        this.useTimeCrystal(usedOnBridge);
                         if(usedOnBridge) return true;
                     }
                     break;
@@ -87,7 +86,7 @@ namespace Opdracht1
 
         void useHealingPotion()
         {
-            this.HitPoints = hpMax;
+            this.HitPoints = MaxHp;
         }
 
         void useTimeCrystal(bool usedOnBridge)
@@ -98,7 +97,7 @@ namespace Opdracht1
             }
             else
             {
-                timeCrystalActive = true;
+                this.timeCrystalActive = true;
             }
         }
 

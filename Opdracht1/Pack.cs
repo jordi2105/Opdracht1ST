@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
+    [Serializable]
     class Pack
     {
         List<Monster> monsters;
@@ -14,17 +15,17 @@ namespace Opdracht1
         public Pack(int n, Node node)
         {
             this.currentNode = node;
-            monsters = new List<Monster>();
+            this.monsters = new List<Monster>();
             for(int i = 0; i < n; i++)
             {
                 Monster monster = new Monster(this);
-                monsters.Add(monster);
+                this.monsters.Add(monster);
             }
         }
 
         public Node getNode()
         {
-            return currentNode;
+            return this.currentNode;
         }
 
         public List<Monster> Monsters
@@ -46,12 +47,12 @@ namespace Opdracht1
 
         public void move(Node u) 
         {
-            currentNode = u;
+            this.currentNode = u;
         }
 
         public void attack(Player player)
         {
-            foreach(Monster monster in monsters)
+            foreach(Monster monster in this.monsters)
             {
                 player.HitPoints -= monster.AttackRating;
                 if(player.HitPoints < 0)

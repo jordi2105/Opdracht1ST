@@ -50,6 +50,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="ItemSpawner.cs" />
     <Compile Include="Monster.cs" />
+    <Compile Include="MonsterSpawner.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Pack.cs" />
     <Compile Include="Player.cs" />

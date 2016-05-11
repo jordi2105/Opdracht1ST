@@ -9,98 +9,107 @@ namespace Opdracht1
     [Serializable]
     class Game
     {
-        [NonSerialized] private DungeonGenerator dungeonGenerator;
-        [NonSerialized] private GameSerializer gameSerializer;
+        [NonSerialized] private readonly DungeonGenerator dungeonGenerator;
+        [NonSerialized] private readonly GameSerializer gameSerializer;
+        [NonSerialized] private readonly MonsterSpawner monsterSpawner;
+        [NonSerialized] private readonly ItemSpawner itemSpawner;
 
-        private Player player;
         private Dungeon dungeon;
         private List<Pack> packs;
         private List<Item> items;
         private bool turnPlayer = true;
         private int t = 1342342435;
-        
+        private Player player;
 
-        public Game(DungeonGenerator dungeonGenerator, GameSerializer gameSerializer)
-        {
-
-            player = new Player();
+        public Game(
+            DungeonGenerator dungeonGenerator, 
+            GameSerializer gameSerializer, 
+            MonsterSpawner monsterSpawner,
+            ItemSpawner itemSpawner
+        ){
             this.dungeonGenerator = dungeonGenerator;
-            nextDungeon();
-            player.move(dungeon.getZones()[0].getStartNode());
-            //ItemSpawner itemSpawner
             this.gameSerializer = gameSerializer;
-            turn();
+            this.monsterSpawner = monsterSpawner;
+            this.itemSpawner = itemSpawner;
+
+            this.startNewGame();
+            this.turn();
         }
 
         public void turn()
         {
-            if (player.HitPoints < 0)
+            if (this.player.HitPoints < 0)
             {
-                endOfGame();
+                this.endOfGame();
             }
 
-            if (player.getCurrentNode().getPacks().Count() > 0)
+            if (this.player.currentNode.packs.Count() > 0)
             {
-                player.getCurrentNode().doCombat(player.getCurrentNode().getPacks()[0], player);
-                if (player.HitPoints < 0)
+                this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player);
+                if (this.player.HitPoints < 0)
                 {
-                    endOfGame();
+                    this.endOfGame();
                 }
-                else turn();
+                else this.turn();
             }
             
-            else if(turnPlayer)
+            else if(this.turnPlayer)
             {
-                List<Node> nodes = player.getCurrentNode().getNeighbours();
-                Node neighbour = moveCreatureRandom(nodes);
-                player.move(neighbour);
-                Console.WriteLine("Player moved to: " + neighbour.getNumber());
-                if (neighbour == dungeon.getZones()[0].getEndNode())
+                List<Node> nodes = this.player.currentNode.neighbours;
+                Node neighbour = this.moveCreatureRandom(nodes);
+                this.player.move(neighbour);
+                Console.WriteLine("Player moved to: " + neighbour.number);
+                if (neighbour == this.dungeon.zones[0].endNode)
                 {
                     Console.WriteLine("Player reached the end node of the zone");
-                    nextDungeon();
+                    this.nextDungeon();
                     Console.ReadLine();
                 }
-                turnPlayer = !turnPlayer;
-                turn();
+                this.turnPlayer = !this.turnPlayer;
+                this.turn();
             }
             else
             {
-                foreach(Zone zone in dungeon.getZones())
+                foreach(Zone zone in this.dungeon.zones)
                 {
-                    foreach(Node node in zone.getNodes())
+                    foreach(Node node in zone.nodes)
                     {
-                        foreach(Pack pack in node.getPacks())
+                        foreach(Pack pack in node.packs)
                         {
-                            List<Node> nodes = pack.getNode().getNeighbours();
-                            Node neighbour = moveCreatureRandom(nodes);
+                            List<Node> nodes = pack.getNode().neighbours;
+                            Node neighbour = this.moveCreatureRandom(nodes);
                             pack.move(neighbour);
-                            Console.WriteLine("Pack moved to: " + neighbour.getNumber());
+                            Console.WriteLine("Pack moved to: " + neighbour.number);
                         }
                     }
                 }
-                turnPlayer = !turnPlayer;
-                turn();
+                this.turnPlayer = !this.turnPlayer;
+                this.turn();
             }
            
             
         }
 
-        
-
         public Node moveCreatureRandom(List<Node> nodes)
         {
-            Random random = new Random(t);
-            t += 24536;
-            int index = random.Next(0, nodes.Count());
-            Node neighbour = nodes[index];
-            return neighbour;
+            Random random = new Random(this.t);
+            this.t += 24536;
+            return nodes[random.Next(nodes.Count)];
         }
 
         public void endOfGame()
         {
             Console.WriteLine("Player died");
             Console.ReadLine();
+
+            this.startNewGame();
+        }
+
+        private void startNewGame()
+        {
+            this.player = new Player();
+            this.nextDungeon();
+            this.player.move(this.dungeon.zones[0].startNode);
         }
 
         public void save(string fileName)
@@ -118,17 +127,15 @@ namespace Opdracht1
 
             this.player = loadedGame.player;
             this.dungeon = loadedGame.dungeon;
-            this.packs = loadedGame.packs;
-            this.items = loadedGame.items;
 
             return true;
         }
 
-        
-
         public void nextDungeon()
         {
             this.dungeon = this.dungeonGenerator.generate(this.nextDungeonLevel());
+            this.monsterSpawner.spawn(this.dungeon);
+            this.itemSpawner.spawn(this.dungeon.zones, this.player.HitPoints);
         }
 
         private int nextDungeonLevel()
