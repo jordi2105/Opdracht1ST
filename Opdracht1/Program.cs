@@ -20,11 +20,6 @@ namespace Opdracht1
             GameSerializer gameSerializer = new GameSerializer(formatter);
 
             Game game = new Game(dungeonGenerator, gameSerializer);
-            //game.nextDungeon();
-            //string fileName = Directory.GetCurrentDirectory() + "my_first_save.save";
-
-            //game.save(fileName);
-           // game = gameSerializer.load(fileName);
 
             game.nextDungeon();
             string fileName = Directory.GetCurrentDirectory() + "my_first_save.save";

@@ -19,9 +19,18 @@ namespace Opdracht1
         {
             List<Zone> zones = dungeon.getZones();
 
+            int monsterHitPoints = 0;
             foreach (Zone zone in zones) {
-                
+                foreach (Node node in zone.getNodes()) {
+                    foreach (Pack pack in node.getPacks()) {
+                        foreach (Monster monster in pack.Monsters) {
+                            monsterHitPoints += monster.HitPoints;
+                        }
+                    }
+                }
             }
+
+
         }
     }
 }

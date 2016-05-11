@@ -24,7 +24,7 @@ namespace Opdracht1
 
         public void addPack(Pack pack)
         {
-            packs.Add(pack);
+            this.packs.Add(pack);
         }
 
         public void setZone(Zone zone)
@@ -66,6 +66,11 @@ namespace Opdracht1
         public void setNeightbours(List<Node> neighbours)
         {
             this.neighbours = neighbours;
+        }
+
+        public List<Pack> getPacks()
+        {
+            return this.packs;
         }
     }
 }

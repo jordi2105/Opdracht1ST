@@ -10,8 +10,6 @@ namespace Opdracht1
     class Dungeon
     {
         private List<Zone> zones;
-        private List<Pack> packs;
-        private List<Item> items;
 
         private int level;
         
