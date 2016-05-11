@@ -25,6 +25,13 @@ namespace Opdracht1
 
             //game.save(fileName);
            // game = gameSerializer.load(fileName);
+
+            game.nextDungeon();
+            string fileName = Directory.GetCurrentDirectory() + "my_first_save.save";
+
+            game.save(fileName);
+            game.load(fileName);
+
         }
     }
 }

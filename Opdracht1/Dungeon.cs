@@ -10,9 +10,11 @@ namespace Opdracht1
     class Dungeon
     {
         private List<Zone> zones;
+        private List<Pack> packs;
+        private List<Item> items;
+
         private int level;
         
-
         public Dungeon(int level)
         {
             this.zones = new List<Zone>();
@@ -36,7 +38,7 @@ namespace Opdracht1
 
         public List<Zone> getZones()
         {
-            return zones;
+            return this.zones;
         }
     }
 }

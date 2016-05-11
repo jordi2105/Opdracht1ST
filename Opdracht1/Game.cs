@@ -14,9 +14,6 @@ namespace Opdracht1
 
         private Player player;
         private Dungeon dungeon;
-        private List<Pack> packs;
-        private List<Item> items;
-        
 
         public Game(DungeonGenerator dungeonGenerator, GameSerializer gameSerializer)
         {
@@ -44,8 +41,6 @@ namespace Opdracht1
 
             this.player = loadedGame.player;
             this.dungeon = loadedGame.dungeon;
-            this.packs = loadedGame.packs;
-            this.items = loadedGame.items;
 
             return true;
         }
