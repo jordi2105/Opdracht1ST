@@ -15,7 +15,7 @@ namespace Opdracht1
         Node currentNode;
         public Player()
         {
-            AttackRating = 5;
+            AttackRating = 30;
             HitPoints = hpMax;
             bag = new List<Item>();
         }
@@ -23,6 +23,11 @@ namespace Opdracht1
         public void move(Node node)
         {
             currentNode = node;
+        }
+
+        public Node getCurrentNode()
+        {
+            return currentNode;
         }
 
 
@@ -37,6 +42,7 @@ namespace Opdracht1
                     if (monster.HitPoints < 0)
                     {
                         monster.pack.removeMonster(monster);
+                        killPoints++;
                     }
                 }
             }
@@ -46,6 +52,7 @@ namespace Opdracht1
                 if (monster.HitPoints < 0)
                 {
                     monster.pack.removeMonster(monster);
+                    killPoints++;
                 }
             }
             
@@ -75,6 +82,8 @@ namespace Opdracht1
             }
             return false;
         }
+
+       
 
         void useHealingPotion()
         {

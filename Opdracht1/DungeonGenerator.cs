@@ -12,7 +12,7 @@ namespace Opdracht1
         private Random random;
         private List<Node> nodes;
         public int number = 0;
-        private int M = 10, N = 6, O = 40;
+        private int M = 3, N = 6, O = 40;
         private int zoneCounter = 1;
 
         public DungeonGenerator(Random random)
@@ -25,12 +25,14 @@ namespace Opdracht1
             Dungeon dungeon = new Dungeon(level);
             int numZones = level + 1;
             Zone[] zones = new Zone[numZones];
-
+            Zone zone = null;
             for (int i = 0; i < numZones; i++)
             {
-                Zone zone = this.createNewZone(dungeon);
+                
+                zone = this.createNewZone(dungeon, zone);
 
                 this.removeDoubles(dungeon, zone);
+                zone = spawnMonsters(dungeon, zone);
                 dungeon.addZone(zone);
             }
 
@@ -76,23 +78,28 @@ namespace Opdracht1
                     node = this.nodes[index];
                 }
                 zone.getStartNode().addNeighbour(node);
-                zone = spawnMonsters(dungeon, zone);
+                
             }
         }
 
-        private Zone createNewZone(Dungeon dungeon)
+        private Zone createNewZone(Dungeon dungeon, Zone oldZone)
         {
             this.nodes = new List<Node>();
 
-            Node startingNode = this.createNodeTree();
+            Node startingNode = this.createNodeTree(oldZone);
             Node endNode = this.chooseEndNode(startingNode);
 
             return new Zone(nodes, startingNode, endNode, zoneCounter);
         }
 
-        private Node createNodeTree()
+        private Node createNodeTree(Zone oldZone)
         {
-            Node node = new Node(number);
+            Node node;
+            if(oldZone != null && nodes.Count() == 0)
+            {
+                node = oldZone.getEndNode();
+            }
+            else node = new Node(number);
             number++;
             this.nodes.Add(node);
 
@@ -139,14 +146,14 @@ namespace Opdracht1
             int count = this.nodes.Count;
             if (count < 3 | this.random.Next(2) == 0)
             {
-                return this.createNodeTree();
+                return this.createNodeTree(null);
             }
 
             List<Node> possibleNeighbours = this.findPossibleNeighbours(node);
             int numChoices = possibleNeighbours.Count;
             if (numChoices == 0)
             {
-                return this.createNodeTree();
+                return this.createNodeTree(null);
             }
 
             return possibleNeighbours[this.random.Next(numChoices)];

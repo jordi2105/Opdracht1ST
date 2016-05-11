@@ -22,7 +22,10 @@ namespace Opdracht1
             }
         }
 
-        
+        public Node getNode()
+        {
+            return currentNode;
+        }
 
         public List<Monster> Monsters
         {
@@ -38,19 +41,23 @@ namespace Opdracht1
 
         public void removeMonster(Monster monster)
         {
-            this.monsters.IndexOf(monster);
+            this.monsters.Remove(monster);
         }
 
-        void move(Node u) 
+        public void move(Node u) 
         {
             currentNode = u;
         }
 
-        void attack(Player player)
+        public void attack(Player player)
         {
             foreach(Monster monster in monsters)
             {
                 player.HitPoints -= monster.AttackRating;
+                if(player.HitPoints < 0)
+                {
+                    break;
+                }
             }
         }
 

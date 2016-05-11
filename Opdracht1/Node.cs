@@ -21,6 +21,11 @@ namespace Opdracht1
             this.number = number;
             this.neighbours = new List<Node>();
         }
+        
+        public List<Pack> getPacks()
+        {
+            return packs;
+        }
 
         public void addPack(Pack pack)
         {
@@ -66,6 +71,32 @@ namespace Opdracht1
         public void setNeightbours(List<Node> neighbours)
         {
             this.neighbours = neighbours;
+        }
+
+        public void use(Item item)
+        {
+
+        }
+
+        public void doCombat(Pack p, Player player)
+        {
+            Console.WriteLine("Combat has begon");
+            while(p.Monsters.Count() > 0 && player.HitPoints >= 0)
+                doCombatRound(p, player);
+            
+            if(p.Monsters.Count() == 0)
+            {
+                Console.WriteLine("Pack is dead");
+                packs.Remove(p);
+            }
+
+            
+        }
+
+        public void doCombatRound(Pack p, Player player)
+        {
+            player.attack(p.Monsters[0]);
+            p.attack(player);
         }
     }
 }
