@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class HealingPotion : Item
+    public class HealingPotion : Item
     {
         public int hitPoints { get; }
 

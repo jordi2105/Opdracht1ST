@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class Pack
+    public class Pack
     {
         List<Monster> monsters;
         Node currentNode;
@@ -54,8 +54,8 @@ namespace Opdracht1
         {
             foreach(Monster monster in this.monsters)
             {
-                player.HitPoints -= monster.AttackRating;
-                if(player.HitPoints < 0)
+                player.hitPoints -= monster.AttackRating;
+                if(player.hitPoints < 0)
                 {
                     break;
                 }

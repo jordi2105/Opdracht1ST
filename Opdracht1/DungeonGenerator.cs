@@ -7,7 +7,7 @@ using Opdracht1;
 
 namespace Opdracht1
 {
-    class DungeonGenerator
+    public class DungeonGenerator
     {
         private Random random;
         private List<Node> nodes;
@@ -22,14 +22,15 @@ namespace Opdracht1
         public Dungeon generate(int level)
         {
             Dungeon dungeon = new Dungeon(level);
+
             int numZones = level + 1;
             Zone[] zones = new Zone[numZones];
             Zone zone = null;
             for (int i = 0; i < numZones; i++)
             {
-                zone = this.createNewZone(dungeon, zone);
+                zone = this.createNewZone(zone);
                 this.removeDoubles(dungeon, zone);
-                dungeon.addZone(zone);
+                dungeon.zones.Add(zone);
             }
 
             return dungeon;
@@ -53,30 +54,44 @@ namespace Opdracht1
             }
         }
 
-        private Zone createNewZone(Dungeon dungeon, Zone oldZone)
+        private Zone createNewZone(Zone previousZone)
         {
             this.nodes = new List<Node>();
 
-            Node startingNode = this.createNodeTree(oldZone);
-            Node endNode = this.chooseEndNode(startingNode);
+            Node startNode = this.getStartingNode(previousZone);
+            Node endNode = this.chooseEndNode(startNode);
 
-            return new Zone(this.nodes, startingNode, endNode, this.zoneCounter);
+            return new Zone(this.nodes, startNode, endNode, this.zoneCounter);
         }
 
-        private Node createNodeTree(Zone oldZone)
+        private Node getStartingNode(Zone previousZone)
+        {
+            if (previousZone != null)
+                return this.createNodeTree(previousZone.endNode);
+
+            return this.createNodeTree();
+        }
+
+        private Node createNodeTree()
         {
             Node node = new Node(this.number);
+
+            return this.createNodeTree(node);
+        }
+
+        private Node createNodeTree(Node startNode)
+        {
             this.number++;
-            this.nodes.Add(node);
+            this.nodes.Add(startNode);
 
             int num = this.getNumNeighbours();
             for (int i = 0; i < num; i++)
             {
-                Node neighbour = this.getNeighbour(node);
-                node.neighbours.Add(neighbour);
+                Node neighbour = this.getNeighbour(startNode);
+                startNode.neighbours.Add(neighbour);
             }
 
-            return node;
+            return startNode;
         }
 
         private int getNumNeighbours()
@@ -112,14 +127,14 @@ namespace Opdracht1
             int count = this.nodes.Count;
             if (count < 3 | this.random.Next(2) == 0)
             {
-                return this.createNodeTree(null);
+                return this.createNodeTree();
             }
 
             List<Node> possibleNeighbours = this.findPossibleNeighbours(node);
             int numChoices = possibleNeighbours.Count;
             if (numChoices == 0)
             {
-                return this.createNodeTree(null);
+                return this.createNodeTree();
             }
 
             return possibleNeighbours[this.random.Next(numChoices)];

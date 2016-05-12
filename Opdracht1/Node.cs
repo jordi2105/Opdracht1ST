@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class Node
+    public class Node
     {
         public int number { get; }
         public Zone zone { get; set; }
@@ -26,13 +26,13 @@ namespace Opdracht1
 
         public void use(Item item)
         {
-
+            
         }
 
         public void doCombat(Pack pack, Player player)
         {
             Console.WriteLine("Combat has begon");
-            while(pack.Monsters.Count() > 0 && player.HitPoints >= 0)
+            while(pack.Monsters.Count() > 0 && player.hitPoints >= 0)
                 doCombatRound(pack, player);
             
             if(pack.Monsters.Count() == 0)

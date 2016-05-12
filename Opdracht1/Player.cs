@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class Player : Creature
+    public class Player : Creature
     {
         private const int MaxHp = 100;
 
@@ -21,7 +21,7 @@ namespace Opdracht1
         {
             this.killPoints = 0;
             this.AttackRating = 5;
-            this.HitPoints = MaxHp;
+            this.hitPoints = MaxHp;
             this.bag = new List<Item>();
         }
 
@@ -30,15 +30,14 @@ namespace Opdracht1
             this.currentNode = node;
         }
 
-
         public void attack(Monster monster)
         {
             if (this.timeCrystalActive)
             {
                 foreach (Monster monsters in monster.pack.Monsters)
                 {
-                    monsters.HitPoints -= this.AttackRating;
-                    if (monster.HitPoints < 0)
+                    monsters.hitPoints -= this.AttackRating;
+                    if (monster.hitPoints < 0)
                     {
                         monster.pack.removeMonster(monster);
                         this.killPoints++;
@@ -47,8 +46,8 @@ namespace Opdracht1
             }
             else
             {
-                monster.HitPoints -= this.AttackRating;
-                if (monster.HitPoints < 0)
+                monster.hitPoints -= this.AttackRating;
+                if (monster.hitPoints < 0)
                 {
                     monster.pack.removeMonster(monster);
                     this.killPoints++;
@@ -65,9 +64,9 @@ namespace Opdracht1
                 case "move":
                     this.currentNode = node;
                     break;
-                case "use-item":
+                case "use-potion":
                     if (item.GetType() == typeof(HealingPotion))
-                        this.useHealingPotion();
+                        this.useHealingPotion((HealingPotion) item);
                     else
                     {
                         this.useTimeCrystal(usedOnBridge);
@@ -76,7 +75,6 @@ namespace Opdracht1
                     break;
                 case "retreat":
                     break;
-                default: break;
 
             }
             return false;
@@ -84,9 +82,9 @@ namespace Opdracht1
 
        
 
-        void useHealingPotion()
+        void useHealingPotion(HealingPotion potion)
         {
-            this.HitPoints = MaxHp;
+            this.hitPoints = Math.Min(MaxHp, potion.hitPoints + this.hitPoints);
         }
 
         void useTimeCrystal(bool usedOnBridge)
@@ -100,7 +98,5 @@ namespace Opdracht1
                 this.timeCrystalActive = true;
             }
         }
-
-
     }
 }

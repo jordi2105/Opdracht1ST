@@ -1,2 +1,3 @@
-Opdracht1/bin
-Opdracht1/obj
+*/bin
+*/obj
+*.coverage

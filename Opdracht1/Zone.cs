@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class Zone
+    public class Zone
     {
         public List<Node> nodes { get; }
         public int number { get; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Opdracht1
 {
-    class ItemSpawner
+    public class ItemSpawner
     {
         private readonly Random random;
 
@@ -29,10 +29,8 @@ namespace Opdracht1
 
         private void spawnHealingPotions(int playerHitPoints, int monsterHitPoints, List<Zone> zones)
         {
-            int numPotions = this.random.Next(1, 5);
-            int potionHitpoints = this.calcPotionHitpoints(
-                playerHitPoints, monsterHitPoints, numPotions
-            );
+            int numPotions = this.random.Next(1, 10);
+            int potionHitpoints = (monsterHitPoints - playerHitPoints)/numPotions;
 
             if (potionHitpoints < 0) return;
 
@@ -43,11 +41,6 @@ namespace Opdracht1
 
         }
 
-        private int calcPotionHitpoints(int playerHitPoints, int monsterHitPoints, int numPotions)
-        {
-            return (monsterHitPoints - playerHitPoints)/numPotions;
-        }
-
         private int getMonsterHitpoints(List<Zone> zones)
         {
             int monsterHitPoints = 0;
@@ -55,7 +48,7 @@ namespace Opdracht1
                 foreach (Node node in zone.nodes) {
                     foreach (Pack pack in node.packs) {
                         foreach (Monster monster in pack.Monsters) {
-                            monsterHitPoints += monster.HitPoints;
+                            monsterHitPoints += monster.hitPoints;
                         }
                     }
                 }

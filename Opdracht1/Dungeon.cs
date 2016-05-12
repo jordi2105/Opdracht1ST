@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class Dungeon
+    public class Dungeon
     {
         public List<Zone> zones { get; }
         public int level { get; }
@@ -22,17 +22,5 @@ namespace Opdracht1
         {
             return null;
         }
-
-        public int getLevel()
-        {
-            return this.level;
-        }
-
-        public void addZone(Zone zone)
-        {
-            this.zones.Add(zone);
-        }
-
-        
     }
 }

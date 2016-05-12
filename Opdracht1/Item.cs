@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    abstract class Item
+    public abstract class Item
     {
     }
 }

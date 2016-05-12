@@ -38,7 +38,7 @@ namespace Opdracht1
 
         public void turn()
         {
-            if (this.player.HitPoints < 0)
+            if (this.player.hitPoints < 0)
             {
                 this.endOfGame();
             }
@@ -46,7 +46,7 @@ namespace Opdracht1
             if (this.player.currentNode.packs.Count() > 0)
             {
                 this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player);
-                if (this.player.HitPoints < 0)
+                if (this.player.hitPoints < 0)
                 {
                     this.endOfGame();
                 }
@@ -135,7 +135,7 @@ namespace Opdracht1
         {
             this.dungeon = this.dungeonGenerator.generate(this.nextDungeonLevel());
             this.monsterSpawner.spawn(this.dungeon);
-            this.itemSpawner.spawn(this.dungeon.zones, this.player.HitPoints);
+            this.itemSpawner.spawn(this.dungeon.zones, this.player.hitPoints);
         }
 
         private int nextDungeonLevel()
@@ -144,7 +144,7 @@ namespace Opdracht1
                 return 1;
             }
 
-            return this.dungeon.getLevel() + 1;
+            return this.dungeon.level + 1;
         }
     }
 }

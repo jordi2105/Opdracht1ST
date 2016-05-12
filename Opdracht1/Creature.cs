@@ -7,20 +7,10 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    abstract class Creature
+    public abstract class Creature
     {
-        int attackRating, hitPoints;
-        public int HitPoints
-        {
-            get
-            {
-                return this.hitPoints;
-            }
-            set
-            {
-                this.hitPoints = value;
-            }
-        }
+        int attackRating;
+        public int hitPoints { get; set; }
 
         public int AttackRating
         {
