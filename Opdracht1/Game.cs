@@ -93,7 +93,6 @@ namespace Opdracht1
                     {
                         Console.WriteLine("Player reached the end node of the zone with zonenumber:" + player.currentNode.zone.number + "in dungeon with dungeon level: " + dungeon.level);
                         player.useTimeCrystal(true);
-                        //this.nextDungeon();
                         Console.ReadLine();
                     }
                     

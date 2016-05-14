@@ -9,12 +9,12 @@ namespace Opdracht1
     [Serializable]
     public class Player : Creature
     {
-        private const int MaxHp = 1000;
+        public int MaxHp = 1000;
 
         private int killPoints;
         private bool timeCrystalActive;
         private List<Item> bag;
-        public Node currentNode { get; private set; }
+        public Node currentNode { get; set; }
         public Dungeon dungeon;
         private List<Node> visitedNodes;
         private bool safe = false;
@@ -46,6 +46,7 @@ namespace Opdracht1
                         this.killPoints++;
                     }
                 }
+                timeCrystalActive = false;
             }
             else
             {
