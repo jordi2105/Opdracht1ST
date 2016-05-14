@@ -17,10 +17,5 @@ namespace Opdracht1
             this.zones = new List<Zone>();
             this.level = level;
         }
-
-        private Node[] shortestpath(Node u, Node v)
-        {
-            return null;
-        }
     }
 }

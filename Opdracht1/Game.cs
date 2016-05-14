@@ -22,7 +22,7 @@ namespace Opdracht1
         private Player player;
         private int teller = 0;
         private Random random;
-        private bool isAlive = true;
+        public bool isAlive = true;
 
         public Game(
             DungeonGenerator dungeonGenerator, 

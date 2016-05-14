@@ -37,7 +37,7 @@ namespace Opdracht1.Tests
         public void average_connectivity_smaller_or_equal_to_three()
         {
             DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
-            Dungeon dungeon = dungeonGenerator.generate(3);
+            Dungeon dungeon = dungeonGenerator.generate(5);
 
             int totalConnections = 0;
             int numberOfNodes = 0;
