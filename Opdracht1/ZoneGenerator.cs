@@ -18,51 +18,78 @@ namespace Opdracht1
 
         public Zone generate(Node startingNode)
         {
+            List<Node> nodes = this.generate();
+            if (startingNode != null) {
+                nodes.Insert(0, startingNode);
+            }
+
+
+            int routeLength = this.random.Next(nodes.Count/3, nodes.Count/2);
+
+            Node previousNode = nodes[0];
+            for (int i = 0; i < routeLength; i++) {
+                Node nextNode = this.getUnconnectedNode(nodes);
+                previousNode.addNeighbour(nextNode);
+                previousNode = nextNode;
+            }
+
+            
+            while (true) {
+                Node unconnected = this.getUnconnectedNode(nodes);
+                Node neighbour = this.getNeighbour(nodes);
+
+                if (unconnected == null || neighbour == null) break;
+
+                unconnected.addNeighbour(neighbour);
+
+            }
+
+            this.printConnections(nodes);
+
+            return new Zone(nodes, nodes[0], previousNode, this.zoneCounter++);
+        }
+
+        private List<Node> generate()
+        {
             List<Node> nodes = new List<Node>();
             int numberOfNodes = this.random.Next(8, 15);
             for (int i = 0; i < numberOfNodes; i++) {
                 nodes.Add(new Node(i));
             }
-
-            Node startNode = nodes[0];
-            Node endNode = nodes[nodes.Count - 1];
-
-            int routeLength = this.random.Next(numberOfNodes/3, numberOfNodes/2);
-
-            List<Node> connectedNodes = new List<Node>();
-
-            this.moveNode(startNode, nodes, connectedNodes);
-            this.moveNode(endNode, nodes, connectedNodes);
-
-            Node previousNode = startNode;
-            for (int i = 0; i < routeLength; i++) {
-                Node nextNode = nodes[this.random.Next(nodes.Count)];
-                this.moveNode(nextNode, nodes, connectedNodes);
-                previousNode.addNeighbour(nextNode);
-                previousNode = nextNode;
-            }
-            previousNode.addNeighbour(endNode);
-
-            while (nodes.Count > 0) {
-                Node node = nodes[this.random.Next(nodes.Count)];
-                int numNeighbours = this.random.Next(1, 5);
-                for (int i = 0; i < numNeighbours; i++) {
-                    List<Node> neighbours = connectedNodes.FindAll(n => ! (n.neighbours.Count > 3));
-                    Node neighbour = neighbours[this.random.Next(neighbours.Count)];
-                    node.addNeighbour(neighbour);
-                    this.moveNode(node, nodes, connectedNodes);
-                }
-            }
-
-            Zone zone = new Zone(connectedNodes, startNode, endNode, this.zoneCounter++);
-
-            return zone;
+            return nodes;
         }
 
-        private void moveNode(Node node, List<Node> from, List<Node> to)
+        private void printConnections(List<Node> nodes)
         {
-            from.Remove(node);
-            to.Add(node);
+            foreach (Node node in nodes) {
+                Console.WriteLine('\n' + node.number.ToString() + ':');
+                foreach (Node neighbour in node.neighbours) {
+                    Console.WriteLine("  " + neighbour.number.ToString());
+                }
+            }
+        }
+
+        private Node getNeighbour(List<Node> nodes)
+        {
+            List<Node> viableNeighbours = nodes.FindAll(n => 
+                n.neighbours.Count < 4 &&
+                n.neighbours.Count > 0);
+
+            return this.getRandomNode(viableNeighbours);
+        }
+
+        private Node getUnconnectedNode(List<Node> nodes)
+        {
+            List<Node> unconnectedNodes = nodes.FindAll(n => 
+                n.neighbours.Count == 0 &&
+                n.number != 0);
+
+            return this.getRandomNode(unconnectedNodes);
+        }
+
+        private Node getRandomNode(List<Node> neighbours)
+        {
+            return neighbours.Count == 0 ? null : neighbours[this.random.Next(neighbours.Count)];
         }
     }
 }

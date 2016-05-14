@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 
 namespace Opdracht1.Tests
 {
@@ -47,28 +48,34 @@ namespace Opdracht1.Tests
         }
 
         [TestMethod]
-//        public void is_fully_connected()
-//        {
-//            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
-//            Dungeon dungeon = dungeonGenerator.generate(3);
-//
-//            Node startNode = dungeon.zones[0].startNode;
-//            foreach (Zone zone in dungeon.zones) {
-//                foreach (Node node in zone.nodes) {
-//                    Assert.IsTrue(this.connectedToNode(node, startNode));
-//                }
-//            }
-//        }
-
-        private bool connectedToNode(Node one, Node two)
+        public void is_fully_connected()
         {
-            if (one.neighbours.Contains(two)) {
+            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
+            Dungeon dungeon = dungeonGenerator.generate(3);
+
+            Node startNode = dungeon.zones[0].startNode;
+            foreach (Zone zone in dungeon.zones) {
+                foreach (Node node in zone.nodes) {
+                    Assert.IsTrue(this.connectedToNode(node, startNode, new List<Node>()));
+                }
+            }
+        }
+
+        private bool connectedToNode(Node node, Node connectedTo, List<Node> visited)
+        {
+            if (visited.Contains(node)) {
+                return false;
+            }
+
+            visited.Add(node);
+
+            if (node.neighbours.Contains(connectedTo)) {
                 return true;
             }
 
             bool connected = false;
-            foreach (Node neighbour in two.neighbours) {
-                connected = this.connectedToNode(neighbour, two) || connected;
+            foreach (Node neighbour in connectedTo.neighbours) {
+                connected = this.connectedToNode(neighbour, connectedTo, visited) || connected;
             }
 
             return connected;

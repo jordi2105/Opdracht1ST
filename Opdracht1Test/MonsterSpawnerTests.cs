@@ -50,7 +50,7 @@ namespace Opdracht1.Tests
         private Dungeon createNewDungeon()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(new ZoneGenerator(random));
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
 
             Dungeon dungeon = dungeonGenerator.generate(3);
