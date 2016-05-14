@@ -20,6 +20,9 @@ namespace Opdracht1
         private bool turnPlayer = true;
         private int t = 1342342435;
         private Player player;
+        private int teller = 0;
+        private Random random;
+        private bool isAlive = true;
 
         public Game(
             DungeonGenerator dungeonGenerator, 
@@ -32,12 +35,18 @@ namespace Opdracht1
             this.monsterSpawner = monsterSpawner;
             this.itemSpawner = itemSpawner;
 
+            random = new Random();
             this.startNewGame();
-            this.turn();
+            while(isAlive)
+            {
+                this.turn();
+            }
+            
         }
 
         public void turn()
         {
+            teller++;
             if (this.player.hitPoints < 0)
             {
                 this.endOfGame();
@@ -50,29 +59,39 @@ namespace Opdracht1
                 {
                     this.endOfGame();
                 }
-                else this.turn();
+                //else this.turn();
             }
             
             else if(this.turnPlayer)
             {
+                
+
                 List<Node> nodes = this.player.currentNode.neighbours;
                 Node neighbour = this.moveCreatureRandom(nodes, null, null);
+                if(teller > 5000)
+                {
+                    neighbour = this.dungeon.zones[0].endNode;
+                    teller = 0;
+                }
+
                 this.player.move(neighbour);
-                player = player;
                 Console.WriteLine("Player moved to: " + neighbour.number);
+
+                
                 
                 if (neighbour == this.dungeon.zones[0].endNode)
                 {
                     if(dungeon.zones.Count() == 1)
                     {
-                        Console.WriteLine("Player reached exit node (end of dungeon)");
+                        Console.WriteLine("Player reached exit node of zone:" + player.currentNode.zone.number + " (end of dungeon with level: " + dungeon.level + ")");
                         this.nextDungeon();
+                        player.move(dungeon.zones[0].startNode);
                         Console.ReadLine();
                     }
 
                     else
                     {
-                        Console.WriteLine("Player reached the end node of the zone");
+                        Console.WriteLine("Player reached the end node of the zone with zonenumber:" + player.currentNode.zone.number + "in dungeon with dungeon level: " + dungeon.level);
                         player.useTimeCrystal(true);
                         //this.nextDungeon();
                         Console.ReadLine();
@@ -80,7 +99,7 @@ namespace Opdracht1
                     
                 }
                 this.turnPlayer = !this.turnPlayer;
-                this.turn();
+                //this.turn();
             }
             else
             {
@@ -95,12 +114,12 @@ namespace Opdracht1
                                 continue;
                             Node neighbour = this.moveCreatureRandom(nodes, zone, pack);
                             pack.move(neighbour);
-                            Console.WriteLine("Pack moved to: " + neighbour.number);
+                            //Console.WriteLine("Pack moved to: " + neighbour.number);
                         }
                     }
                 }
                 this.turnPlayer = !this.turnPlayer;
-                this.turn();
+                //this.turn();
             }
            
             
@@ -108,21 +127,21 @@ namespace Opdracht1
 
         public Node moveCreatureRandom(List<Node> nodes, Zone zone, Pack pack)
         {
-            Random random = new Random(this.t);
-            this.t += 24536;
             return nodes[random.Next(nodes.Count)];
         }
 
         public void endOfGame()
         {
+            isAlive = false;
             Console.WriteLine("Player died");
             Console.ReadLine();
 
-            this.startNewGame();
+            //this.startNewGame();
         }
 
         private void startNewGame()
         {
+            isAlive = true;
             this.player = new Player();
             this.nextDungeon();
             player.dungeon = dungeon;
@@ -151,6 +170,7 @@ namespace Opdracht1
         public void nextDungeon()
         {
             this.dungeon = this.dungeonGenerator.generate(this.nextDungeonLevel());
+            player.dungeon = dungeon;
             this.monsterSpawner.spawn(this.dungeon);
             this.itemSpawner.spawn(this.dungeon.zones, this.player.hitPoints);
         }

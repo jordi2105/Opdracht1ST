@@ -9,7 +9,7 @@ namespace Opdracht1
     [Serializable]
     public class Player : Creature
     {
-        private const int MaxHp = 10000;
+        private const int MaxHp = 1000;
 
         private int killPoints;
         private bool timeCrystalActive;
@@ -125,6 +125,7 @@ namespace Opdracht1
             int index = random.Next(0, nodesList.Count());
             foreach(Node node in currentNode.neighbours)
                 node.neighbours.Remove(currentNode);
+            safe = false;
            
             currentNode = nodesList[index];
             
