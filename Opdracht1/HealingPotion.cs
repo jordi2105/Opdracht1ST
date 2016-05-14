@@ -9,7 +9,7 @@ namespace Opdracht1
     [Serializable]
     public class HealingPotion : Item
     {
-        public int hitPoints { get; }
+        public int hitPoints;
 
         public HealingPotion(int hitPoints)
         {

@@ -10,11 +10,11 @@ namespace Opdracht1
     [Serializable]
     public class Node
     {
-        public int number { get; }
-        public Zone zone { get; set; }
-        public List<Pack> packs { get; }
-        public List<Node> neighbours { get; set; }
-        public List<Item> items { get; set; }
+        public int number;
+        public Zone zone;
+        public List<Pack> packs;
+        public List<Node> neighbours;
+        public List<Item> items;
 
         public Node(int number)
         {

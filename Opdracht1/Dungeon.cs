@@ -9,8 +9,8 @@ namespace Opdracht1
     [Serializable]
     public class Dungeon
     {
-        public List<Zone> zones { get; }
-        public int level { get; }
+        public List<Zone> zones;
+        public int level;
         
         public Dungeon(int level)
         {

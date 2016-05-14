@@ -9,12 +9,15 @@ namespace Opdracht1
     [Serializable]
     public class Player : Creature
     {
-        private const int MaxHp = 100;
+        private const int MaxHp = 10000;
 
         private int killPoints;
         private bool timeCrystalActive;
         private List<Item> bag;
         public Node currentNode { get; private set; }
+        public Dungeon dungeon;
+        private List<Node> visitedNodes;
+        private bool safe = false;
 
 
         public Player()
@@ -87,16 +90,63 @@ namespace Opdracht1
             this.hitPoints = Math.Min(MaxHp, potion.hitPoints + this.hitPoints);
         }
 
-        void useTimeCrystal(bool usedOnBridge)
+        public void useTimeCrystal(bool usedOnBridge)
         {
             if(usedOnBridge)
             {
-                
+                Zone zoneToBeDeleted = currentNode.zone;
+                teleportToSaveNeighbour();
+                dungeon.zones.Remove(zoneToBeDeleted);
+                Console.WriteLine("Bridge and zone removed");
             }
             else
             {
                 this.timeCrystalActive = true;
             }
+        }
+
+        void teleportToSaveNeighbour()
+        {
+            Random random = new Random(13423);
+            List<Node> nodesList = new List<Node>();
+            
+            foreach(Node neighbour in currentNode.neighbours)
+            {
+                if (neighbour.zone == currentNode.zone)
+                    continue;
+                safe = false;
+                visitedNodes = new List<Node>();
+                saveNode(neighbour);
+                if(safe)
+                {
+                    nodesList.Add(neighbour);
+                }
+            }
+            int index = random.Next(0, nodesList.Count());
+            foreach(Node node in currentNode.neighbours)
+                node.neighbours.Remove(currentNode);
+           
+            currentNode = nodesList[index];
+            
+            Console.WriteLine("Player teleported to node: " + currentNode.number);
+        }
+
+        void saveNode(Node node)
+        {
+            if (!visitedNodes.Exists(x => x == node))
+            {
+                visitedNodes.Add(node);
+                foreach (Node neighbour in node.neighbours)
+                {
+                    if (neighbour == currentNode.zone.endNode)
+                    {
+                        safe = true; 
+                        break;
+                    }
+                    else saveNode(neighbour);
+                }
+            }
+            
         }
     }
 }
