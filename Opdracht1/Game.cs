@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Opdracht1
 {
@@ -86,8 +84,6 @@ namespace Opdracht1
                 this.turnPlayer = !this.turnPlayer;
                 this.turn();
             }
-           
-            
         }
 
         public Node moveCreatureRandom(List<Node> nodes)

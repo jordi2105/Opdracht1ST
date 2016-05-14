@@ -1,10 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Opdracht1;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Opdracht1.Tests
 {
@@ -55,7 +50,7 @@ namespace Opdracht1.Tests
         private Dungeon createNewDungeon()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            DungeonGenerator dungeonGenerator = new DungeonGenerator();
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
 
             Dungeon dungeon = dungeonGenerator.generate(3);

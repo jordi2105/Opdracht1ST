@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Opdracht1
 {
@@ -48,6 +45,12 @@ namespace Opdracht1
         {
             player.attack(p.Monsters[0]);
             p.attack(player);
+        }
+
+        public void addNeighbour(Node neighbour)
+        {
+            this.neighbours.Add(neighbour);
+            neighbour.neighbours.Add(this);
         }
     }
 }
