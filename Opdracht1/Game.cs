@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class Game
+    public class Game
     {
         [NonSerialized] private readonly DungeonGenerator dungeonGenerator;
         [NonSerialized] private readonly GameSerializer gameSerializer;
@@ -22,7 +22,7 @@ namespace Opdracht1
         private Player player;
         private int teller = 0;
         private Random random;
-        private bool isAlive = true;
+        public bool isAlive = true;
 
         public Game(
             DungeonGenerator dungeonGenerator, 

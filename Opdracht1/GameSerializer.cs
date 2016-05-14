@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Opdracht1
 {
-    class GameSerializer
+    public class GameSerializer
     {
         private IFormatter formatter;
 
