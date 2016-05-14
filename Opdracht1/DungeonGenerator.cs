@@ -29,28 +29,23 @@ namespace Opdracht1
             for (int i = 0; i < numZones; i++)
             {
                 zone = this.createNewZone(zone);
-                this.removeDoubles(dungeon, zone);
+                this.removeDoubles(zone);
                 dungeon.zones.Add(zone);
             }
 
             return dungeon;
         }
 
-        private void removeDoubles(Dungeon dungeon, Zone zone)
+        private void removeDoubles(Zone zone)
         {
             foreach (Node node in zone.nodes) {
-                List<Node> newNeighbours = node.neighbours.Distinct().ToList();
-                node.neighbours = newNeighbours;
+                node.setNeighbours(node.getNeighbours().Distinct().ToList());
             }
-            if (zone.startNode.neighbours.Count == 1) {
-                int index = this.random.Next(1, this.nodes.Count());
-                Node node = this.nodes[index];
-                while (node == zone.startNode) {
-                    index++;
-                    node = this.nodes[index];
-                }
 
-                zone.startNode.neighbours.Add(node);
+
+            if (zone.startNode.neighbourCount() == 1) {
+                List<Node> viableNeighnours = zone.nodes.FindAll(n => this.isValidNeighbour(zone.startNode, n));
+                zone.startNode.addNeighbour(viableNeighnours[this.random.Next(viableNeighnours.Count)]);
             }
         }
 
@@ -88,7 +83,7 @@ namespace Opdracht1
             for (int i = 0; i < num; i++)
             {
                 Node neighbour = this.getNeighbour(startNode);
-                startNode.neighbours.Add(neighbour);
+                startNode.addNeighbour(neighbour);
             }
 
             return startNode;
@@ -152,12 +147,12 @@ namespace Opdracht1
                 return false;
             }
 
-            if (neighbour.neighbours.Count > 3)
+            if (neighbour.neighbourCount() > 3)
             {
                 return false;
             }
 
-            if (node.neighbours.Contains(neighbour))
+            if (node.hasNeighbour(neighbour))
             {
                 return false;
             }
@@ -168,7 +163,7 @@ namespace Opdracht1
         private Node chooseEndNode(Node startingNode)
         {
             Node node = this.nodes[this.random.Next(this.nodes.Count())];
-            if (!node.Equals(startingNode) && node.neighbours.Count >= 2)
+            if (!node.Equals(startingNode) && node.neighbourCount() >= 2)
             {
                 return node;
             }

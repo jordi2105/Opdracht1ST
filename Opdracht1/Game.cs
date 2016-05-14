@@ -55,8 +55,7 @@ namespace Opdracht1
             
             else if(this.turnPlayer)
             {
-                List<Node> nodes = this.player.currentNode.neighbours;
-                Node neighbour = this.moveCreatureRandom(nodes);
+                Node neighbour = this.moveCreatureRandom(this.player.currentNode.getNeighbours());
                 this.player.move(neighbour);
                 Console.WriteLine("Player moved to: " + neighbour.number);
                 if (neighbour == this.dungeon.zones[0].endNode)
@@ -76,7 +75,7 @@ namespace Opdracht1
                     {
                         foreach(Pack pack in node.packs)
                         {
-                            List<Node> nodes = pack.getNode().neighbours;
+                            List<Node> nodes = pack.getNode().getNeighbours();
                             Node neighbour = this.moveCreatureRandom(nodes);
                             pack.move(neighbour);
                             Console.WriteLine("Pack moved to: " + neighbour.number);

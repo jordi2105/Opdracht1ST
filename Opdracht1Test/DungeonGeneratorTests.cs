@@ -43,7 +43,7 @@ namespace Opdracht1.Tests
             int numberOfNodes = 0;
             foreach (Zone zone in dungeon.zones) {
                 foreach (Node node in zone.nodes) {
-                    totalConnections += node.neighbours.Count;
+                    totalConnections += node.neighbourCount();
                     numberOfNodes++;
                 }
             }
@@ -67,12 +67,12 @@ namespace Opdracht1.Tests
 
         private bool connectedToNode(Node one, Node two)
         {
-            if (one.neighbours.Contains(two)) {
+            if (one.hasNeighbour(two)) {
                 return true;
             }
 
             bool connected = false;
-            foreach (Node neighbour in two.neighbours) {
+            foreach (Node neighbour in two.getNeighbours()) {
                 connected = this.connectedToNode(neighbour, two) || connected;
             }
 
