@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class Game
+    public class Game
     {
         [NonSerialized] private readonly DungeonGenerator dungeonGenerator;
         [NonSerialized] private readonly GameSerializer gameSerializer;
@@ -54,6 +54,9 @@ namespace Opdracht1
 
             if (this.player.currentNode.packs.Count() > 0)
             {
+
+                useTimeCrystalOrNot();
+                
                 this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player);
                 if (this.player.hitPoints < 0)
                 {
@@ -92,7 +95,7 @@ namespace Opdracht1
                     else
                     {
                         Console.WriteLine("Player reached the end node of the zone with zonenumber:" + player.currentNode.zone.number + "in dungeon with dungeon level: " + dungeon.level);
-                        player.useTimeCrystal(true);
+                        player.useTimeCrystal(true, null);
                         Console.ReadLine();
                     }
                     
@@ -124,6 +127,23 @@ namespace Opdracht1
             
         }
 
+        public void useTimeCrystalOrNot()
+        {
+            foreach (Item item in player.bag)
+            {
+                if (item.GetType() == typeof(TimeCrystal))
+                {
+                    int timeCrystal = random.Next(0, 4);
+                    if (timeCrystal == 1)
+                    {
+                        player.useTimeCrystal(false, (TimeCrystal)item);
+                        break;
+                    }
+
+                }
+            }
+        }
+
         public Node moveCreatureRandom(List<Node> nodes, Zone zone, Pack pack)
         {
             return nodes[random.Next(nodes.Count)];
@@ -138,7 +158,7 @@ namespace Opdracht1
             //this.startNewGame();
         }
 
-        private void startNewGame()
+        public void startNewGame()
         {
             isAlive = true;
             this.player = new Player();

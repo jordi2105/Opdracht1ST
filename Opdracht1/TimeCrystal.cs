@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Opdracht1
 {
     [Serializable]
-    class TimeCrystal : Item
+    public class TimeCrystal : Item
     {
     }
 }

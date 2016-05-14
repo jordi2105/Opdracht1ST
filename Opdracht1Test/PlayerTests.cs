@@ -36,7 +36,7 @@ namespace Opdracht1.Tests
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
             Dungeon dungeon = dungeonGenerator.generate(3);
             Player player = new Player();
-            player.currentNode = dungeon.zones[0].startNode;
+            player.move(dungeon.zones[0].startNode);
             List<Node> allNeigbours = new List<Node>();
             foreach (Node neigbours in player.currentNode.neighbours)
             {

@@ -12,8 +12,8 @@ namespace Opdracht1
         public int MaxHp = 1000;
 
         private int killPoints;
-        private bool timeCrystalActive;
-        private List<Item> bag;
+        public bool timeCrystalActive;
+        public List<Item> bag;
         public Node currentNode { get; set; }
         public Dungeon dungeon;
         private List<Node> visitedNodes;
@@ -31,6 +31,21 @@ namespace Opdracht1
         public void move(Node node)
         {
             this.currentNode = node;
+            foreach (Item item in node.items)
+            {
+                //bag.Add(item);
+                //node.items.Remove(item);
+                Console.WriteLine(item);
+            }
+           
+            for (int i = 0; i < node.items.Count; i++)
+            {
+                bag.Add(node.items[i]);
+                node.items.Remove(node.items[i]);
+                Console.WriteLine("delete item");
+            }
+            Console.WriteLine(node.items.Count);
+                
         }
 
         public void attack(Monster monster)
@@ -73,7 +88,7 @@ namespace Opdracht1
                         this.useHealingPotion((HealingPotion) item);
                     else
                     {
-                        this.useTimeCrystal(usedOnBridge);
+                        this.useTimeCrystal(usedOnBridge, null);
                         if(usedOnBridge) return true;
                     }
                     break;
@@ -89,9 +104,10 @@ namespace Opdracht1
         void useHealingPotion(HealingPotion potion)
         {
             this.hitPoints = Math.Min(MaxHp, potion.hitPoints + this.hitPoints);
+            
         }
 
-        public void useTimeCrystal(bool usedOnBridge)
+        public void useTimeCrystal(bool usedOnBridge, TimeCrystal timeCrystal)
         {
             if(usedOnBridge)
             {
@@ -103,6 +119,7 @@ namespace Opdracht1
             else
             {
                 this.timeCrystalActive = true;
+                bag.Remove(timeCrystal);
             }
         }
 
