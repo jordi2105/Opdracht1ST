@@ -82,7 +82,8 @@ namespace Opdracht1.Tests
                 new DungeonGenerator(random2),
                 new GameSerializer(formatter),
                 new MonsterSpawner(random2),
-                new ItemSpawner(random2)
+                new ItemSpawner(random2),
+                random2
             );
             Random random = new Random();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);

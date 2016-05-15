@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Opdracht1
 {
     public class GameSerializer
     {
-        private IFormatter formatter;
+        private readonly IFormatter formatter;
 
         public GameSerializer(IFormatter formatter)
         {
