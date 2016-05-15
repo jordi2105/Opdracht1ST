@@ -51,6 +51,15 @@ namespace Opdracht1Test
             }
         }
 
+        [TestMethod]
+        public void wont_load_non_existent_save()
+        {
+            Game game = this.createGame();
+            bool success = game.load("doesntexists.save");
+
+            Assert.IsFalse(success);
+        }
+
 //        private void compareGames(Game one, Game two)
 //        {
 //            this.compareDungeons(one.dungeon, two.dungeon);
