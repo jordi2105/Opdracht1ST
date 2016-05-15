@@ -61,6 +61,18 @@ namespace Opdracht1.Tests
             Assert.IsTrue(player.currentNode != node);
         }
         [TestMethod]
+        public void time_crystal_not_used_on_bridge()
+        {
+            Random random = new Random();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            Dungeon dungeon = dungeonGenerator.generate(3);
+            Player player = new Player();
+            player.dungeon = dungeon;
+            TimeCrystal timecrystal = new TimeCrystal();
+            player.getCommand("use-potion", null, timecrystal, false);
+            Assert.IsTrue(player.timeCrystalActive && !player.bag.Contains(timecrystal));
+        }
+        [TestMethod]
         public void attack_a_pack_player_wins()
         {
             Random random = new Random();

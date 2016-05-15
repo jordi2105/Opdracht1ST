@@ -6,10 +6,10 @@ using Opdracht1;
 
 namespace Opdracht1Test
 {
-    [TestClass]
+    [TestClass()]
     public class GameSerializerTests
     {
-        [TestMethod]
+        [TestMethod()]
         public void creates_file_in_file_system()
         {
             Game game = this.createGame();
@@ -25,7 +25,7 @@ namespace Opdracht1Test
             }
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void game_get_loaded()
         {
             Game game = this.createGame();
@@ -51,7 +51,7 @@ namespace Opdracht1Test
             }
         }
 
-        [TestMethod]
+        [TestMethod()]
         public void wont_load_non_existent_save()
         {
             Game game = this.createGame();
@@ -60,58 +60,59 @@ namespace Opdracht1Test
             Assert.IsFalse(success);
         }
 
-//        private void compareGames(Game one, Game two)
-//        {
-//            this.compareDungeons(one.dungeon, two.dungeon);
-//        }
-//
-//        private void compareDungeons(Dungeon one, Dungeon two)
-//        {
-//            Assert.AreEqual(one.level, two.level);
-//            Assert.AreEqual(one.zones.Count, two.zones.Count);
-//
-//            int minCount = Math.Min(one.zones.Count, two.zones.Count);
-//            for (int i = 0; i < minCount; i++) {
-//                this.compareZones(one.zones[i], two.zones[i]);
-//            }
-//        }
-//
-//        private void compareZones(Zone one, Zone two)
-//        {
-//            Assert.AreEqual(one.number, two.number);
-//
-//            this.compareNodes(one.startNode, one.startNode);
-//            this.compareNodes(one.endNode, one.endNode);
-//
-//            Assert.AreEqual(one.nodes.Count, two.nodes.Count);
-//            int minCount = Math.Min(one.nodes.Count, two.nodes.Count);
-//            for (int i = 0; i < minCount; i++) {
-//                this.compareNodes(one.nodes[i], two.nodes[i]);
-//            }
-//        }
-//
-//        private void compareNodes(Node one, Node two, bool numbersOnly = false)
-//        {
-//            Assert.AreEqual(one.number, two.number);
-//
-//            if (!numbersOnly) {
-//                this.compareNeighbours(one, two);
-//
-//                Assert.AreEqual(one.items.Count, two.items.Count);
-//                
-//            }
-//        }
-//
-//        private void compareNeighbours(Node one, Node two)
-//        {
-//            Assert.AreEqual(one.neighbours.Count, two.neighbours.Count);
-//            int minCount = Math.Min(one.neighbours.Count, two.neighbours.Count);
-//            for (int i = 0; i < minCount; i++) {
-//                this.compareNodes(one.neighbours[i], two.neighbours[i], true);
-//            }
-//        }
-//
+     
 
+        //        private void compareGames(Game one, Game two)
+        //        {
+        //            this.compareDungeons(one.dungeon, two.dungeon);
+        //        }
+        //
+        //        private void compareDungeons(Dungeon one, Dungeon two)
+        //        {
+        //            Assert.AreEqual(one.level, two.level);
+        //            Assert.AreEqual(one.zones.Count, two.zones.Count);
+        //
+        //            int minCount = Math.Min(one.zones.Count, two.zones.Count);
+        //            for (int i = 0; i < minCount; i++) {
+        //                this.compareZones(one.zones[i], two.zones[i]);
+        //            }
+        //        }
+        //
+        //        private void compareZones(Zone one, Zone two)
+        //        {
+        //            Assert.AreEqual(one.number, two.number);
+        //
+        //            this.compareNodes(one.startNode, one.startNode);
+        //            this.compareNodes(one.endNode, one.endNode);
+        //
+        //            Assert.AreEqual(one.nodes.Count, two.nodes.Count);
+        //            int minCount = Math.Min(one.nodes.Count, two.nodes.Count);
+        //            for (int i = 0; i < minCount; i++) {
+        //                this.compareNodes(one.nodes[i], two.nodes[i]);
+        //            }
+        //        }
+        //
+        //        private void compareNodes(Node one, Node two, bool numbersOnly = false)
+        //        {
+        //            Assert.AreEqual(one.number, two.number);
+        //
+        //            if (!numbersOnly) {
+        //                this.compareNeighbours(one, two);
+        //
+        //                Assert.AreEqual(one.items.Count, two.items.Count);
+        //                
+        //            }
+        //        }
+        //
+        //        private void compareNeighbours(Node one, Node two)
+        //        {
+        //            Assert.AreEqual(one.neighbours.Count, two.neighbours.Count);
+        //            int minCount = Math.Min(one.neighbours.Count, two.neighbours.Count);
+        //            for (int i = 0; i < minCount; i++) {
+        //                this.compareNodes(one.neighbours[i], two.neighbours[i], true);
+        //            }
+        //        }
+        //
         private Game createGame()
         {
             Random random = new Random();
@@ -129,5 +130,7 @@ namespace Opdracht1Test
                 random);
             return game;
         }
+
+        
     }
 }

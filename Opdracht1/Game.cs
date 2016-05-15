@@ -19,7 +19,7 @@ namespace Opdracht1
         public Dungeon dungeon { get; private set; }
 
         public bool isAlive { get; private set; }
-        public bool turnPlayer { get; private set; }
+        public bool turnPlayer { get; set; }
         public int teller { get; private set; }
         public int t { get; private set; }
 
@@ -126,7 +126,7 @@ namespace Opdracht1
             {
                 if (item.GetType() == typeof(TimeCrystal))
                 {
-                    int timeCrystal = this.random.Next(0, 4);
+                    int timeCrystal = 1;//this.random.Next(0, 4);
                     if (timeCrystal == 1)
                     {
                         this.player.useTimeCrystal(false, (TimeCrystal)item);
@@ -162,6 +162,7 @@ namespace Opdracht1
             this.nextDungeon();
             this.player.dungeon = this.dungeon;
             this.player.move(this.dungeon.zones[0].startNode);
+            //this.turn();
         }
 
         public void save(string fileName)
