@@ -55,9 +55,10 @@ namespace Opdracht1.Tests
             Dungeon dungeon = dungeonGenerator.generate(3);
             Player player = new Player();
             player.dungeon = dungeon;
+            Node node = dungeon.zones[0].endNode;
             player.currentNode = dungeon.zones[0].endNode;
             player.getCommand("use-potion", null, new TimeCrystal(), true);
-            Assert.IsTrue(player.currentNode != dungeon.zones[0].endNode);
+            Assert.IsTrue(player.currentNode != node);
         }
         [TestMethod]
         public void attack_a_pack_player_wins()
@@ -76,24 +77,18 @@ namespace Opdracht1.Tests
         [TestMethod]
         public void attack_a_pack_pack_wins()
         {
-            Random random2 = new Random();
-            BinaryFormatter formatter = new BinaryFormatter();
-            Game game = new Game(
-                new DungeonGenerator(random2),
-                new GameSerializer(formatter),
-                new MonsterSpawner(random2),
-                new ItemSpawner(random2)
-            );
+
             Random random = new Random();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
             Dungeon dungeon = dungeonGenerator.generate(3);
             Player player = new Player();
-            player.hitPoints = 10;
+            player.hitPoints = 1;
             player.dungeon = dungeon;
-            player.move(dungeon.zones[0].nodes[1]);
-            Pack pack = new Pack(3, player.currentNode);
+            player.currentNode = dungeon.zones[0].nodes[1];
+            player.timeCrystalActive = false;
+            Pack pack = new Pack(15, player.currentNode);
             player.currentNode.doCombat(pack, player);
-            Assert.IsTrue(!game.isAlive);
+            Assert.IsFalse(player.isAlive);
         }
 
         [TestMethod()]

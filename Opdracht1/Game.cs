@@ -127,6 +127,7 @@ namespace Opdracht1
             
         }
 
+        
         public void useTimeCrystalOrNot()
         {
             foreach (Item item in player.bag)

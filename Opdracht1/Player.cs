@@ -18,6 +18,7 @@ namespace Opdracht1
         public Dungeon dungeon;
         private List<Node> visitedNodes;
         private bool safe = false;
+        public bool isAlive = true;
 
 
         public Player()
@@ -26,25 +27,17 @@ namespace Opdracht1
             this.AttackRating = 5;
             this.hitPoints = MaxHp;
             this.bag = new List<Item>();
+            timeCrystalActive = false;
         }
 
         public void move(Node node)
         {
             this.currentNode = node;
-            foreach (Item item in node.items)
-            {
-                //bag.Add(item);
-                //node.items.Remove(item);
-                Console.WriteLine(item);
-            }
-           
             for (int i = 0; i < node.items.Count; i++)
             {
                 bag.Add(node.items[i]);
                 node.items.Remove(node.items[i]);
-                Console.WriteLine("delete item");
             }
-            Console.WriteLine(node.items.Count);
                 
         }
 
@@ -52,6 +45,7 @@ namespace Opdracht1
         {
             if (this.timeCrystalActive)
             {
+                Console.WriteLine("kauloaap");
                 foreach (Monster monsters in monster.pack.Monsters)
                 {
                     monsters.hitPoints -= this.AttackRating;

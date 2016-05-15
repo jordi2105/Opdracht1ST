@@ -124,13 +124,13 @@ namespace Opdracht1
 
         private int getMaxNeighbours()
         {
-            return Math.Min(5, 11 - this.nodes.Count);
+            return Math.Min(4, 11 - this.nodes.Count);
         }
 
         private Node getNeighbour(Node node)
         {
             int count = this.nodes.Count;
-            if (count < 3 | this.random.Next(2) == 0)
+            if (count < 5 | this.random.Next(2) == 0)
             {
                 return this.createNodeTree(false);
             }

@@ -41,6 +41,12 @@ namespace Opdracht1
                 packs.Remove(pack);
             }
 
+            if(player.hitPoints <= 0)
+            {
+                Console.WriteLine("Player is dead");
+                player.isAlive = false;
+            }
+
             
         }
 
