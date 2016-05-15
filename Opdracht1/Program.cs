@@ -20,10 +20,17 @@ namespace Opdracht1
                 new DungeonGenerator(random), 
                 new GameSerializer(formatter), 
                 new MonsterSpawner(random), 
-                new ItemSpawner(random)
+                new ItemSpawner(random),
+                random
             );
 
+//            while (game.isAlive) {
+//                game.turn();
+//            }
+
             game.nextDungeon();
+
+
             string fileName = Directory.GetCurrentDirectory() + "my_first_save.save";
 
             game.save(fileName);

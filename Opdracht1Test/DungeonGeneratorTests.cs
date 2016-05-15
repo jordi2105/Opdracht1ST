@@ -74,28 +74,34 @@ namespace Opdracht1.Tests
         }
 
         [TestMethod]
-//        public void is_fully_connected()
-//        {
-//            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
-//            Dungeon dungeon = dungeonGenerator.generate(3);
-//
-//            Node startNode = dungeon.zones[0].startNode;
-//            foreach (Zone zone in dungeon.zones) {
-//                foreach (Node node in zone.nodes) {
-//                    Assert.IsTrue(this.connectedToNode(node, startNode));
-//                }
-//            }
-//        }
-
-        private bool connectedToNode(Node one, Node two)
+        public void is_fully_connected()
         {
+            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
+            Dungeon dungeon = dungeonGenerator.generate(3);
+
+            Node startNode = dungeon.zones[0].startNode;
+            foreach (Zone zone in dungeon.zones) {
+                foreach (Node node in zone.nodes) {
+                    Assert.IsTrue(this.connectedToNode(node, startNode, new List<Node>()));
+                }
+            }
+        }
+
+        private bool connectedToNode(Node one, Node two, List<Node> visited)
+        {
+            if (visited.Contains(one)) {
+                return false;
+            }
+
+            visited.Add(one);
+
             if (one.neighbours.Contains(two)) {
                 return true;
             }
 
             bool connected = false;
             foreach (Node neighbour in two.neighbours) {
-                connected = this.connectedToNode(neighbour, two) || connected;
+                connected = this.connectedToNode(neighbour, two, visited) || connected;
             }
 
             return connected;
