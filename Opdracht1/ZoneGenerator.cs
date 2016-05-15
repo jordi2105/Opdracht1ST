@@ -63,7 +63,7 @@ namespace Opdracht1
         {
             foreach (Node node in nodes) {
                 Console.WriteLine('\n' + node.number.ToString() + ':');
-                foreach (Node neighbour in node.neighbours) {
+                foreach (Node neighbour in node.getNeighbours()) {
                     Console.WriteLine("  " + neighbour.number.ToString());
                 }
             }
@@ -72,8 +72,8 @@ namespace Opdracht1
         private Node getNeighbour(List<Node> nodes)
         {
             List<Node> viableNeighbours = nodes.FindAll(n => 
-                n.neighbours.Count < 4 &&
-                n.neighbours.Count > 0);
+                n.neighbourCount() < 4 &&
+                n.neighbourCount() > 0);
 
             return this.getRandomNode(viableNeighbours);
         }
@@ -81,7 +81,7 @@ namespace Opdracht1
         private Node getUnconnectedNode(List<Node> nodes)
         {
             List<Node> unconnectedNodes = nodes.FindAll(n => 
-                n.neighbours.Count == 0 &&
+                n.neighbourCount() == 0 &&
                 n.number != 0);
 
             return this.getRandomNode(unconnectedNodes);

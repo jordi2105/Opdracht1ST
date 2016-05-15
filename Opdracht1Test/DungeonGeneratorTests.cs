@@ -1,12 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Opdracht1;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Opdracht1;
 
-namespace Opdracht1.Tests
+namespace Opdracht1Test
 {
     [TestClass()]
     public class DungeonGeneratorTests
@@ -52,37 +49,42 @@ namespace Opdracht1.Tests
         }
 
         [TestMethod]
-//        public void is_fully_connected()
-//        {
-//            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
-//            Dungeon dungeon = dungeonGenerator.generate(3);
-//
-//            Node startNode = dungeon.zones[0].startNode;
-//            foreach (Zone zone in dungeon.zones) {
-//                foreach (Node node in zone.nodes) {
-//                    Assert.IsTrue(this.connectedToNode(node, startNode));
-//                }
-//            }
-//        }
-
-        private bool connectedToNode(Node one, Node two)
+        public void is_fully_connected()
         {
-            if (one.hasNeighbour(two)) {
+            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
+            Dungeon dungeon = dungeonGenerator.generate(3);
+
+            Node startNode = dungeon.zones[0].startNode;
+            foreach (Zone zone in dungeon.zones) {
+                foreach (Node node in zone.nodes) {
+                    Assert.IsTrue(this.connectedToNode(node, startNode, new List<Node>()));
+                }
+            }
+        }
+
+        private bool connectedToNode(Node node, Node connectedTo, List<Node> visited)
+        {
+            if (visited.Contains(node)) {
+                return false;
+            }
+
+            visited.Add(node);
+
+            if (node.hasNeighbour(connectedTo)) {
                 return true;
             }
 
             bool connected = false;
-            foreach (Node neighbour in two.getNeighbours()) {
-                connected = this.connectedToNode(neighbour, two) || connected;
+            foreach (Node neighbour in connectedTo.getNeighbours()) {
+                connected = this.connectedToNode(neighbour, connectedTo, visited) || connected;
             }
 
             return connected;
         }
 
-      
         private DungeonGenerator createDungeonGenerator()
         {
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(new Random());
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(new ZoneGenerator(new Random()));
             return dungeonGenerator;
         }
     }
