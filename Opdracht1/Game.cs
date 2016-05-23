@@ -28,15 +28,17 @@ namespace Opdracht1
             GameSerializer gameSerializer, 
             MonsterSpawner monsterSpawner,
             ItemSpawner itemSpawner,
-            Random random
+            Random random,
+            bool automatic
         ){
             this.dungeonGenerator = dungeonGenerator;
             this.gameSerializer = gameSerializer;
             this.monsterSpawner = monsterSpawner;
             this.itemSpawner = itemSpawner;
             this.random = random;
+            
 
-            this.startNewGame();
+            this.startNewGame(automatic);
         }
 
         public void turn()
@@ -151,7 +153,7 @@ namespace Opdracht1
             //this.startNewGame();
         }
 
-        public void startNewGame()
+        public void startNewGame(bool automatic)
         {
             this.turnPlayer = true;
             this.isAlive = true;
@@ -162,21 +164,37 @@ namespace Opdracht1
             this.nextDungeon();
             this.player.dungeon = this.dungeon;
             this.player.move(this.dungeon.zones[0].startNode);
-            Turn turn;
-            while(player.hitPoints > 0)
-            {
-                turn = new Turn(this);
-                turn.doTurnPlayer();
-                while (!turn.checkNode());
 
-                turn = new Turn(this);
-                turn.doTurnPacks();
-                while (!turn.checkNode());
-            }
-            this.endOfGame();
+            if (automatic)
+                startNewAutomaticGame();
+            else
+                startNewNonAutomaticGame();
+                
+           
             
             
             //this.turn();
+        }
+
+        public void startNewAutomaticGame()
+        {
+
+        }
+
+        public void startNewNonAutomaticGame()
+        {
+            Turn turn;
+            while (player.hitPoints > 0)
+            {
+                turn = new Turn(this, false);
+                turn.doTurnPlayer();
+                while (!turn.checkNode()) ;
+
+                turn = new Turn(this, false);
+                turn.doTurnPacks();
+                while (!turn.checkNode()) ;
+            }
+            this.endOfGame();
         }
 
         public void save(string fileName)

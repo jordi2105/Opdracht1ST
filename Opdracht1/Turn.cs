@@ -11,7 +11,7 @@ namespace Opdracht1
         Player player;
         Dungeon dungeon;
         Game game;
-        public Turn(Game game)
+        public Turn(Game game, bool automatic)
         {
             this.player = game.player;
             this.dungeon = game.dungeon;

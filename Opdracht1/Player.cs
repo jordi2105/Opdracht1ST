@@ -46,7 +46,6 @@ namespace Opdracht1
         {
             if (this.timeCrystalActive)
             {
-                Console.WriteLine("kauloaap");
                 foreach (Monster monsters in monster.pack.Monsters)
                 {
                     monsters.hitPoints -= this.AttackRating;

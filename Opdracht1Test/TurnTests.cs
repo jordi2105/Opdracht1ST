@@ -94,7 +94,8 @@ namespace Opdracht1.Test
                 gameSerializer,
                 monsterSpawner,
                 itemSpawner,
-                random);
+                random,
+                true);
             return game;
         }
     }

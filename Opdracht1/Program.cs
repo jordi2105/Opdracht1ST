@@ -21,7 +21,8 @@ namespace Opdracht1
                 new GameSerializer(formatter), 
                 new MonsterSpawner(random), 
                 new ItemSpawner(random),
-                random
+                random,
+                true
             );
 
 //            while (game.isAlive) {
