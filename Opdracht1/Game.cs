@@ -20,7 +20,7 @@ namespace Opdracht1
 
         public bool isAlive { get; private set; }
         public bool turnPlayer { get; set; }
-        public int teller { get; private set; }
+        public int teller { get; set; }
         public int t { get; private set; }
 
         public Game(
@@ -162,6 +162,20 @@ namespace Opdracht1
             this.nextDungeon();
             this.player.dungeon = this.dungeon;
             this.player.move(this.dungeon.zones[0].startNode);
+            Turn turn;
+            while(player.hitPoints > 0)
+            {
+                turn = new Turn(this);
+                turn.doTurnPlayer();
+                while (!turn.checkNode());
+
+                turn = new Turn(this);
+                turn.doTurnPacks();
+                while (!turn.checkNode());
+            }
+            this.endOfGame();
+            
+            
             //this.turn();
         }
 
@@ -194,6 +208,9 @@ namespace Opdracht1
             this.player.dungeon = this.dungeon;
             this.monsterSpawner.spawn(this.dungeon);
             this.itemSpawner.spawn(this.dungeon.zones, this.player.hitPoints);
+
+            Console.WriteLine();
+            Console.WriteLine("New dungeon has been generated");
         }
 
         private int nextDungeonLevel()

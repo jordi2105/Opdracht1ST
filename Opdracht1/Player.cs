@@ -11,7 +11,7 @@ namespace Opdracht1
     {
         public int MaxHp = 1000;
 
-        private int killPoints;
+        public int killPoints;
         public bool timeCrystalActive;
         public List<Item> bag;
         public Node currentNode { get; set; }
@@ -38,7 +38,8 @@ namespace Opdracht1
                 bag.Add(node.items[i]);
                 node.items.Remove(node.items[i]);
             }
-                
+            Console.WriteLine("Player moved to: " + node.number);
+
         }
 
         public void attack(Monster monster)
@@ -124,7 +125,7 @@ namespace Opdracht1
             
             foreach(Node neighbour in currentNode.neighbours)
             {
-                if (neighbour.zone == currentNode.zone)
+                if (neighbour.zone == currentNode.zone || neighbour.zone == null)
                     continue;
                 safe = false;
                 visitedNodes = new List<Node>();
@@ -139,9 +140,7 @@ namespace Opdracht1
                 node.neighbours.Remove(currentNode);
             safe = false;
            
-            currentNode = nodesList[index];
-            
-            Console.WriteLine("Player teleported to node: " + currentNode.number);
+            move(nodesList[index]);
         }
 
         void saveNode(Node node)
