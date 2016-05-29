@@ -38,7 +38,7 @@ namespace Opdracht1
             this.random = random;
             
 
-            this.startNewGame(automatic);
+            this.startNewGame(!automatic);
         }
 
         public void turn()
@@ -89,7 +89,7 @@ namespace Opdracht1
                     else
                     {
                         Console.WriteLine("Player reached the end node of the zone with zonenumber:" + this.player.currentNode.zone.number + "in dungeon with dungeon level: " + this.dungeon.level);
-                        this.player.useTimeCrystal(true, null);
+                        //this.player.useTimeCrystal(true, null);
                         Console.ReadLine();
                     }
                     
@@ -131,7 +131,7 @@ namespace Opdracht1
                     int timeCrystal = 1;//this.random.Next(0, 4);
                     if (timeCrystal == 1)
                     {
-                        this.player.useTimeCrystal(false, (TimeCrystal)item);
+                        //this.player.useTimeCrystal(false, (TimeCrystal)item);
                         break;
                     }
 
@@ -188,11 +188,13 @@ namespace Opdracht1
             {
                 turn = new Turn(this, false);
                 turn.doTurnPlayer();
-                while (!turn.checkNode()) ;
+                // while (!turn.checkNode()) ;
+                turn.checkNode(true);
 
                 turn = new Turn(this, false);
                 turn.doTurnPacks();
-                while (!turn.checkNode()) ;
+                //while (!turn.checkNode()) ;
+                turn.checkNode(false);
             }
             this.endOfGame();
         }

@@ -38,7 +38,7 @@ namespace Opdracht1
                 bag.Add(node.items[i]);
                 node.items.Remove(node.items[i]);
             }
-            Console.WriteLine("Player moved to: " + node.number);
+            Console.WriteLine("You moved to: " + node.number);
 
         }
 
@@ -69,51 +69,145 @@ namespace Opdracht1
             
         }
 
-        public bool getCommand(string command, Node node, Item item, bool usedOnBridge)
+        public void getCommand(string command/*string command, Node node, Item item, bool usedOnBridge*/)
         {
+            int output;
             string[] temp = command.Split();
-            switch(temp[0])
+            if(temp.Length != 2 || temp[1] == "" || (temp[0] == "move" && !int.TryParse(temp[1], out output)))
             {
-                case "move":
-                    this.currentNode = node;
-                    break;
-                case "use-potion":
-                    if (item.GetType() == typeof(HealingPotion))
-                        this.useHealingPotion((HealingPotion) item);
-                    else
-                    {
-                        this.useTimeCrystal(usedOnBridge, null);
-                        if(usedOnBridge) return true;
-                    }
-                    break;
-                case "retreat":
-                    break;
-
+                Console.WriteLine("Action is not valid, try another command");
+                getCommand(Console.ReadLine());
             }
-            return false;
+            else
+            {
+                
+                switch (temp[0])
+                {
+                    case "move":
+                        tryMove(int.Parse(temp[1]));
+                        break;
+                    case "use-potion":
+                        if (temp[1] == "healingpotion" || temp[1] == "HealingPotion")
+                            useHealingPotion();
+                        else if (temp[1] == "timecrystal" || temp[1] == "TimeCrystal")
+                        {
+                            useTimeCrystal();
+                        }
+                        else
+                        {
+                            Console.WriteLine("I can't drink a " + temp[1] + ", try again");
+                            getCommand(Console.ReadLine());
+                        }
+
+                        break;
+                    default:
+                        {
+                            Console.WriteLine("Action is not valid, try another command");
+                            getCommand(Console.ReadLine());
+                        }
+                        break;
+                }
+            }
+        }
+
+        public void tryMove(int number)
+        {
+            int oldNumber = currentNode.number;
+            if (number != currentNode.number)
+            {
+                if (!currentNode.neighbours.Exists(item => item.number == number) && number != currentNode.number)
+                {
+                    Console.WriteLine("Node is not a neighbour, try again");
+                    getCommand(Console.ReadLine());
+                }
+                else if (number != currentNode.number)
+                {
+                    oldNumber = currentNode.number;
+                    Node node = currentNode.neighbours.Find(item => item.number == number);
+                    move(node);
+                }
+            }
+
+            if (number == oldNumber)
+            {
+                Console.WriteLine("You stayed in the same node");
+            }
         }
 
        
 
-        void useHealingPotion(HealingPotion potion)
+        void useHealingPotion()
         {
-            this.hitPoints = Math.Min(MaxHp, potion.hitPoints + this.hitPoints);
-            
-        }
-
-        public void useTimeCrystal(bool usedOnBridge, TimeCrystal timeCrystal)
-        {
-            if(usedOnBridge)
+            if (!bag.Exists(item => item.GetType() == typeof(HealingPotion)))
             {
-                Zone zoneToBeDeleted = currentNode.zone;
-                teleportToSaveNeighbour();
-                dungeon.zones.Remove(zoneToBeDeleted);
-                Console.WriteLine("Bridge and zone removed");
+                Console.WriteLine("You have no healingpotions, try another command");
+                getCommand(Console.ReadLine());
             }
             else
             {
+                Console.WriteLine("Which healingpotion do you want?");
+                int i = 0;
+                foreach(HealingPotion hp in bag)
+                {
+                    Console.WriteLine(i + ". " + "hp: " + hp.hitPoints);
+                    i++;
+                }
+                int number = int.Parse(Console.ReadLine());
+                while(number < 0 || number >= i)
+                {
+                    number = int.Parse(Console.ReadLine());
+                }
+
+                int j = 0;
+                foreach (HealingPotion hp in bag)
+                {
+                    if (j == number)
+                    {
+                        this.hitPoints = Math.Min(MaxHp, hp.hitPoints + this.hitPoints);
+                        bag.Remove(hp);
+                        break;
+                    }
+                    j++;
+                }
+            } 
+        }
+
+        public void useTimeCrystal()
+        {
+            if(!bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
+            {
+                Console.WriteLine("You have no timecrystal, try another command");
+                getCommand(Console.ReadLine());
+            }
+
+            else if(currentNode.zone != null && currentNode == currentNode.zone.endNode)
+            {
+                Console.WriteLine("Do you want to use this timecrystal on this bridge? (yes/no)");
+                string input = Console.ReadLine();
+                while(input != "yes" && input != "no")
+                {
+                    Console.WriteLine("This is not an option, try again (yes/no)");
+                    input = Console.ReadLine();
+                }
+
+                if (input == "yes")
+                {
+                    Zone zoneToBeDeleted = currentNode.zone;
+                    teleportToSaveNeighbour();
+                    dungeon.zones.Remove(zoneToBeDeleted);
+                    Console.WriteLine("Bridge and zone removed");
+                }
+                else
+                {
+                    this.timeCrystalActive = true;
+                    bag.RemoveAt(bag.IndexOf(bag.Find(item => item.GetType() == typeof(TimeCrystal))));
+                }
+            }
+            
+            else
+            {
                 this.timeCrystalActive = true;
-                bag.Remove(timeCrystal);
+                bag.RemoveAt(bag.IndexOf(bag.Find(item => item.GetType() == typeof(TimeCrystal))));
             }
         }
 

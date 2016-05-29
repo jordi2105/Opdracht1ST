@@ -20,8 +20,8 @@ namespace Opdracht1
 
         public void doTurnPlayer()
         {
-            Console.WriteLine("The player has HP: " + player.hitPoints, " KP: " + player.killPoints);
-            Console.Write("The player has in his bag: ");
+            Console.WriteLine("Your HP: " + player.hitPoints, " KP: " + player.killPoints);
+            Console.Write("You've got in your bag: ");
             if (player.bag.Count == 0)
                 Console.Write("empty");
             foreach(Item item in player.bag)
@@ -30,9 +30,10 @@ namespace Opdracht1
 
             }
             Console.WriteLine();
-           
+            
             List<Node> neighbours = player.currentNode.neighbours;
-            Console.Write("To which node should the player go: ");
+            Console.Write("Your neighbours are: ");
+            
             bool first = true;
             foreach(Node neighbour in neighbours)
             {
@@ -42,17 +43,14 @@ namespace Opdracht1
                     Console.Write(", " + neighbour.number);
                 first = false;
             }
-            Console.WriteLine("?");
-            int number = int.Parse(Console.ReadLine());
-            while(!neighbours.Exists(item => item.number == number))
-            {
-                Console.WriteLine("Node is not a neighbour, try again");
-                number = int.Parse(Console.ReadLine());
-            }
-            Node node = neighbours.Find(item => item.number == number);
-            player.move(node);
-            
-            
+            Console.WriteLine();
+            Console.WriteLine("What action do you want to do?");
+            player.getCommand(Console.ReadLine());
+
+           
+
+
+
         }
 
         public void doTurnPacks()
@@ -66,14 +64,28 @@ namespace Opdracht1
                         List<Node> nodes = pack.getNode().neighbours;
                         if (nodes.Count() == 0)
                             continue;
-                        Node neighbour = game.moveCreatureRandom(nodes, zone, pack);
-                        pack.move(neighbour);
+                        else if (zone == player.currentNode.zone)
+                        {
+                            List<Node> nodesToPlayer = getNodeWithShortestPath(pack.getNode(), player.currentNode);
+                            List<Node> nodesToEndNode = getNodeWithShortestPath(pack.getNode(), zone.endNode);
+                            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.getNode() != player.currentNode)
+                            {
+                                pack.move(nodesToPlayer[1]);
+                            }
+                            else if(pack.getNode() != zone.endNode)
+                                pack.move(nodesToEndNode[1]);
+                        }
+                        else
+                        {
+                            Node neighbour = game.moveCreatureRandom(nodes, zone, pack);
+                            pack.move(neighbour);
+                        }
                     }
                 }
             }
         }
 
-        public bool checkNode()
+        public bool checkNode(bool checkEndNode)
         {
             if (this.player.currentNode.packs.Count() > 0)
             {
@@ -86,7 +98,7 @@ namespace Opdracht1
                 return true;
             }
 
-            if (player.currentNode == this.dungeon.zones[0].endNode)
+            if (checkEndNode && player.currentNode == this.dungeon.zones[0].endNode)
             {
                 if (this.dungeon.zones.Count() == 1)
                 {
@@ -100,13 +112,37 @@ namespace Opdracht1
                 else
                 {
                     Console.WriteLine("This is the end node (bridge) of zone: " + this.player.currentNode.zone.number + " in dungeon with level: " + this.dungeon.level);
-                    this.player.useTimeCrystal(true, null);
+                    //this.player.useTimeCrystal(true, null);
 
                 }
                 return false;
             }
 
             return true;
+        }
+
+        public List<Node> getNodeWithShortestPath(Node startNode, Node endNode)
+        {
+            Queue<List<Node>> queue = new Queue<List<Node>>();
+            List<Node> nodeList = new List<Node>();
+            nodeList.Add(startNode);
+            queue.Enqueue(nodeList);
+            while(queue.Count > 0)
+            {
+                List<Node> current = queue.Dequeue();
+                if(current.Last() == endNode)
+                {
+                    return current;
+                }
+                List<Node> neighbours = current.Last().neighbours;
+                foreach(Node neighbour in neighbours)
+                {
+                    List<Node> nodes = new List<Node>(current);
+                    nodes.Add(neighbour);
+                    queue.Enqueue(nodes);
+                }
+            }
+            return null;
         }
     }
 }
