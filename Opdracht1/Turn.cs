@@ -74,16 +74,20 @@ namespace Opdracht1
                         List<Node> nodes = pack.getNode().neighbours;
                         if (nodes.Count() == 0)
                             continue;
+                        else if (zone == dungeon.zones[dungeon.zones.Count - 1] && player.currentNode.zone == dungeon.zones[dungeon.zones.Count - 2])
+                        {
+                            if(zone == player.currentNode.zone)
+                            {
+                                chasePlayer(zone, pack);
+                            }
+                            else
+                            {
+                                moveTowardsShortestPath(zone, pack);
+                            }
+                        }
                         else if (zone == player.currentNode.zone)
                         {
-                            List<Node> nodesToPlayer = getNodeWithShortestPath(pack.getNode(), player.currentNode);
-                            List<Node> nodesToEndNode = getNodeWithShortestPath(pack.getNode(), zone.endNode);
-                            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.getNode() != player.currentNode)
-                            {
-                                pack.move(nodesToPlayer[1]);
-                            }
-                            else if(pack.getNode() != zone.endNode)
-                                pack.move(nodesToEndNode[1]);
+                            moveMonster(zone, pack);
                         }
                         else
                         {
@@ -95,7 +99,43 @@ namespace Opdracht1
             }
         }
 
-        public bool checkNode(bool checkEndNode)
+        public void chasePlayer(Zone zone, Pack pack)
+        {
+            List<Node> nodesToPlayer = getNodesWithShortestPath(pack.getNode(), player.currentNode);
+            pack.move(nodesToPlayer[1]);
+        }
+
+        public void moveTowardsShortestPath(Zone zone, Pack pack)
+        {
+            List<Node> nodesInPath = getNodesWithShortestPath(zone.startNode, zone.endNode);
+
+            if (!nodesInPath.Contains(pack.getNode()))
+            {
+                List<Node> shortest = null;
+                foreach (Node node in nodesInPath)
+                {
+                    List<Node> nodes = getNodesWithShortestPath(pack.getNode(), node);
+                    if (shortest == null || nodes.Count < shortest.Count)
+                    {
+                        shortest = nodes;
+                    }
+                }
+                pack.move(shortest[0]);
+            }
+        }
+
+        public void moveMonster(Zone zone, Pack pack)
+        {
+            List<Node> nodesToPlayer = getNodesWithShortestPath(pack.getNode(), player.currentNode);
+            List<Node> nodesToEndNode = getNodesWithShortestPath(pack.getNode(), zone.endNode);
+            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.getNode() != player.currentNode)
+            {
+                pack.move(nodesToPlayer[1]);
+            }
+            else if (pack.getNode() != zone.endNode)
+                pack.move(nodesToEndNode[1]);
+        }
+        public void checkIfCombat()
         {
             if (this.player.currentNode.packs.Count() > 0)
             {
@@ -105,12 +145,14 @@ namespace Opdracht1
                 {
                     game.endOfGame();
                 }
-                return true;
             }
+        }
 
-            if (checkEndNode && player.currentNode == this.dungeon.zones[0].endNode)
+        public void checkNode()
+        {
+            if (player.currentNode == player.currentNode.zone.endNode)
             {
-                if (this.dungeon.zones.Count() == 1)
+                if (player.currentNode.zone == this.dungeon.zones[dungeon.zones.Count - 1])
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine("This is the exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
@@ -129,13 +171,10 @@ namespace Opdracht1
                     Console.ResetColor();
 
                 }
-                return false;
             }
-
-            return true;
         }
 
-        public List<Node> getNodeWithShortestPath(Node startNode, Node endNode)
+        public List<Node> getNodesWithShortestPath(Node startNode, Node endNode)
         {
             Queue<List<Node>> queue = new Queue<List<Node>>();
             List<Node> nodeList = new List<Node>();
