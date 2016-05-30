@@ -51,6 +51,7 @@ namespace Opdracht1
             if(stopCombat)
             {
                 retreatingToNeighbour(player);
+                stopCombat = false;
             }
 
             
@@ -70,14 +71,16 @@ namespace Opdracht1
                 first = false;
             }
             Console.WriteLine("?");
-            int number = int.Parse(Console.ReadLine());
-            while (!neighbours.Exists(item => item.number == number))
+             
+            int output;
+            string[] temp = Console.ReadLine().Split();
+            while (temp.Length != 1 || (!int.TryParse(temp[0], out output)) || !neighbours.Exists(item => item.number == int.Parse(temp[0])))
             {
-                Console.WriteLine("Node is not a neighbour, try again");
-                number = int.Parse(Console.ReadLine());
+                Console.WriteLine("Action is not valid, try another command");
+                temp = Console.ReadLine().Split();
             }
             
-            Node node = neighbours.Find(item => item.number == number);
+            Node node = neighbours.Find(item => item.number == int.Parse(temp[0]));
             player.move(node);
             
         }
