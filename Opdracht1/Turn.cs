@@ -20,8 +20,16 @@ namespace Opdracht1
 
         public void doTurnPlayer()
         {
-            Console.WriteLine("Your HP: " + player.hitPoints, " KP: " + player.killPoints);
+            Console.Write("Your HP: ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(player.hitPoints);
+            Console.ResetColor();
+            Console.Write(" KP: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(player.killPoints);
+            Console.ResetColor();
             Console.Write("You've got in your bag: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
             if (player.bag.Count == 0)
                 Console.Write("empty");
             foreach(Item item in player.bag)
@@ -29,11 +37,12 @@ namespace Opdracht1
                 Console.Write(item.getItemType() + ", ");
 
             }
+            Console.ResetColor();
             Console.WriteLine();
             
             List<Node> neighbours = player.currentNode.neighbours;
             Console.Write("Your neighbours are: ");
-            
+            Console.ForegroundColor = ConsoleColor.DarkRed;
             bool first = true;
             foreach(Node neighbour in neighbours)
             {
@@ -43,6 +52,7 @@ namespace Opdracht1
                     Console.Write(", " + neighbour.number);
                 first = false;
             }
+            Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("What action do you want to do?");
             player.getCommand(Console.ReadLine());
@@ -102,7 +112,9 @@ namespace Opdracht1
             {
                 if (this.dungeon.zones.Count() == 1)
                 {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine("This is the exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
+                    Console.ResetColor();
                     game.nextDungeon();
                     this.dungeon = game.dungeon;
                     this.player.move(this.dungeon.zones[0].startNode);
@@ -111,8 +123,10 @@ namespace Opdracht1
 
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine("This is the end node (bridge) of zone: " + this.player.currentNode.zone.number + " in dungeon with level: " + this.dungeon.level);
                     //this.player.useTimeCrystal(true, null);
+                    Console.ResetColor();
 
                 }
                 return false;

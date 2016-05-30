@@ -84,11 +84,21 @@ namespace Opdracht1
 
         public void doCombatRound(Pack p, Player player)
         {
-            Console.WriteLine("Your health is: " + player.hitPoints);
+            Console.Write("Your health is: ");
+            Console.ForegroundColor = ConsoleColor.Green;    
+            Console.WriteLine(player.hitPoints);
+            Console.ResetColor();
             int totalHealth = 0;
             foreach (Monster monster in p.Monsters)
                 totalHealth += monster.hitPoints;
-            Console.WriteLine("Enemy has " + p.Monsters.Count + " monsters left with a total health of: " + totalHealth);
+            Console.Write("Enemy has ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(p.Monsters.Count);
+            Console.ResetColor();
+            Console.Write(" monsters left with a total health of: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(totalHealth);
+            Console.ResetColor();
             Console.WriteLine("retreat or continue the combat?");
             string input = Console.ReadLine();
             while(input != "continue" && input != "retreat")
