@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using SystemTests.Specifications;
 using Rogue;
 using Rogue.DomainObjects;
 using Rogue.Services;
@@ -11,18 +13,39 @@ namespace SystemTests
     {
         static void Main(string[] args)
         {
-            Random random = new Random(0);
+            new Program().run();  
+        }
 
-            new TestGame(
-                new DungeonGenerator(random), 
-                new GameSerializer(new BinaryFormatter()), 
-                new MonsterSpawner(random), 
-                new ItemSpawner(random),
-                random,
-                new List<ISpecification>{
-                    new MaxMonstersInNode()
-                }
-            ).play();
+        public void run()
+        {
+             Random random = new Random(0);
+
+            List<ISpecification> specifications = new List<ISpecification>{
+                new MaxMonstersInNode(),
+                new MonsterDoesntLeaveZone()
+            };
+
+            foreach (ISpecification specification in specifications) {
+                string gameStatesDir = this.getGameStatesDir(specification);
+                if (!Directory.Exists(gameStatesDir))Directory.CreateDirectory(gameStatesDir);
+            }
+
+//            new TestGame(
+//                new DungeonGenerator(random), 
+//                new GameSerializer(new BinaryFormatter()), 
+//                new MonsterSpawner(random), 
+//                new ItemSpawner(random),
+//                random,
+//                specifications
+//            ).play();
+//
+//            Console.WriteLine(Directory.GetCurrentDirectory());
+//            Console.ReadLine();
+        }
+
+        private string getGameStatesDir(ISpecification specification)
+        {
+            return Directory.GetCurrentDirectory() + "\\..\\..\\GameStates\\" + specification.GetType().Name;
         }
     }
 }

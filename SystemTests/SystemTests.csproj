@@ -45,6 +45,10 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specifications\ISpecification.cs" />
+    <Compile Include="Specifications\MaxMonstersInNode.cs" />
+    <Compile Include="Specifications\MonsterDoesntLeaveZone.cs" />
+    <Compile Include="Specifications\MonstersDontMoveAway.cs" />
     <Compile Include="TestGame.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +59,9 @@
       <Project>{902133da-7fad-42e9-b6b5-c3ba0d95a4c7}</Project>
       <Name>Rogue</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="GameStates\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -85,7 +85,7 @@ namespace Rogue
                     {
                         foreach(Pack pack in node.packs)
                         {
-                            List<Node> nodes = pack.getNode().neighbours;
+                            List<Node> nodes = pack.node.neighbours;
                             if (!nodes.Any())
                                 continue;
                             Node neighbour = this.moveCreatureRandom(nodes, zone, pack);

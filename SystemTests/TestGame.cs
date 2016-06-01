@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using SystemTests.Specifications;
 using Rogue;
 using Rogue.DomainObjects;
 using Rogue.Services;
@@ -34,19 +35,6 @@ namespace SystemTests
                 bool result = specification.validate(this);
                 Debug.WriteLine(specification.GetType().Name + ' ' + (result ? "succeeded" : "failed"));
             }
-        }
-    }
-
-    internal interface ISpecification
-    {
-        bool validate(Game game);
-    }
-
-    internal class MaxMonstersInNode : ISpecification
-    {
-        public bool validate(Game game)
-        {
-            return false;
         }
     }
 }

@@ -44,8 +44,8 @@ namespace Rogue.DomainObjects
         {
             if (this.timeCrystalActive)
             {
-                for (int index = 0; index < monster.pack.Monsters.Count; index++) {
-                    Monster curMonster = monster.pack.Monsters[index];
+                for (int index = 0; index < monster.pack.monsters.Count; index++) {
+                    Monster curMonster = monster.pack.monsters[index];
                     curMonster.hitPoints -= this.attackRating;
                     if (curMonster.hitPoints < 0)
                     {

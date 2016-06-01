@@ -66,8 +66,8 @@ namespace Rogue
                 {
                     foreach (Pack pack in node.packs)
                     {
-                        List<Node> nodes = pack.getNode().neighbours;
-                        if (nodes.Count() == 0)
+                        List<Node> nodes = pack.node.neighbours;
+                        if (!nodes.Any())
                             continue;
                         else if (zone == this.dungeon.zones[this.dungeon.zones.Count - 1] && this.player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 2])
                         {
@@ -89,7 +89,7 @@ namespace Rogue
 
                             Node neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                             int times = 0;
-                            while(!(neighbour.zone == zone) && times < 10)
+                            while(neighbour.zone != zone && times < 10)
                             {
                                 neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                                 times++;
@@ -103,7 +103,7 @@ namespace Rogue
 
         public void chasePlayer(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.getNode(), this.player.currentNode);
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
             if(nodesToPlayer[1].zone == zone)
                 pack.move(nodesToPlayer[1]);
         }
@@ -112,12 +112,12 @@ namespace Rogue
         {
             List<Node> nodesInPath = this.getNodesWithShortestPath(zone.startNode, zone.endNode);
 
-            if (!nodesInPath.Contains(pack.getNode()))
+            if (!nodesInPath.Contains(pack.node))
             {
                 List<Node> shortest = null;
                 foreach (Node node in nodesInPath)
                 {
-                    List<Node> nodes = this.getNodesWithShortestPath(pack.getNode(), node);
+                    List<Node> nodes = this.getNodesWithShortestPath(pack.node, node);
                     if (shortest == null || nodes.Count < shortest.Count)
                     {
                         shortest = nodes;
@@ -130,13 +130,13 @@ namespace Rogue
 
         public void moveMonster(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.getNode(), this.player.currentNode);
-            List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.getNode(), zone.endNode);
-            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.getNode() != this.player.currentNode)
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
+            List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.node, zone.endNode);
+            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node!= this.player.currentNode)
             {
                 pack.move(nodesToPlayer[1]);
             }
-            else if (pack.getNode() != zone.endNode)
+            else if (pack.node!= zone.endNode)
                 pack.move(nodesToEndNode[1]);
         }
         public void checkIfCombat()

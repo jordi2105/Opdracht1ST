@@ -47,7 +47,7 @@ namespace Rogue.DomainObjects
             foreach (Zone zone in zones) {
                 foreach (Node node in zone.nodes) {
                     foreach (Pack pack in node.packs) {
-                        foreach (Monster monster in pack.Monsters) {
+                        foreach (Monster monster in pack.monsters) {
                             monsterHitPoints += monster.hitPoints;
                         }
                     }

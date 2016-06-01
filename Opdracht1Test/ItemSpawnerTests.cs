@@ -38,7 +38,7 @@ namespace Opdracht1Test
                     }
                     foreach (Pack pack in node.packs)
                     {
-                        foreach (Monster monster in pack.Monsters)
+                        foreach (Monster monster in pack.monsters)
                         {
                             monsterHitPoints += monster.hitPoints;
                         }
