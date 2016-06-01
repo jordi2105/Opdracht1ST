@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Rogue.DomainObjects;
 
-namespace Opdracht1
+namespace Rogue
 {
     class Turn
     {
-        Player player;
-        Dungeon dungeon;
-        Game game;
+        private readonly Player player;
+        private Dungeon dungeon;
+        private readonly Game game;
+
         public Turn(Game game, bool automatic)
         {
             this.player = game.player;
@@ -18,21 +18,21 @@ namespace Opdracht1
             this.game = game;
         }
 
-        public void doTurnPlayer()
+        public void playerTurn()
         {
             Console.Write("Your HP: ");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(player.hitPoints);
+            Console.Write(this.player.hitPoints);
             Console.ResetColor();
             Console.Write(" KP: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(player.killPoints);
+            Console.WriteLine(this.player.killPoints);
             Console.ResetColor();
             Console.Write("You've got in your bag: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
-            if (player.bag.Count == 0)
+            if (this.player.bag.Count == 0)
                 Console.Write("empty");
-            foreach(Item item in player.bag)
+            foreach(Item item in this.player.bag)
             {
                 Console.Write(item.getItemType() + ", ");
 
@@ -40,7 +40,7 @@ namespace Opdracht1
             Console.ResetColor();
             Console.WriteLine();
             
-            List<Node> neighbours = player.currentNode.neighbours;
+            List<Node> neighbours = this.player.currentNode.neighbours;
             Console.Write("Your neighbours are: ");
             Console.ForegroundColor = ConsoleColor.DarkRed;
             bool first = true;
@@ -55,15 +55,10 @@ namespace Opdracht1
             Console.ResetColor();
             Console.WriteLine();
             Console.WriteLine("What action do you want to do?");
-            player.getCommand(Console.ReadLine());
-
-           
-
-
-
+            this.player.getCommand(Console.ReadLine());
         }
 
-        public void doTurnPacks()
+        public void packsTurn()
         {
             foreach (Zone zone in this.dungeon.zones)
             {
@@ -74,29 +69,29 @@ namespace Opdracht1
                         List<Node> nodes = pack.getNode().neighbours;
                         if (nodes.Count() == 0)
                             continue;
-                        else if (zone == dungeon.zones[dungeon.zones.Count - 1] && player.currentNode.zone == dungeon.zones[dungeon.zones.Count - 2])
+                        else if (zone == this.dungeon.zones[this.dungeon.zones.Count - 1] && this.player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 2])
                         {
-                            if(zone == player.currentNode.zone)
+                            if(zone == this.player.currentNode.zone)
                             {
-                                chasePlayer(zone, pack);
+                                this.chasePlayer(zone, pack);
                             }
                             else
                             {
-                                moveTowardsShortestPath(zone, pack);
+                                this.moveTowardsShortestPath(zone, pack);
                             }
                         }
-                        else if (zone == player.currentNode.zone)
+                        else if (zone == this.player.currentNode.zone)
                         {
-                            moveMonster(zone, pack);
+                            this.moveMonster(zone, pack);
                         }
                         else
                         {
 
-                            Node neighbour = game.moveCreatureRandom(nodes, zone, pack);
+                            Node neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                             int times = 0;
                             while(!(neighbour.zone == zone) && times < 10)
                             {
-                                neighbour = game.moveCreatureRandom(nodes, zone, pack);
+                                neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                                 times++;
                             }
                             pack.move(neighbour);
@@ -108,21 +103,21 @@ namespace Opdracht1
 
         public void chasePlayer(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = getNodesWithShortestPath(pack.getNode(), player.currentNode);
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.getNode(), this.player.currentNode);
             if(nodesToPlayer[1].zone == zone)
                 pack.move(nodesToPlayer[1]);
         }
 
         public void moveTowardsShortestPath(Zone zone, Pack pack)
         {
-            List<Node> nodesInPath = getNodesWithShortestPath(zone.startNode, zone.endNode);
+            List<Node> nodesInPath = this.getNodesWithShortestPath(zone.startNode, zone.endNode);
 
             if (!nodesInPath.Contains(pack.getNode()))
             {
                 List<Node> shortest = null;
                 foreach (Node node in nodesInPath)
                 {
-                    List<Node> nodes = getNodesWithShortestPath(pack.getNode(), node);
+                    List<Node> nodes = this.getNodesWithShortestPath(pack.getNode(), node);
                     if (shortest == null || nodes.Count < shortest.Count)
                     {
                         shortest = nodes;
@@ -135,9 +130,9 @@ namespace Opdracht1
 
         public void moveMonster(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = getNodesWithShortestPath(pack.getNode(), player.currentNode);
-            List<Node> nodesToEndNode = getNodesWithShortestPath(pack.getNode(), zone.endNode);
-            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.getNode() != player.currentNode)
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.getNode(), this.player.currentNode);
+            List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.getNode(), zone.endNode);
+            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.getNode() != this.player.currentNode)
             {
                 pack.move(nodesToPlayer[1]);
             }
@@ -152,22 +147,22 @@ namespace Opdracht1
                 this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player);
                 if (this.player.hitPoints < 0)
                 {
-                    game.endOfGame();
+                    this.game.endOfGame();
                 }
             }
         }
 
         public bool checkNode()
         {
-            if (player.currentNode == player.currentNode.zone.endNode)
+            if (this.player.currentNode == this.player.currentNode.zone.endNode)
             {
-                if (player.currentNode.zone == this.dungeon.zones[dungeon.zones.Count - 1])
+                if (this.player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 1])
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine("This is the exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
                     Console.ResetColor();
-                    game.nextDungeon();
-                    this.dungeon = game.dungeon;
+                    this.game.nextDungeon();
+                    this.dungeon = this.game.dungeon;
                     this.player.move(this.dungeon.zones[0].startNode);
                     return false;
 

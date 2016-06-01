@@ -59,9 +59,9 @@
     <Compile Include="TurnTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Opdracht1\Opdracht1.csproj">
+    <ProjectReference Include="..\Opdracht1\Rogue.csproj">
       <Project>{902133da-7fad-42e9-b6b5-c3ba0d95a4c7}</Project>
-      <Name>Opdracht1</Name>
+      <Name>Rogue</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

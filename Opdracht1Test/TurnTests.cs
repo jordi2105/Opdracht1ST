@@ -1,13 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Opdracht1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Runtime.Serialization.Formatters.Binary;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rogue;
+using Rogue.DomainObjects;
+using Rogue.Services;
 
-namespace Opdracht1.Test
+namespace Opdracht1Test
 {
     [TestClass]
     public class TurnTests
@@ -60,7 +58,7 @@ namespace Opdracht1.Test
         [TestMethod()]
         public void use_time_crystal_if_in_bag()
         {
-            Game game = this.createGame();
+            AutomaticGame game = this.createGame();
             TimeCrystal timecrystal = new TimeCrystal();
             game.player.bag.Clear();
             game.player.bag.Add(timecrystal);
@@ -78,9 +76,7 @@ namespace Opdracht1.Test
             Assert.IsFalse(game.isAlive);
         }
 
-
-
-        private Game createGame()
+        private AutomaticGame createGame()
         {
             Random random = new Random();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
@@ -89,14 +85,12 @@ namespace Opdracht1.Test
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
             ItemSpawner itemSpawner = new ItemSpawner(random);
 
-            Game game = new Game(
+            return new AutomaticGame(
                 dungeonGenerator,
                 gameSerializer,
                 monsterSpawner,
                 itemSpawner,
-                random,
-                true);
-            return game;
+                random);
         }
     }
 }

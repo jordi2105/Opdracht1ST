@@ -2,7 +2,9 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Opdracht1;
+using Rogue;
+using Rogue.DomainObjects;
+using Rogue.Services;
 
 namespace Opdracht1Test
 {
@@ -36,7 +38,6 @@ namespace Opdracht1Test
             bool isAlive = game.isAlive;
             bool turnPlayer = game.turnPlayer;
             int teller = game.teller;
-            int t = game.t;
 
             FileInfo fileInfo = new FileInfo(fileName);
             if (fileInfo.Exists) {
@@ -46,7 +47,6 @@ namespace Opdracht1Test
                 Assert.AreEqual(isAlive, game.isAlive);
                 Assert.AreEqual(turnPlayer, game.turnPlayer);
                 Assert.AreEqual(teller, game.teller);
-                Assert.AreEqual(t, game.t);
                 fileInfo.Delete();
             }
         }
@@ -127,8 +127,7 @@ namespace Opdracht1Test
                 gameSerializer,
                 monsterSpawner,
                 itemSpawner,
-                random,
-                true);
+                random);
             return game;
         }
 

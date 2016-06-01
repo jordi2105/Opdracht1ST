@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Node
@@ -33,13 +30,13 @@ namespace Opdracht1
         public void doCombat(Pack pack, Player player)
         {
             Console.WriteLine("Combat has begon");
-            while(pack.Monsters.Count() > 0 && player.hitPoints >= 0 && !stopCombat)
-                doCombatRound(pack, player);
+            while(pack.Monsters.Count() > 0 && player.hitPoints >= 0 && !this.stopCombat)
+                this.doCombatRound(pack, player);
             
             if(pack.Monsters.Count() == 0)
             {
                 Console.WriteLine("Pack is dead");
-                packs.Remove(pack);
+                this.packs.Remove(pack);
             }
 
             if(player.hitPoints <= 0)
@@ -48,10 +45,10 @@ namespace Opdracht1
                 player.isAlive = false;
             }
 
-            if(stopCombat)
+            if(this.stopCombat)
             {
-                retreatingToNeighbour(player);
-                stopCombat = false;
+                this.retreatingToNeighbour(player);
+                this.stopCombat = false;
                 player.timeCrystalActive = false;
             }
 
@@ -118,18 +115,18 @@ namespace Opdracht1
                 Console.WriteLine("This is not an option!");
                 input = Console.ReadLine();
             }
-            if (input == "continue")
-            {
+
+            if (input == "continue") {
                 player.attack(p.Monsters[0]);
                 p.attack(player);
-            }
-            else if(input == "retreat")
-                stopCombat = true;
-            else if(input == "timecrystal" || input == "TimeCrystal")
+            } else if (input == "retreat") {
+                this.stopCombat = true;
+            } else if(input == "timecrystal" || input == "TimeCrystal")
             {
                 player.getCommand("use-potion timecrystal1");
 
             }
+
 
 
         }

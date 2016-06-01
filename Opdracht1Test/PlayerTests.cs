@@ -1,13 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Runtime.Serialization.Formatters.Binary;
-using Opdracht1;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rogue.DomainObjects;
+using Rogue.Services;
 
-namespace Opdracht1.Tests
+namespace Opdracht1Test
 {
     [TestClass()]
     public class PlayerTests
@@ -17,7 +14,7 @@ namespace Opdracht1.Tests
         {
             Player player = new Player();
             player.hitPoints = 10;
-            player.getCommand("use-potion", null, new HealingPotion(45), false);
+//            player.getCommand("use-potion", null, new HealingPotion(45), false);
             Assert.AreEqual(55, player.hitPoints); 
         }
 
@@ -26,8 +23,8 @@ namespace Opdracht1.Tests
         {
             Player player = new Player();
             player.hitPoints = 990;
-            player.getCommand("use-potion", null, new HealingPotion(45), false);
-            Assert.AreEqual(player.MaxHp, player.hitPoints); 
+//            player.getCommand("use-potion", null, new HealingPotion(45), false);
+            Assert.AreEqual(player.maxHp, player.hitPoints); 
         }
 
         [TestMethod]
@@ -43,7 +40,7 @@ namespace Opdracht1.Tests
             {
                 allNeigbours.Add(neigbours);
             }
-            player.getCommand("move", allNeigbours[0], null, false);
+//            player.getCommand("move", allNeigbours[0], null, false);
             Node current = player.currentNode;
             Assert.AreEqual(allNeigbours[0], current);
         }
@@ -57,7 +54,7 @@ namespace Opdracht1.Tests
             player.dungeon = dungeon;
             Node node = dungeon.zones[0].endNode;
             player.currentNode = dungeon.zones[0].endNode;
-            player.getCommand("use-potion", null, new TimeCrystal(), true);
+//            player.getCommand("use-potion", null, new TimeCrystal(), true);
             Assert.IsTrue(player.currentNode != node);
         }
         [TestMethod]
@@ -69,7 +66,7 @@ namespace Opdracht1.Tests
             Player player = new Player();
             player.dungeon = dungeon;
             TimeCrystal timecrystal = new TimeCrystal();
-            player.getCommand("use-potion", null, timecrystal, false);
+//            player.getCommand("use-potion", null, timecrystal, false);
             Assert.IsTrue(player.timeCrystalActive && !player.bag.Contains(timecrystal));
         }
         [TestMethod]
@@ -79,7 +76,7 @@ namespace Opdracht1.Tests
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
             Dungeon dungeon = dungeonGenerator.generate(3);
             Player player = new Player();
-            player.hitPoints = player.MaxHp;
+            player.hitPoints = player.maxHp;
             player.dungeon = dungeon;
             player.move(dungeon.zones[0].nodes[1]);
             Pack pack = new Pack(3, player.currentNode);

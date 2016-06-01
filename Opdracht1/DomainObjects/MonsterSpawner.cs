@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
 
     public class MonsterSpawner

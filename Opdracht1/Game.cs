@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Rogue.DomainObjects;
+using Rogue.Services;
 
-namespace Opdracht1
+namespace Rogue
 {
     [Serializable]
     public class Game
@@ -17,126 +17,22 @@ namespace Opdracht1
 
         public Player player { get; private set; }
         public Dungeon dungeon { get; private set; }
-
         public bool isAlive { get; private set; }
         public bool turnPlayer { get; set; }
         public int teller { get; set; }
-        public int t { get; private set; }
 
         public Game(
             DungeonGenerator dungeonGenerator, 
             GameSerializer gameSerializer, 
             MonsterSpawner monsterSpawner,
             ItemSpawner itemSpawner,
-            Random random,
-            bool automatic
+            Random random
         ){
             this.dungeonGenerator = dungeonGenerator;
             this.gameSerializer = gameSerializer;
             this.monsterSpawner = monsterSpawner;
             this.itemSpawner = itemSpawner;
             this.random = random;
-            
-
-            this.startNewGame(!automatic);
-        }
-
-        public void turn()
-        {
-            this.teller++;
-            if (this.player.hitPoints < 0)
-            {
-                this.endOfGame();
-            }
-
-            if (this.player.currentNode.packs.Count() > 0)
-            {
-                this.useTimeCrystalOrNot();
-                
-                this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player);
-                if (this.player.hitPoints < 0)
-                {
-                    this.endOfGame();
-                }
-                //else this.turn();
-            }
-            
-            else if(this.turnPlayer)
-            {
-                
-
-                List<Node> nodes = this.player.currentNode.neighbours;
-                Node neighbour = this.moveCreatureRandom(nodes, null, null);
-                if(this.teller > 5000)
-                {
-                    neighbour = this.dungeon.zones[0].endNode;
-                    this.teller = 0;
-                }
-
-                this.player.move(neighbour);
-                Console.WriteLine("Player moved to: " + neighbour.number);
-                
-                if (neighbour == this.dungeon.zones[0].endNode)
-                {
-                    if(this.dungeon.zones.Count() == 1)
-                    {
-                        Console.WriteLine("Player reached exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
-                        this.nextDungeon();
-                        this.player.move(this.dungeon.zones[0].startNode);
-                        Console.ReadLine();
-                    }
-
-                    else
-                    {
-                        Console.WriteLine("Player reached the end node of the zone with zonenumber:" + this.player.currentNode.zone.number + "in dungeon with dungeon level: " + this.dungeon.level);
-                        //this.player.useTimeCrystal(true, null);
-                        Console.ReadLine();
-                    }
-                    
-                }
-                this.turnPlayer = !this.turnPlayer;
-                //this.turn();
-            }
-            else
-            {
-                foreach(Zone zone in this.dungeon.zones)
-                {
-                    foreach(Node node in zone.nodes)
-                    {
-                        foreach(Pack pack in node.packs)
-                        {
-                            List<Node> nodes = pack.getNode().neighbours;
-                            if (nodes.Count() == 0)
-                                continue;
-                            Node neighbour = this.moveCreatureRandom(nodes, zone, pack);
-                            pack.move(neighbour);
-                            //Console.WriteLine("Pack moved to: " + neighbour.number);
-                        }
-                    }
-                }
-                this.turnPlayer = !this.turnPlayer;
-                //this.turn();
-            }
-           
-            
-        }
-
-        
-        public void useTimeCrystalOrNot()
-        {
-            foreach (Item item in this.player.bag)
-            {
-                if (item.GetType() == typeof(TimeCrystal))
-                {
-                    int timeCrystal = 1;//this.random.Next(0, 4);
-                    if (timeCrystal == 1)
-                    {
-                        //this.player.useTimeCrystal(false, (TimeCrystal)item);
-                        break;
-                    }
-
-                }
-            }
         }
 
         public Node moveCreatureRandom(List<Node> nodes, Zone zone, Pack pack)
@@ -149,56 +45,43 @@ namespace Opdracht1
             this.isAlive = false;
             Console.WriteLine("Player died");
             Console.ReadLine();
-
-            //this.startNewGame();
         }
 
-        public void startNewGame(bool automatic)
+        public void play()
+        {
+            this.initialize();
+
+            while (this.player.hitPoints > 0){
+                this.turn();
+            }
+
+            this.endOfGame();
+        }
+
+        protected virtual void initialize()
         {
             this.turnPlayer = true;
             this.isAlive = true;
             this.teller = 0;
-            this.t = 1342342435;
 
             this.player = new Player();
             this.nextDungeon();
             this.player.dungeon = this.dungeon;
             this.player.move(this.dungeon.zones[0].startNode);
-
-            if (automatic)
-                startNewAutomaticGame();
-            else
-                startNewNonAutomaticGame();
-                
-           
-            
-            
-            //this.turn();
         }
 
-        public void startNewAutomaticGame()
+        public virtual void turn()
         {
-
-        }
-
-        public void startNewNonAutomaticGame()
-        {
-            Turn turn;
-            while (player.hitPoints > 0)
+            Turn turn = new Turn(this, false);
+            turn.playerTurn();
+            turn.checkIfCombat();
+            if(turn.checkNode())
             {
                 turn = new Turn(this, false);
-                turn.doTurnPlayer();
+                turn.packsTurn();
                 turn.checkIfCombat();
-                if(turn.checkNode())
-                {
-                    turn = new Turn(this, false);
-                    turn.doTurnPacks();
-                    turn.checkIfCombat();
-                }
-
-                
             }
-            this.endOfGame();
+
         }
 
         public void save(string fileName)
@@ -219,7 +102,6 @@ namespace Opdracht1
             this.turnPlayer = loadedGame.turnPlayer;
             this.isAlive = loadedGame.isAlive;
             this.teller = loadedGame.teller;
-            this.t = loadedGame.t;
 
             return true;
         }
