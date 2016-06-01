@@ -52,6 +52,7 @@ namespace Opdracht1
             {
                 retreatingToNeighbour(player);
                 stopCombat = false;
+                player.timeCrystalActive = false;
             }
 
             
@@ -102,9 +103,17 @@ namespace Opdracht1
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(totalHealth);
             Console.ResetColor();
-            Console.WriteLine("retreat or continue the combat?");
+            
+            if(player.bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
+            {
+                Console.WriteLine("retreat or continue the combat? Or use a TimeCrystal?");
+            }
+            else
+            {
+                Console.WriteLine("retreat or continue the combat?");
+            }
             string input = Console.ReadLine();
-            while(input != "continue" && input != "retreat")
+            while(input != "continue" && input != "retreat" && input != "timecrystal" && input != "TimeCrystal")
             {
                 Console.WriteLine("This is not an option!");
                 input = Console.ReadLine();
@@ -114,9 +123,15 @@ namespace Opdracht1
                 player.attack(p.Monsters[0]);
                 p.attack(player);
             }
-            else stopCombat = true;
-           
-            
+            else if(input == "retreat")
+                stopCombat = true;
+            else if(input == "timecrystal" || input == "TimeCrystal")
+            {
+                player.getCommand("use-potion timecrystal1");
+
+            }
+
+
         }
     }
 }

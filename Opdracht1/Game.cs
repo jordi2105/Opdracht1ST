@@ -188,12 +188,15 @@ namespace Opdracht1
             {
                 turn = new Turn(this, false);
                 turn.doTurnPlayer();
-                turn.checkNode();
                 turn.checkIfCombat();
+                if(turn.checkNode())
+                {
+                    turn = new Turn(this, false);
+                    turn.doTurnPacks();
+                    turn.checkIfCombat();
+                }
 
-                turn = new Turn(this, false);
-                turn.doTurnPacks();
-                turn.checkIfCombat();
+                
             }
             this.endOfGame();
         }

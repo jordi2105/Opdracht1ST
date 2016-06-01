@@ -91,7 +91,14 @@ namespace Opdracht1
                         }
                         else
                         {
+
                             Node neighbour = game.moveCreatureRandom(nodes, zone, pack);
+                            int times = 0;
+                            while(!(neighbour.zone == zone) && times < 10)
+                            {
+                                neighbour = game.moveCreatureRandom(nodes, zone, pack);
+                                times++;
+                            }
                             pack.move(neighbour);
                         }
                     }
@@ -102,7 +109,8 @@ namespace Opdracht1
         public void chasePlayer(Zone zone, Pack pack)
         {
             List<Node> nodesToPlayer = getNodesWithShortestPath(pack.getNode(), player.currentNode);
-            pack.move(nodesToPlayer[1]);
+            if(nodesToPlayer[1].zone == zone)
+                pack.move(nodesToPlayer[1]);
         }
 
         public void moveTowardsShortestPath(Zone zone, Pack pack)
@@ -120,7 +128,8 @@ namespace Opdracht1
                         shortest = nodes;
                     }
                 }
-                pack.move(shortest[0]);
+                if(shortest[0].zone == zone)
+                    pack.move(shortest[0]);
             }
         }
 
@@ -148,7 +157,7 @@ namespace Opdracht1
             }
         }
 
-        public void checkNode()
+        public bool checkNode()
         {
             if (player.currentNode == player.currentNode.zone.endNode)
             {
@@ -160,6 +169,7 @@ namespace Opdracht1
                     game.nextDungeon();
                     this.dungeon = game.dungeon;
                     this.player.move(this.dungeon.zones[0].startNode);
+                    return false;
 
                 }
 
@@ -172,6 +182,7 @@ namespace Opdracht1
 
                 }
             }
+            return true;
         }
 
         public List<Node> getNodesWithShortestPath(Node startNode, Node endNode)

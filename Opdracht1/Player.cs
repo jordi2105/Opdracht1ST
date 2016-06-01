@@ -46,16 +46,17 @@ namespace Opdracht1
         {
             if (this.timeCrystalActive)
             {
-                foreach (Monster monsters in monster.pack.Monsters)
+                for (int index = 0; index < monster.pack.Monsters.Count; index++)
                 {
-                    monsters.hitPoints -= this.AttackRating;
-                    if (monster.hitPoints < 0)
+                    Monster curMonster = monster.pack.Monsters[index];
+                    curMonster.hitPoints -= this.AttackRating;
+                    if (curMonster.hitPoints < 0)
                     {
-                        monster.pack.removeMonster(monster);
+                        monster.pack.removeMonster(curMonster);
                         this.killPoints++;
                     }
                 }
-                timeCrystalActive = false;
+                
             }
             else
             {
@@ -89,9 +90,17 @@ namespace Opdracht1
                     case "use-potion":
                         if (temp[1] == "healingpotion" || temp[1] == "HealingPotion")
                             useHealingPotion();
-                        else if (temp[1] == "timecrystal" || temp[1] == "TimeCrystal")
+                        else if (temp[1] == "timecrystal" || temp[1] == "TimeCrystal" || temp[1] == "timecrystal1")
                         {
-                            useTimeCrystal();
+                            if(temp[1] == "timecrystal1")
+                            {
+                                useTimeCrystal(true);
+                            }
+                            else
+                            {
+                                useTimeCrystal(false);
+                            }
+                            
                         }
                         else
                         {
@@ -172,7 +181,7 @@ namespace Opdracht1
             } 
         }
 
-        public void useTimeCrystal()
+        public void useTimeCrystal(bool inBattle)
         {
             if(!bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
             {
@@ -182,20 +191,28 @@ namespace Opdracht1
 
             else if(currentNode.zone != null && currentNode == currentNode.zone.endNode)
             {
-                Console.WriteLine("Do you want to use this timecrystal on this bridge? (yes/no)");
-                string input = Console.ReadLine();
-                while(input != "yes" && input != "no")
+                if(!inBattle)
                 {
-                    Console.WriteLine("This is not an option, try again (yes/no)");
-                    input = Console.ReadLine();
-                }
+                    Console.WriteLine("Do you want to use this timecrystal on this bridge? (yes/no)");
+                    string input = Console.ReadLine();
+                    while (input != "yes" && input != "no")
+                    {
+                        Console.WriteLine("This is not an option, try again (yes/no)");
+                        input = Console.ReadLine();
+                    }
 
-                if (input == "yes")
-                {
-                    Zone zoneToBeDeleted = currentNode.zone;
-                    teleportToSaveNeighbour();
-                    dungeon.zones.Remove(zoneToBeDeleted);
-                    Console.WriteLine("Bridge and zone removed");
+                    if (input == "yes")
+                    {
+                        Zone zoneToBeDeleted = currentNode.zone;
+                        teleportToSaveNeighbour();
+                        dungeon.zones.Remove(zoneToBeDeleted);
+                        Console.WriteLine("Bridge and zone removed");
+                    }
+                    else
+                    {
+                        this.timeCrystalActive = true;
+                        bag.RemoveAt(bag.IndexOf(bag.Find(item => item.GetType() == typeof(TimeCrystal))));
+                    }
                 }
                 else
                 {
