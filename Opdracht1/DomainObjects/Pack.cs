@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Pack
@@ -51,7 +51,7 @@ namespace Opdracht1
         {
             foreach(Monster monster in this.monsters)
             {
-                player.hitPoints -= monster.AttackRating;
+                player.hitPoints -= monster.attackRating;
                 if(player.hitPoints < 0)
                 {
                     break;

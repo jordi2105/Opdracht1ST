@@ -1,7 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rogue.DomainObjects;
+using Rogue.Services;
 
-namespace Opdracht1.Tests
+namespace Opdracht1Test
 {
     [TestClass()]
     public class MonsterSpawnerTests
@@ -9,17 +11,24 @@ namespace Opdracht1.Tests
         [TestMethod]
         public void number_of_monsters_not_more_than_maximum()
         {
-            Dungeon dungeon = this.createNewDungeon();
+            for(int i = 0; i < 1000; i++)
+            {
+                Dungeon dungeon = this.createNewDungeon();
 
-            foreach (Zone zone in dungeon.zones) {
-                foreach (Node node in zone.nodes) {
-                    int monsterCount = 0;
-                    foreach (Pack pack in node.packs) {
-                        monsterCount += pack.Monsters.Count;
+                foreach (Zone zone in dungeon.zones)
+                {
+                    foreach (Node node in zone.nodes)
+                    {
+                        int monsterCount = 0;
+                        foreach (Pack pack in node.packs)
+                        {
+                            monsterCount += pack.Monsters.Count;
+                        }
+                        Assert.IsTrue(monsterCount <= 3 * (dungeon.level + 1));
                     }
-                    Assert.IsTrue(monsterCount <= MonsterSpawner.M * (dungeon.level + 1));
                 }
             }
+            
         }
 
         

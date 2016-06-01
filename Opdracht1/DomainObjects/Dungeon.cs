@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Dungeon
     {
-        public List<Zone> zones { get; }
-        public int level { get; }
+        public List<Zone> zones;
+        public int level;
         
         public Dungeon(int level)
         {
             this.zones = new List<Zone>();
             this.level = level;
-        }
-
-        private Node[] shortestpath(Node u, Node v)
-        {
-            return null;
         }
     }
 }

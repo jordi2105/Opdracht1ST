@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Opdracht1;
+using Rogue.DomainObjects;
+using Rogue.Services;
 
 namespace Opdracht1Test
 {
@@ -33,19 +34,41 @@ namespace Opdracht1Test
         [TestMethod]
         public void average_connectivity_smaller_or_equal_to_three()
         {
-            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
-            Dungeon dungeon = dungeonGenerator.generate(3);
+            for(int i = 100; i < 100; i++)
+            {
+                DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
+                Dungeon dungeon = dungeonGenerator.generate(5);
 
-            int totalConnections = 0;
-            int numberOfNodes = 0;
-            foreach (Zone zone in dungeon.zones) {
-                foreach (Node node in zone.nodes) {
-                    totalConnections += node.neighbourCount();
-                    numberOfNodes++;
+                int totalConnections = 0;
+                int numberOfNodes = 0;
+                foreach (Zone zone in dungeon.zones)
+                {
+                    foreach (Node node in zone.nodes)
+                    {
+                        totalConnections += node.neighbours.Count;
+                        numberOfNodes++;
+                    }
                 }
-            }
 
-            Assert.IsTrue((double) totalConnections / numberOfNodes <= 3.0);
+                Assert.IsTrue((double)totalConnections / numberOfNodes <= 3.0);
+            }
+            
+        }
+        [TestMethod]
+        public void number_of_nodes_divided_by_O_is_less_than_maximum_monsters_in_node()
+        {
+            DungeonGenerator dungeonGenerator = this.createDungeonGenerator();
+            Dungeon dungeon = dungeonGenerator.generate(1);
+            Random random = new Random();
+            MonsterSpawner monsterspawner = new MonsterSpawner(random);
+            monsterspawner.spawn(dungeon);
+            int nrOfNodes = 0;
+            foreach(Zone zone in dungeon.zones)
+            {
+                nrOfNodes += zone.nodes.Count;
+            }
+            Assert.IsTrue(nrOfNodes / MonsterSpawner.O <= MonsterSpawner.M * (1 + 1));
+
         }
 
         [TestMethod]
@@ -62,21 +85,21 @@ namespace Opdracht1Test
             }
         }
 
-        private bool connectedToNode(Node node, Node connectedTo, List<Node> visited)
+        private bool connectedToNode(Node one, Node two, List<Node> visited)
         {
-            if (visited.Contains(node)) {
+            if (visited.Contains(one)) {
                 return false;
             }
 
-            visited.Add(node);
+            visited.Add(one);
 
-            if (node.hasNeighbour(connectedTo)) {
+            if (one.neighbours.Contains(two)) {
                 return true;
             }
 
             bool connected = false;
-            foreach (Node neighbour in connectedTo.getNeighbours()) {
-                connected = this.connectedToNode(neighbour, connectedTo, visited) || connected;
+            foreach (Node neighbour in two.neighbours) {
+                connected = this.connectedToNode(neighbour, two, visited) || connected;
             }
 
             return connected;

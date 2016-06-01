@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class HealingPotion : Item
     {
-        public int hitPoints { get; }
+        public int hitPoints;
 
         public HealingPotion(int hitPoints)
         {

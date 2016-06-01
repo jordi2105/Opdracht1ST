@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Monster : Creature
@@ -9,7 +9,7 @@ namespace Opdracht1
         public Monster(Pack pack)
         {
             this.pack = pack;
-            this.AttackRating = 5;
+            this.attackRating = 5;
             this.hitPoints = 14;
         }
     }
