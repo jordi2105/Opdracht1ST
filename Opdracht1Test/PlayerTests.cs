@@ -83,7 +83,7 @@ namespace Opdracht1.Tests
             player.dungeon = dungeon;
             player.move(dungeon.zones[0].nodes[1]);
             Pack pack = new Pack(3, player.currentNode);
-            player.currentNode.doCombat(pack, player);
+            player.currentNode.doCombat(pack, player, false);
             Assert.IsTrue(player.currentNode.packs.Count == 0);
         }
         [TestMethod]
@@ -99,7 +99,7 @@ namespace Opdracht1.Tests
             player.currentNode = dungeon.zones[0].nodes[1];
             player.timeCrystalActive = false;
             Pack pack = new Pack(15, player.currentNode);
-            player.currentNode.doCombat(pack, player);
+            player.currentNode.doCombat(pack, player, false);
             Assert.IsFalse(player.isAlive);
         }
 

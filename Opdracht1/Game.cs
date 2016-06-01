@@ -38,7 +38,7 @@ namespace Opdracht1
             this.random = random;
             
 
-            this.startNewGame(!automatic);
+            this.startNewGame(automatic);
         }
 
         public void turn()
@@ -53,7 +53,7 @@ namespace Opdracht1
             {
                 this.useTimeCrystalOrNot();
                 
-                this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player);
+                this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player, false);
                 if (this.player.hitPoints < 0)
                 {
                     this.endOfGame();
@@ -178,7 +178,27 @@ namespace Opdracht1
 
         public void startNewAutomaticGame()
         {
+            TurnBot turn;
+            int counter = 0;
+            while (player.hitPoints > 0)
+            {
+                turn = new TurnBot(this);
+                turn.doTurnPlayer(counter);
+                turn.checkIfCombat();
+                if (turn.checkNode())
+                {
+                    turn = new TurnBot(this);
+                    turn.doTurnPacks();
+                    turn.checkIfCombat();
+                }
+                if (player.currentNode.zone != null && player.currentNode == player.currentNode.zone.endNode)
+                {
+                    counter = 0;
+                }
+                counter++;
 
+            }
+            this.endOfGame();
         }
 
         public void startNewNonAutomaticGame()
@@ -186,12 +206,12 @@ namespace Opdracht1
             Turn turn;
             while (player.hitPoints > 0)
             {
-                turn = new Turn(this, false);
+                turn = new Turn(this);
                 turn.doTurnPlayer();
                 turn.checkIfCombat();
                 if(turn.checkNode())
                 {
-                    turn = new Turn(this, false);
+                    turn = new Turn(this);
                     turn.doTurnPacks();
                     turn.checkIfCombat();
                 }
