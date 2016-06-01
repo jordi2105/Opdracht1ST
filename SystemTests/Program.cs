@@ -25,9 +25,16 @@ namespace SystemTests
                 new MonsterDoesntLeaveZone()
             };
 
+            this.createGameStateDirs(specifications);
+
+            GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
+
             foreach (ISpecification specification in specifications) {
-                string gameStatesDir = this.getGameStatesDir(specification);
-                if (!Directory.Exists(gameStatesDir))Directory.CreateDirectory(gameStatesDir);
+                DirectoryInfo directoryInfo = new DirectoryInfo(this.getGameStatesDir(specification));
+                FileInfo[] fileInfos = directoryInfo.GetFiles();
+                foreach (FileInfo fileInfo in fileInfos) {
+                    Game game = gameSerializer.load(fileInfo.FullName);
+                }
             }
 
 //            new TestGame(
@@ -41,6 +48,14 @@ namespace SystemTests
 //
 //            Console.WriteLine(Directory.GetCurrentDirectory());
 //            Console.ReadLine();
+        }
+
+        private void createGameStateDirs(List<ISpecification> specifications)
+        {
+            foreach (ISpecification specification in specifications) {
+                string gameStatesDir = this.getGameStatesDir(specification);
+                if (!Directory.Exists(gameStatesDir)) Directory.CreateDirectory(gameStatesDir);
+            }
         }
 
         private string getGameStatesDir(ISpecification specification)
