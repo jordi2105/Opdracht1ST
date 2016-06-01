@@ -1,12 +1,9 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Opdracht1;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rogue.DomainObjects;
+using Rogue.Services;
 
-namespace Opdracht1.Tests
+namespace Opdracht1Test
 {
     [TestClass()]
     public class MonsterSpawnerTests

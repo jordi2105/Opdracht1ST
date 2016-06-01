@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Monster : Creature
@@ -13,7 +9,7 @@ namespace Opdracht1
         public Monster(Pack pack)
         {
             this.pack = pack;
-            this.AttackRating = 5;
+            this.attackRating = 5;
             this.hitPoints = 14;
         }
     }

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Node
@@ -33,13 +30,18 @@ namespace Opdracht1
         public void doCombat(Pack pack, Player player, bool automatic)
         {
             Console.WriteLine("Combat has begon");
+<<<<<<< HEAD:Opdracht1/Node.cs
             while(pack.Monsters.Count() > 0 && player.hitPoints >= 0 && !stopCombat)
                 doCombatRound(pack, player, automatic);
+=======
+            while(pack.Monsters.Count() > 0 && player.hitPoints >= 0 && !this.stopCombat)
+                this.doCombatRound(pack, player);
+>>>>>>> 3e8cc43f07a0a33e222d5407b57a73b0f76e17ff:Opdracht1/DomainObjects/Node.cs
             
             if(pack.Monsters.Count() == 0)
             {
                 Console.WriteLine("Pack is dead");
-                packs.Remove(pack);
+                this.packs.Remove(pack);
             }
 
             if(player.hitPoints <= 0)
@@ -48,10 +50,10 @@ namespace Opdracht1
                 player.isAlive = false;
             }
 
-            if(stopCombat)
+            if(this.stopCombat)
             {
-                retreatingToNeighbour(player);
-                stopCombat = false;
+                this.retreatingToNeighbour(player);
+                this.stopCombat = false;
                 player.timeCrystalActive = false;
             }
 
@@ -135,10 +137,33 @@ namespace Opdracht1
             }
             else
             {
+<<<<<<< HEAD:Opdracht1/Node.cs
                 player.attack(p.Monsters[0]);
                 p.attack(player);
             }
             
+=======
+                Console.WriteLine("retreat or continue the combat?");
+            }
+            string input = Console.ReadLine();
+            while(input != "continue" && input != "retreat" && input != "timecrystal" && input != "TimeCrystal")
+            {
+                Console.WriteLine("This is not an option!");
+                input = Console.ReadLine();
+            }
+
+            if (input == "continue") {
+                player.attack(p.Monsters[0]);
+                p.attack(player);
+            } else if (input == "retreat") {
+                this.stopCombat = true;
+            } else if(input == "timecrystal" || input == "TimeCrystal")
+            {
+                player.getCommand("use-potion timecrystal1");
+
+            }
+>>>>>>> 3e8cc43f07a0a33e222d5407b57a73b0f76e17ff:Opdracht1/DomainObjects/Node.cs
+
 
 
         }

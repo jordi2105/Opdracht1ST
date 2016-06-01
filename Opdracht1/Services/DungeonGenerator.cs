@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Opdracht1;
+using Rogue.DomainObjects;
 
-namespace Opdracht1
+namespace Rogue.Services
 {
     public class DungeonGenerator
     {
-        private Random random;
+        private readonly Random random;
         private List<Node> nodes;
         public int number;
         private int zoneCounter;
@@ -63,7 +61,7 @@ namespace Opdracht1
 
             Node startNode = this.getStartingNode(previousZone, true);
             Node endNode = this.chooseEndNode(startNode);
-            zoneCounter++;
+            this.zoneCounter++;
             return new Zone(this.nodes, startNode, endNode, this.zoneCounter);
         }
 

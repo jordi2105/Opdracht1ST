@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Opdracht1
+namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Player : Creature
     {
-        public int MaxHp = 1000;
+        public int maxHp = 1000;
 
         public int killPoints;
         public bool timeCrystalActive;
@@ -24,10 +22,10 @@ namespace Opdracht1
         public Player()
         {
             this.killPoints = 0;
-            this.AttackRating = 5;
-            this.hitPoints = MaxHp;
+            this.attackRating = 5;
+            this.hitPoints = this.maxHp;
             this.bag = new List<Item>();
-            timeCrystalActive = false;
+            this.timeCrystalActive = false;
         }
 
         public void move(Node node)
@@ -35,7 +33,7 @@ namespace Opdracht1
             this.currentNode = node;
             for (int i = 0; i < node.items.Count; i++)
             {
-                bag.Add(node.items[i]);
+                this.bag.Add(node.items[i]);
                 node.items.Remove(node.items[i]);
             }
             Console.WriteLine("You moved to: " + node.number);
@@ -46,21 +44,19 @@ namespace Opdracht1
         {
             if (this.timeCrystalActive)
             {
-                for (int index = 0; index < monster.pack.Monsters.Count; index++)
-                {
+                for (int index = 0; index < monster.pack.Monsters.Count; index++) {
                     Monster curMonster = monster.pack.Monsters[index];
-                    curMonster.hitPoints -= this.AttackRating;
+                    curMonster.hitPoints -= this.attackRating;
                     if (curMonster.hitPoints < 0)
                     {
                         monster.pack.removeMonster(curMonster);
                         this.killPoints++;
                     }
                 }
-                
             }
             else
             {
-                monster.hitPoints -= this.AttackRating;
+                monster.hitPoints -= this.attackRating;
                 if (monster.hitPoints < 0)
                 {
                     monster.pack.removeMonster(monster);
@@ -77,7 +73,7 @@ namespace Opdracht1
             if(temp.Length != 2 || temp[1] == "" || (temp[0] == "move" && !int.TryParse(temp[1], out output)))
             {
                 Console.WriteLine("Action is not valid, try another command");
-                getCommand(Console.ReadLine());
+                this.getCommand(Console.ReadLine());
             }
             else
             {
@@ -85,34 +81,33 @@ namespace Opdracht1
                 switch (temp[0])
                 {
                     case "move":
-                        tryMove(int.Parse(temp[1]));
+                        this.tryMove(int.Parse(temp[1]));
                         break;
                     case "use-potion":
                         if (temp[1] == "healingpotion" || temp[1] == "HealingPotion")
-                            useHealingPotion();
+                            this.useHealingPotion();
                         else if (temp[1] == "timecrystal" || temp[1] == "TimeCrystal" || temp[1] == "timecrystal1")
                         {
                             if(temp[1] == "timecrystal1")
                             {
-                                useTimeCrystal(true);
+                                this.useTimeCrystal(true);
                             }
                             else
                             {
-                                useTimeCrystal(false);
+                                this.useTimeCrystal(false);
                             }
-                            
                         }
                         else
                         {
                             Console.WriteLine("I can't drink a " + temp[1] + ", try again");
-                            getCommand(Console.ReadLine());
+                            this.getCommand(Console.ReadLine());
                         }
 
                         break;
                     default:
                         {
                             Console.WriteLine("Action is not valid, try another command");
-                            getCommand(Console.ReadLine());
+                            this.getCommand(Console.ReadLine());
                         }
                         break;
                 }
@@ -121,19 +116,19 @@ namespace Opdracht1
 
         public void tryMove(int number)
         {
-            int oldNumber = currentNode.number;
-            if (number != currentNode.number)
+            int oldNumber = this.currentNode.number;
+            if (number != this.currentNode.number)
             {
-                if (!currentNode.neighbours.Exists(item => item.number == number) && number != currentNode.number)
+                if (!this.currentNode.neighbours.Exists(item => item.number == number) && number != this.currentNode.number)
                 {
                     Console.WriteLine("Node is not a neighbour, try again");
-                    getCommand(Console.ReadLine());
+                    this.getCommand(Console.ReadLine());
                 }
-                else if (number != currentNode.number)
+                else if (number != this.currentNode.number)
                 {
-                    oldNumber = currentNode.number;
-                    Node node = currentNode.neighbours.Find(item => item.number == number);
-                    move(node);
+                    oldNumber = this.currentNode.number;
+                    Node node = this.currentNode.neighbours.Find(item => item.number == number);
+                    this.move(node);
                 }
             }
 
@@ -147,16 +142,16 @@ namespace Opdracht1
 
         void useHealingPotion()
         {
-            if (!bag.Exists(item => item.GetType() == typeof(HealingPotion)))
+            if (!this.bag.Exists(item => item.GetType() == typeof(HealingPotion)))
             {
                 Console.WriteLine("You have no healingpotions, try another command");
-                getCommand(Console.ReadLine());
+                this.getCommand(Console.ReadLine());
             }
             else
             {
                 Console.WriteLine("Which healingpotion do you want?");
                 int i = 0;
-                foreach(HealingPotion hp in bag)
+                foreach(HealingPotion hp in this.bag)
                 {
                     Console.WriteLine(i + ". " + "hp: " + hp.hitPoints);
                     i++;
@@ -168,12 +163,12 @@ namespace Opdracht1
                 }
 
                 int j = 0;
-                foreach (HealingPotion hp in bag)
+                foreach (HealingPotion hp in this.bag)
                 {
                     if (j == number)
                     {
-                        this.hitPoints = Math.Min(MaxHp, hp.hitPoints + this.hitPoints);
-                        bag.Remove(hp);
+                        this.hitPoints = Math.Min(this.maxHp, hp.hitPoints + this.hitPoints);
+                        this.bag.Remove(hp);
                         break;
                     }
                     j++;
@@ -183,13 +178,13 @@ namespace Opdracht1
 
         public void useTimeCrystal(bool inBattle)
         {
-            if(!bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
+            if(!this.bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
             {
                 Console.WriteLine("You have no timecrystal, try another command");
-                getCommand(Console.ReadLine());
+                this.getCommand(Console.ReadLine());
             }
 
-            else if(currentNode.zone != null && currentNode == currentNode.zone.endNode)
+            else if(this.currentNode.zone != null && this.currentNode == this.currentNode.zone.endNode)
             {
                 if(!inBattle)
                 {
@@ -203,28 +198,28 @@ namespace Opdracht1
 
                     if (input == "yes")
                     {
-                        Zone zoneToBeDeleted = currentNode.zone;
-                        teleportToSaveNeighbour();
-                        dungeon.zones.Remove(zoneToBeDeleted);
+                        Zone zoneToBeDeleted = this.currentNode.zone;
+                        this.teleportToSaveNeighbour();
+                        this.dungeon.zones.Remove(zoneToBeDeleted);
                         Console.WriteLine("Bridge and zone removed");
                     }
                     else
                     {
                         this.timeCrystalActive = true;
-                        bag.RemoveAt(bag.IndexOf(bag.Find(item => item.GetType() == typeof(TimeCrystal))));
+                        this.bag.RemoveAt(this.bag.IndexOf(this.bag.Find(item => item.GetType() == typeof(TimeCrystal))));
                     }
                 }
                 else
                 {
                     this.timeCrystalActive = true;
-                    bag.RemoveAt(bag.IndexOf(bag.Find(item => item.GetType() == typeof(TimeCrystal))));
+                    this.bag.RemoveAt(this.bag.IndexOf(this.bag.Find(item => item.GetType() == typeof(TimeCrystal))));
                 }
             }
             
             else
             {
                 this.timeCrystalActive = true;
-                bag.RemoveAt(bag.IndexOf(bag.Find(item => item.GetType() == typeof(TimeCrystal))));
+                this.bag.RemoveAt(this.bag.IndexOf(this.bag.Find(item => item.GetType() == typeof(TimeCrystal))));
             }
         }
 
@@ -233,39 +228,39 @@ namespace Opdracht1
             Random random = new Random(13423);
             List<Node> nodesList = new List<Node>();
             
-            foreach(Node neighbour in currentNode.neighbours)
+            foreach(Node neighbour in this.currentNode.neighbours)
             {
-                if (neighbour.zone == currentNode.zone || neighbour.zone == null)
+                if (neighbour.zone == this.currentNode.zone || neighbour.zone == null)
                     continue;
-                safe = false;
-                visitedNodes = new List<Node>();
-                saveNode(neighbour);
-                if(safe)
+                this.safe = false;
+                this.visitedNodes = new List<Node>();
+                this.saveNode(neighbour);
+                if(this.safe)
                 {
                     nodesList.Add(neighbour);
                 }
             }
             int index = random.Next(0, nodesList.Count());
-            foreach(Node node in currentNode.neighbours)
-                node.neighbours.Remove(currentNode);
-            safe = false;
-           
-            move(nodesList[index]);
+            foreach(Node node in this.currentNode.neighbours)
+                node.neighbours.Remove(this.currentNode);
+            this.safe = false;
+
+            this.move(nodesList[index]);
         }
 
         void saveNode(Node node)
         {
-            if (!visitedNodes.Exists(x => x == node))
+            if (!this.visitedNodes.Exists(x => x == node))
             {
-                visitedNodes.Add(node);
+                this.visitedNodes.Add(node);
                 foreach (Node neighbour in node.neighbours)
                 {
-                    if (neighbour == currentNode.zone.endNode)
+                    if (neighbour == this.currentNode.zone.endNode)
                     {
-                        safe = true; 
+                        this.safe = true; 
                         break;
                     }
-                    else saveNode(neighbour);
+                    else this.saveNode(neighbour);
                 }
             }
             

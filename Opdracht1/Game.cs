@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Opdracht1;
 
 namespace Opdracht1
 {
@@ -38,7 +39,7 @@ namespace Opdracht1
             this.random = random;
             
 
-            this.startNewGame(automatic);
+            this.startNewGame(!automatic);
         }
 
         public void turn()
@@ -207,12 +208,12 @@ namespace Opdracht1
             while (player.hitPoints > 0)
             {
                 turn = new Turn(this);
-                turn.doTurnPlayer();
+                turn.playerTurn();
                 turn.checkIfCombat();
                 if(turn.checkNode())
                 {
                     turn = new Turn(this);
-                    turn.doTurnPacks();
+                    turn.packsTurn();
                     turn.checkIfCombat();
                 }
 
