@@ -11,13 +11,12 @@ namespace Rogue
         {
             Random random = new Random();
 
-            new Game(
-                new DungeonGenerator(random), 
-                new GameSerializer(new BinaryFormatter()), 
-                new MonsterSpawner(random), 
-                new ItemSpawner(random),
-                random
-            ).play();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            MonsterSpawner monsterSpawner = new MonsterSpawner(random);
+            ItemSpawner itemSpawner = new ItemSpawner(random);
+            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
+
+            new Game(new GameSerializer(new BinaryFormatter()), gameBuilder,random).play();
         }
     }
 }

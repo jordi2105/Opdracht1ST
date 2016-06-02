@@ -12,7 +12,7 @@ namespace Rogue.DomainObjects
         public List<Pack> packs;
         public List<Node> neighbours;
         public List<Item> items;
-        private bool stopCombat = false;
+        private bool stopCombat;
 
         public Node(int number)
         {
@@ -30,10 +30,10 @@ namespace Rogue.DomainObjects
         public void doCombat(Pack pack, Player player)
         {
             Console.WriteLine("Combat has begon");
-            while(pack.Monsters.Count() > 0 && player.hitPoints >= 0 && !this.stopCombat)
+            while(pack.monsters.Count() > 0 && player.hitPoints >= 0 && !this.stopCombat)
                 this.doCombatRound(pack, player);
             
-            if(pack.Monsters.Count() == 0)
+            if(pack.monsters.Count() == 0)
             {
                 Console.WriteLine("Pack is dead");
                 this.packs.Remove(pack);
@@ -57,10 +57,9 @@ namespace Rogue.DomainObjects
 
         public void retreatingToNeighbour(Player player)
         {
-            List<Node> neighbours = player.currentNode.neighbours;
             Console.Write("To which node do you want to go: ");
             bool first = true;
-            foreach (Node neighbour in neighbours)
+            foreach (Node neighbour in player.currentNode.neighbours)
             {
                 if (first)
                     Console.Write(neighbour.number);
@@ -72,13 +71,13 @@ namespace Rogue.DomainObjects
              
             int output;
             string[] temp = Console.ReadLine().Split();
-            while (temp.Length != 1 || (!int.TryParse(temp[0], out output)) || !neighbours.Exists(item => item.number == int.Parse(temp[0])))
+            while (temp.Length != 1 || (!int.TryParse(temp[0], out output)) || !player.currentNode.neighbours.Exists(item => item.number == int.Parse(temp[0])))
             {
                 Console.WriteLine("Action is not valid, try another command");
                 temp = Console.ReadLine().Split();
             }
             
-            Node node = neighbours.Find(item => item.number == int.Parse(temp[0]));
+            Node node = player.currentNode.neighbours.Find(item => item.number == int.Parse(temp[0]));
             player.move(node);
             
         }
@@ -90,11 +89,11 @@ namespace Rogue.DomainObjects
             Console.WriteLine(player.hitPoints);
             Console.ResetColor();
             int totalHealth = 0;
-            foreach (Monster monster in p.Monsters)
+            foreach (Monster monster in p.monsters)
                 totalHealth += monster.hitPoints;
             Console.Write("Enemy has ");
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(p.Monsters.Count);
+            Console.Write(p.monsters.Count);
             Console.ResetColor();
             Console.Write(" monsters left with a total health of: ");
             Console.ForegroundColor = ConsoleColor.Red;
@@ -117,7 +116,7 @@ namespace Rogue.DomainObjects
             }
 
             if (input == "continue") {
-                player.attack(p.Monsters[0]);
+                player.attack(p.monsters[0]);
                 p.attack(player);
             } else if (input == "retreat") {
                 this.stopCombat = true;

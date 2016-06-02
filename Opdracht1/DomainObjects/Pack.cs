@@ -6,12 +6,12 @@ namespace Rogue.DomainObjects
     [Serializable]
     public class Pack
     {
-        List<Monster> monsters;
-        Node currentNode;
+        public List<Monster> monsters { get; set; }
+        public Node node { get; private set; }
         
         public Pack(int n, Node node)
         {
-            this.currentNode = node;
+            this.node = node;
             this.monsters = new List<Monster>();
             for(int i = 0; i < n; i++)
             {
@@ -20,22 +20,6 @@ namespace Rogue.DomainObjects
             }
         }
 
-        public Node getNode()
-        {
-            return this.currentNode;
-        }
-
-        public List<Monster> Monsters
-        {
-            get
-            {
-                return this.monsters;
-            }
-            set
-            {
-                this.monsters = value;
-            }
-        }
 
         public void removeMonster(Monster monster)
         {
@@ -44,7 +28,7 @@ namespace Rogue.DomainObjects
 
         public void move(Node u) 
         {
-            this.currentNode = u;
+            this.node = u;
         }
 
         public void attack(Player player)

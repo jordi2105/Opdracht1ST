@@ -22,7 +22,7 @@ namespace Opdracht1Test
                         int monsterCount = 0;
                         foreach (Pack pack in node.packs)
                         {
-                            monsterCount += pack.Monsters.Count;
+                            monsterCount += pack.monsters.Count;
                         }
                         Assert.IsTrue(monsterCount <= 3 * (dungeon.level + 1));
                     }
@@ -42,7 +42,7 @@ namespace Opdracht1Test
                 int monsterCount = 0;
                 foreach (Node node in zone.nodes) {
                     foreach (Pack pack in node.packs) {
-                        monsterCount += pack.Monsters.Count;
+                        monsterCount += pack.monsters.Count;
                     }
                 }
 
@@ -59,7 +59,7 @@ namespace Opdracht1Test
         private Dungeon createNewDungeon()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(new ZoneGenerator(random));
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
 
             Dungeon dungeon = dungeonGenerator.generate(3);

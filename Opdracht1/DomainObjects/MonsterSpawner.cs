@@ -35,7 +35,7 @@ namespace Rogue.DomainObjects
                     int x = 0;
                     foreach (Pack pack in node.packs)
                     {
-                        x += pack.Monsters.Count;
+                        x += pack.monsters.Count;
                     }
                     if (node != zone.endNode)
                     {
@@ -51,7 +51,7 @@ namespace Rogue.DomainObjects
                     x = 0;
                     foreach (Pack pack in node.packs)
                     {
-                        x += pack.Monsters.Count;
+                        x += pack.monsters.Count;
                     }
                     if (x == maxMonstersInNode)
                         notFullNodes.Remove(node);

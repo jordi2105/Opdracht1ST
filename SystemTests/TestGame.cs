@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using SystemTests.Specifications;
 using Rogue;
 using Rogue.DomainObjects;
 using Rogue.Services;
@@ -11,7 +12,8 @@ namespace SystemTests
     {
         private readonly List<ISpecification> specifications;
 
-        public TestGame(DungeonGenerator dungeonGenerator, GameSerializer gameSerializer, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner, Random random, List<ISpecification> specifications) : base(dungeonGenerator, gameSerializer, monsterSpawner, itemSpawner, random)
+        public TestGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random) 
+            : base(gameSerializer,gameBuilder,random)
         {
             this.specifications = specifications;
         }
@@ -34,19 +36,6 @@ namespace SystemTests
                 bool result = specification.validate(this);
                 Debug.WriteLine(specification.GetType().Name + ' ' + (result ? "succeeded" : "failed"));
             }
-        }
-    }
-
-    internal interface ISpecification
-    {
-        bool validate(Game game);
-    }
-
-    internal class MaxMonstersInNode : ISpecification
-    {
-        public bool validate(Game game)
-        {
-            return false;
         }
     }
 }

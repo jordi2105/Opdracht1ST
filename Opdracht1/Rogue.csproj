@@ -55,9 +55,11 @@
     <Compile Include="DomainObjects\TimeCrystal.cs" />
     <Compile Include="DomainObjects\Zone.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DungeonGenerator.cs" />
+    <Compile Include="Services\GameBuilder.cs" />
     <Compile Include="Services\GameSerializer.cs" />
     <Compile Include="Turn.cs" />
   </ItemGroup>

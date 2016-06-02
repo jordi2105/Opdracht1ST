@@ -12,20 +12,15 @@ namespace Rogue.Services
             this.formatter = formatter;
         }
 
-        public void save(Game game, string fileName)
+        public void save(GameState state, string fileName)
         {
-            Stream stream = new FileStream(
-                    fileName,
-                    FileMode.Create,
-                    FileAccess.Write,
-                    FileShare.None
-                    );
+            Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None);
 
-            this.formatter.Serialize(stream, game);
+            this.formatter.Serialize(stream, state);
             stream.Close();
         }
         
-        public Game load(string fileName)
+        public GameState load(string fileName)
         {
             FileInfo fileInfo = new FileInfo(fileName);
 
@@ -34,10 +29,10 @@ namespace Rogue.Services
             }
 
             Stream stream = fileInfo.OpenRead();
-            Game game = (Game) this.formatter.Deserialize(stream);
+            GameState state = (GameState) this.formatter.Deserialize(stream);
             stream.Close();
 
-            return game;
+            return state;
         }
     }
 }
