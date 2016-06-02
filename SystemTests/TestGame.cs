@@ -12,7 +12,7 @@ namespace SystemTests
     {
         private readonly List<ISpecification> specifications;
 
-        public TestGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random) 
+        public TestGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random, List<ISpecification> specifications) 
             : base(gameSerializer,gameBuilder,random)
         {
             this.specifications = specifications;

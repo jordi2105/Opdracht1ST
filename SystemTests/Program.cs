@@ -18,35 +18,21 @@ namespace SystemTests
 
         public void run()
         {
-             Random random = new Random(0);
 
             List<ISpecification> specifications = new List<ISpecification>{
                 new MaxMonstersInNode(),
                 new MonsterDoesntLeaveZone()
             };
 
-            this.createGameStateDirs(specifications);
+            Random random = new Random(0);
 
-            GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            MonsterSpawner monsterSpawner = new MonsterSpawner(random);
+            ItemSpawner itemSpawner = new ItemSpawner(random);
+            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
 
-            foreach (ISpecification specification in specifications) {
-                DirectoryInfo directoryInfo = new DirectoryInfo(this.getGameStatesDir(specification));
-                FileInfo[] fileInfos = directoryInfo.GetFiles();
-                foreach (FileInfo fileInfo in fileInfos) {
-                }
-            }
+            new TestGame(new GameSerializer(new BinaryFormatter()), gameBuilder, random, specifications).play();
 
-//            new TestGame(
-//                new DungeonGenerator(random), 
-//                new GameSerializer(new BinaryFormatter()), 
-//                new MonsterSpawner(random), 
-//                new ItemSpawner(random),
-//                random,
-//                specifications
-//            ).play();
-//
-//            Console.WriteLine(Directory.GetCurrentDirectory());
-//            Console.ReadLine();
         }
 
         private void createGameStateDirs(List<ISpecification> specifications)
