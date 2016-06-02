@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Opdracht1;
 using Rogue;
 using Rogue.DomainObjects;
 using Rogue.Services;

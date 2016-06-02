@@ -16,7 +16,10 @@ namespace Rogue
             ItemSpawner itemSpawner = new ItemSpawner(random);
             GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
 
-            new Game(new GameSerializer(new BinaryFormatter()), gameBuilder,random).play();
+            GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
+
+//            new Game(gameSerializer, gameBuilder,random).play();
+            new AutomaticGame(gameSerializer, gameBuilder, random).play();
         }
     }
 }

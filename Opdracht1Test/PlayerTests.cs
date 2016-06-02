@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Opdracht1;
 using Rogue.DomainObjects;
 using Rogue.Services;
 
@@ -80,7 +81,7 @@ namespace Opdracht1Test
             player.dungeon = dungeon;
             player.move(dungeon.zones[0].nodes[1]);
             Pack pack = new Pack(3, player.currentNode);
-            player.currentNode.doCombat(pack, player);
+            player.currentNode.doCombat(pack, player, true);
             Assert.IsTrue(player.currentNode.packs.Count == 0);
         }
         [TestMethod]
@@ -96,7 +97,7 @@ namespace Opdracht1Test
             player.currentNode = dungeon.zones[0].nodes[1];
             player.timeCrystalActive = false;
             Pack pack = new Pack(15, player.currentNode);
-            player.currentNode.doCombat(pack, player);
+            player.currentNode.doCombat(pack, player, true);
             Assert.IsFalse(player.isAlive);
         }
 

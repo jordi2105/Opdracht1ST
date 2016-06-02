@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Opdracht1;
 using Rogue.DomainObjects;
 using Rogue.Services;
 

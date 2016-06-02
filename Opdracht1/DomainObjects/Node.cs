@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rogue.DomainObjects;
 
-namespace Rogue.DomainObjects
+namespace Opdracht1
 {
     [Serializable]
     public class Node
@@ -12,7 +13,7 @@ namespace Rogue.DomainObjects
         public List<Pack> packs;
         public List<Node> neighbours;
         public List<Item> items;
-        private bool stopCombat;
+        private bool stopCombat = false;
 
         public Node(int number)
         {
@@ -27,11 +28,11 @@ namespace Rogue.DomainObjects
             
         }
 
-        public void doCombat(Pack pack, Player player)
+        public void doCombat(Pack pack, Player player, bool automatic)
         {
             Console.WriteLine("Combat has begon");
-            while(pack.monsters.Count() > 0 && player.hitPoints >= 0 && !this.stopCombat)
-                this.doCombatRound(pack, player);
+            while(pack.monsters.Count() > 0 && player.hitPoints >= 0 && !stopCombat)
+                doCombatRound(pack, player, automatic);
             
             if(pack.monsters.Count() == 0)
             {
@@ -57,9 +58,10 @@ namespace Rogue.DomainObjects
 
         public void retreatingToNeighbour(Player player)
         {
+            List<Node> neighbours = player.currentNode.neighbours;
             Console.Write("To which node do you want to go: ");
             bool first = true;
-            foreach (Node neighbour in player.currentNode.neighbours)
+            foreach (Node neighbour in neighbours)
             {
                 if (first)
                     Console.Write(neighbour.number);
@@ -71,63 +73,88 @@ namespace Rogue.DomainObjects
              
             int output;
             string[] temp = Console.ReadLine().Split();
-            while (temp.Length != 1 || (!int.TryParse(temp[0], out output)) || !player.currentNode.neighbours.Exists(item => item.number == int.Parse(temp[0])))
+            while (temp.Length != 1 || (!int.TryParse(temp[0], out output)) || !neighbours.Exists(item => item.number == int.Parse(temp[0])))
             {
                 Console.WriteLine("Action is not valid, try another command");
                 temp = Console.ReadLine().Split();
             }
             
-            Node node = player.currentNode.neighbours.Find(item => item.number == int.Parse(temp[0]));
+            Node node = neighbours.Find(item => item.number == int.Parse(temp[0]));
             player.move(node);
             
         }
 
-        public void doCombatRound(Pack p, Player player)
+        public void doCombatRound(Pack p, Player player, bool automatic)
         {
-            Console.Write("Your health is: ");
-            Console.ForegroundColor = ConsoleColor.Green;    
-            Console.WriteLine(player.hitPoints);
-            Console.ResetColor();
-            int totalHealth = 0;
-            foreach (Monster monster in p.monsters)
-                totalHealth += monster.hitPoints;
-            Console.Write("Enemy has ");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(p.monsters.Count);
-            Console.ResetColor();
-            Console.Write(" monsters left with a total health of: ");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(totalHealth);
-            Console.ResetColor();
-            
-            if(player.bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
+            if(!automatic)
             {
-                Console.WriteLine("retreat or continue the combat? Or use a TimeCrystal?");
+                Console.Write("Your health is: ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(player.hitPoints);
+                Console.ResetColor();
+                int totalHealth = 0;
+                foreach (Monster monster in p.monsters)
+                    totalHealth += monster.hitPoints;
+                Console.Write("Enemy has ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(p.monsters.Count);
+                Console.ResetColor();
+                Console.Write(" monsters left with a total health of: ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(totalHealth);
+                Console.ResetColor();
+
+                if (player.bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
+                {
+                    Console.WriteLine("retreat or continue the combat? Or use a TimeCrystal?");
+                }
+                else
+                {
+                    Console.WriteLine("retreat or continue the combat?");
+                }
+                string input = Console.ReadLine();
+                while (input != "continue" && input != "retreat" && input != "timecrystal" && input != "TimeCrystal")
+                {
+                    Console.WriteLine("This is not an option!");
+                    input = Console.ReadLine();
+                }
+                if (input == "continue")
+                {
+                    player.attack(p.monsters[0]);
+                    p.attack(player);
+                    //packAttack(p, player);
+                }
+                else if (input == "retreat")
+                    stopCombat = true;
+                else if (input == "timecrystal" || input == "TimeCrystal")
+                {
+                    player.getCommand("use-potion timecrystal1");
+
+                }
             }
             else
             {
-                Console.WriteLine("retreat or continue the combat?");
-            }
-            string input = Console.ReadLine();
-            while(input != "continue" && input != "retreat" && input != "timecrystal" && input != "TimeCrystal")
-            {
-                Console.WriteLine("This is not an option!");
-                input = Console.ReadLine();
-            }
-
-            if (input == "continue") {
                 player.attack(p.monsters[0]);
                 p.attack(player);
-            } else if (input == "retreat") {
-                this.stopCombat = true;
-            } else if(input == "timecrystal" || input == "TimeCrystal")
-            {
-                player.getCommand("use-potion timecrystal1");
-
             }
 
 
 
         }
+
+        /*void packAttack(Pack p, Player player)
+        {
+            int totalHealth = 0;
+            foreach(Monster monster in p.monsters)
+            {
+                totalHealth += monster.hitPoints;
+            }
+            if(totalHealth < player.hitPoints)
+            {
+                stopCombat = true;
+                Console.WriteLine("Pack retreated");
+            }
+            else p.attack(player);
+        }*/
     }
 }

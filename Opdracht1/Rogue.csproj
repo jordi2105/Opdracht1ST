@@ -62,6 +62,7 @@
     <Compile Include="Services\GameBuilder.cs" />
     <Compile Include="Services\GameSerializer.cs" />
     <Compile Include="Turn.cs" />
+    <Compile Include="TurnBot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

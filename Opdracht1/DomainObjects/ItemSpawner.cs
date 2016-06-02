@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Opdracht1;
 
 namespace Rogue.DomainObjects
 {
