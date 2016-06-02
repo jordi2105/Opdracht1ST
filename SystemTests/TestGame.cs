@@ -12,7 +12,8 @@ namespace SystemTests
     {
         private readonly List<ISpecification> specifications;
 
-        public TestGame(DungeonGenerator dungeonGenerator, GameSerializer gameSerializer, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner, Random random, List<ISpecification> specifications) : base(dungeonGenerator, gameSerializer, monsterSpawner, itemSpawner, random)
+        public TestGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random) 
+            : base(gameSerializer,gameBuilder,random)
         {
             this.specifications = specifications;
         }

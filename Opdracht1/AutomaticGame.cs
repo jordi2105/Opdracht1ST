@@ -10,76 +10,66 @@ namespace Rogue
 {
     public class AutomaticGame : Game
     {
-        public AutomaticGame(
-            DungeonGenerator dungeonGenerator, 
-            GameSerializer gameSerializer, 
-            MonsterSpawner monsterSpawner, 
-            ItemSpawner itemSpawner, 
-            Random random) : base(
-                dungeonGenerator, 
-                gameSerializer, 
-                monsterSpawner, 
-                itemSpawner, 
-                random
-        ){}
+        public AutomaticGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random) 
+            : base(gameSerializer,gameBuilder,random) { }
 
         public override void turn()
         {
-            this.teller++;
-            if (this.player.hitPoints < 0)
+            this.gameState.teller++;
+            if (this.gameState.player.hitPoints < 0)
             {
                 this.endOfGame();
             }
 
-            if (this.player.currentNode.packs.Any())
+            if (this.gameState.player.currentNode.packs.Any())
             {
                 this.useTimeCrystalOrNot();
                 
-                this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player);
-                if (this.player.hitPoints < 0) {
+                this.gameState.player.currentNode.doCombat(this.gameState.player.currentNode.packs[0], this.gameState.player);
+                if (this.gameState.player.hitPoints < 0) {
                     this.endOfGame();
                 }
             }
             
-            else if(this.turnPlayer)
+            else if(this.gameState.turnPlayer)
             {
                 
 
-                List<Node> nodes = this.player.currentNode.neighbours;
+                List<Node> nodes = this.gameState.player.currentNode.neighbours;
                 Node neighbour = this.moveCreatureRandom(nodes, null, null);
-                if(this.teller > 5000)
+                if(this.gameState.teller > 5000)
                 {
-                    neighbour = this.dungeon.zones[0].endNode;
-                    this.teller = 0;
+                    neighbour = this.gameState.dungeon.zones[0].endNode;
+                    this.gameState.teller = 0;
                 }
 
-                this.player.move(neighbour);
+                this.gameState.player.move(neighbour);
                 Console.WriteLine("Player moved to: " + neighbour.number);
                 
-                if (neighbour == this.dungeon.zones[0].endNode)
+                if (neighbour == this.gameState.dungeon.zones[0].endNode)
                 {
-                    if(this.dungeon.zones.Count() == 1)
+                    if(this.gameState.dungeon.zones.Count() == 1)
                     {
-                        Console.WriteLine("Player reached exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
+                        Console.WriteLine("Player reached exit node of zone:" + this.gameState.player.currentNode.zone.number + " (end of dungeon with level: " + this.gameState.dungeon.level + ")");
                         this.nextDungeon();
-                        this.player.move(this.dungeon.zones[0].startNode);
+                        this.gameState.player.move(this.gameState.dungeon.zones[0].startNode);
                         Console.ReadLine();
                     }
 
                     else
                     {
-                        Console.WriteLine("Player reached the end node of the zone with zonenumber:" + this.player.currentNode.zone.number + "in dungeon with dungeon level: " + this.dungeon.level);
+                        Console.WriteLine("Player reached the end node of the zone with zonenumber:" + this.gameState.player.currentNode.zone.number + "in dungeon with dungeon level: " + this.gameState.dungeon.level);
                         //this.player.useTimeCrystal(true, null);
                         Console.ReadLine();
                     }
                     
                 }
-                this.turnPlayer = !this.turnPlayer;
+                this.gameState.turnPlayer = !this.gameState.turnPlayer;
                 //this.turn();
             }
             else
             {
-                foreach(Zone zone in this.dungeon.zones)
+                foreach(Zone zone in this.gameState.dungeon.zones)
                 {
                     foreach(Node node in zone.nodes)
                     {
@@ -94,14 +84,14 @@ namespace Rogue
                         }
                     }
                 }
-                this.turnPlayer = !this.turnPlayer;
+                this.gameState.turnPlayer = !this.gameState.turnPlayer;
                 //this.turn();
             }
         }
 
         public void useTimeCrystalOrNot()
         {
-            foreach (Item item in this.player.bag)
+            foreach (Item item in this.gameState.player.bag)
             {
                 if (item.GetType() == typeof(TimeCrystal))
                 {

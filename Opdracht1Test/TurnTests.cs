@@ -18,14 +18,14 @@ namespace Opdracht1Test
 
             game.turn();
 
-            Assert.IsTrue(game.player.currentNode != game.dungeon.zones[0].startNode);
+            Assert.IsTrue(game.gameState.player.currentNode != game.gameState.dungeon.zones[0].startNode);
         }
 
         [TestMethod()]
         public void turn_test_pack()
         {
             Game game = this.createGame();
-            game.turnPlayer = false;
+            game.gameState.turnPlayer = false;
 
             game.turn();
 
@@ -36,11 +36,11 @@ namespace Opdracht1Test
         public void pack_and_player_at_same_node_one_will_remain()
         {
             Game game = this.createGame();
-            game.player.currentNode = game.dungeon.zones[0].startNode.neighbours[0];
-            game.player.currentNode.packs.Add(new Pack(10, game.player.currentNode));
+            game.gameState.player.currentNode = game.gameState.dungeon.zones[0].startNode.neighbours[0];
+            game.gameState.player.currentNode.packs.Add(new Pack(10, game.gameState.player.currentNode));
             game.turn();
 
-            Assert.IsTrue(!game.isAlive ^ game.player.currentNode.packs.Count == 0);
+            Assert.IsTrue(!game.gameState.isAlive ^ game.gameState.player.currentNode.packs.Count == 0);
         }
 
         [TestMethod()]
@@ -48,11 +48,11 @@ namespace Opdracht1Test
         {
             Game game = this.createGame();
             
-            game.player.currentNode = game.dungeon.zones[1].endNode;
-            Node node = game.player.currentNode;
+            game.gameState.player.currentNode = game.gameState.dungeon.zones[1].endNode;
+            Node node = game.gameState.player.currentNode;
             game.turn();
 
-            Assert.IsFalse(game.dungeon.zones[0].nodes.Contains(node));
+            Assert.IsFalse(game.gameState.dungeon.zones[0].nodes.Contains(node));
         }
 
         [TestMethod()]
@@ -60,11 +60,11 @@ namespace Opdracht1Test
         {
             AutomaticGame game = this.createGame();
             TimeCrystal timecrystal = new TimeCrystal();
-            game.player.bag.Clear();
-            game.player.bag.Add(timecrystal);
+            game.gameState.player.bag.Clear();
+            game.gameState.player.bag.Add(timecrystal);
             game.useTimeCrystalOrNot();
 
-            Assert.IsTrue(!game.player.bag.Contains(timecrystal));
+            Assert.IsTrue(!game.gameState.player.bag.Contains(timecrystal));
         }
 
         [TestMethod()]
@@ -73,24 +73,22 @@ namespace Opdracht1Test
             Game game = this.createGame();
             game.endOfGame();
 
-            Assert.IsFalse(game.isAlive);
+            Assert.IsFalse(game.gameState.isAlive);
         }
 
         private AutomaticGame createGame()
         {
             Random random = new Random();
+
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
-            BinaryFormatter binaryFormatter = new BinaryFormatter();
-            GameSerializer gameSerializer = new GameSerializer(binaryFormatter);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
             ItemSpawner itemSpawner = new ItemSpawner(random);
+            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
 
-            return new AutomaticGame(
-                dungeonGenerator,
-                gameSerializer,
-                monsterSpawner,
-                itemSpawner,
-                random);
+            BinaryFormatter binaryFormatter = new BinaryFormatter();
+            GameSerializer gameSerializer = new GameSerializer(binaryFormatter);
+
+            return new AutomaticGame(gameSerializer,gameBuilder,random);
         }
     }
 }

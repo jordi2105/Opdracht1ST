@@ -33,7 +33,6 @@ namespace SystemTests
                 DirectoryInfo directoryInfo = new DirectoryInfo(this.getGameStatesDir(specification));
                 FileInfo[] fileInfos = directoryInfo.GetFiles();
                 foreach (FileInfo fileInfo in fileInfos) {
-                    Game game = gameSerializer.load(fileInfo.FullName);
                 }
             }
 

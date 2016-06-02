@@ -13,8 +13,8 @@ namespace Rogue
 
         public Turn(Game game, bool automatic)
         {
-            this.player = game.player;
-            this.dungeon = game.dungeon;
+            this.player = game.gameState.player;
+            this.dungeon = game.gameState.dungeon;
             this.game = game;
         }
 
@@ -162,7 +162,7 @@ namespace Rogue
                     Console.WriteLine("This is the exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
                     Console.ResetColor();
                     this.game.nextDungeon();
-                    this.dungeon = this.game.dungeon;
+                    this.dungeon = this.game.gameState.dungeon;
                     this.player.move(this.dungeon.zones[0].startNode);
                     return false;
 
