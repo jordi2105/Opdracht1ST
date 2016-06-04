@@ -16,10 +16,10 @@ namespace Rogue.Services
             this.itemSpawner = itemSpawner;
         }
 
-        public GameState buildNewGameState()
+        public GameState buildNewGameState(Random random)
         {
 
-            GameState gameState = new GameState();
+            GameState gameState = new GameState(random);
             this.generateNewDungeon(gameState);
 
             Console.WriteLine();

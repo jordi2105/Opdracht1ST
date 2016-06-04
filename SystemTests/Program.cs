@@ -13,40 +13,31 @@ namespace SystemTests
     {
         static void Main(string[] args)
         {
-            new Program().run();  
+            new Program().run(); 
         }
 
         public void run()
         {
-             Random random = new Random(0);
+            /*Random random = new Random(0);
 
-            List<ISpecification> specifications = new List<ISpecification>{
-                new MaxMonstersInNode(),
-                new MonsterDoesntLeaveZone()
-            };
+           List<ISpecification> specifications = new List<ISpecification>{
+               new MaxMonstersInNode(),
+               new MonsterDoesntLeaveZone()
+           };
 
-            this.createGameStateDirs(specifications);
+           this.createGameStateDirs(specifications);
 
+           GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
+
+           foreach (ISpecification specification in specifications) {
+               DirectoryInfo directoryInfo = new DirectoryInfo(this.getGameStatesDir(specification));
+               FileInfo[] fileInfos = directoryInfo.GetFiles();
+               foreach (FileInfo fileInfo in fileInfos) {
+               }
+           }*/
             GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
-
-            foreach (ISpecification specification in specifications) {
-                DirectoryInfo directoryInfo = new DirectoryInfo(this.getGameStatesDir(specification));
-                FileInfo[] fileInfos = directoryInfo.GetFiles();
-                foreach (FileInfo fileInfo in fileInfos) {
-                }
-            }
-
-//            new TestGame(
-//                new DungeonGenerator(random), 
-//                new GameSerializer(new BinaryFormatter()), 
-//                new MonsterSpawner(random), 
-//                new ItemSpawner(random),
-//                random,
-//                specifications
-//            ).play();
-//
-//            Console.WriteLine(Directory.GetCurrentDirectory());
-//            Console.ReadLine();
+            GameBuilder gameBuilder = new GameBuilder(new DungeonGenerator(new Random()), new MonsterSpawner(new Random()), new ItemSpawner(new Random()));
+            TestGame testGame = new TestGame(gameSerializer, gameBuilder, new Random());
         }
 
         private void createGameStateDirs(List<ISpecification> specifications)

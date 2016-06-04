@@ -12,10 +12,10 @@ namespace Rogue
         public bool turnPlayer { get; set; }
         public int teller { get; set; }
 
-        public GameState()
+        public GameState(Random random)
         {
             this.teller = 0;
-            this.player = new Player();;
+            this.player = new Player(random);
             this.isAlive = true;
             this.turnPlayer = true;
         }

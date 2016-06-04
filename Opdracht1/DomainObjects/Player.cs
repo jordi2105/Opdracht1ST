@@ -19,14 +19,17 @@ namespace Rogue.DomainObjects
         private bool safe = false;
         public bool isAlive = true;
 
+        public Random random;
 
-        public Player()
+
+        public Player(Random random)
         {
             this.killPoints = 0;
             this.attackRating = 5;
             this.hitPoints = this.maxHp;
             this.bag = new List<Item>();
             this.timeCrystalActive = false;
+            this.random = random;
         }
 
         public void move(Node node)
@@ -226,7 +229,7 @@ namespace Rogue.DomainObjects
 
         void teleportToSaveNeighbour()
         {
-            Random random = new Random(13423);
+            //Random random = new Random(13423);
             List<Node> nodesList = new List<Node>();
             
             foreach(Node neighbour in this.currentNode.neighbours)

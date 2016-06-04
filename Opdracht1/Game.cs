@@ -84,7 +84,7 @@ namespace Rogue
         public void nextDungeon()
         {
             if (this.gameState == null) {
-                this.gameState = this.gameBuilder.buildNewGameState();
+                this.gameState = this.gameBuilder.buildNewGameState(random);
             }
 
             this.gameBuilder.generateNewDungeon(this.gameState);

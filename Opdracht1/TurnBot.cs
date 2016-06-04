@@ -164,7 +164,7 @@ namespace Opdracht1
                     Console.ResetColor();
                     this.game.nextDungeon();
                     this.dungeon = this.game.gameState.dungeon;
-                    this.player.move(this.dungeon.zones[0].startNode);
+                   // this.player.move(this.dungeon.zones[0].startNode);
                     Console.ReadLine();
                     return false;
 
