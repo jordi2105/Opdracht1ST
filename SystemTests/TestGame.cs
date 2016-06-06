@@ -8,11 +8,11 @@ using Rogue.Services;
 
 namespace SystemTests
 {
-    class TestGame : Game
+    class TestGame : AutomaticGame
     {
         private readonly List<ISpecification> specifications;
 
-        public TestGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random) 
+        public TestGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random, List<ISpecification> specifications) 
             : base(gameSerializer,gameBuilder,random)
         {
             this.specifications = specifications;
@@ -33,8 +33,10 @@ namespace SystemTests
         private void validateSpecifications()
         {
             foreach (ISpecification specification in this.specifications) {
-                bool result = specification.validate(this);
-                Debug.WriteLine(specification.GetType().Name + ' ' + (result ? "succeeded" : "failed"));
+               bool result = specification.validate(this);
+               if(!result)
+                   Debug.WriteLine(specification.GetType().Name + ' ' + "failed");
+               // Debug.WriteLine(specification.GetType().Name + ' ' + (result ? "succeeded" : "failed"));
             }
         }
     }

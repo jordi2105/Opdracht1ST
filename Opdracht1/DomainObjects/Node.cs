@@ -13,7 +13,7 @@ namespace Opdracht1
         public List<Pack> packs;
         public List<Node> neighbours;
         public List<Item> items;
-        private bool stopCombat = false;
+        private bool stopCombat = false, packRetreated = false;
 
         public Node(int number)
         {
@@ -31,7 +31,7 @@ namespace Opdracht1
         public void doCombat(Pack pack, Player player, bool automatic)
         {
             Console.WriteLine("Combat has begon");
-            while(pack.monsters.Count() > 0 && player.hitPoints >= 0 && !stopCombat)
+            while(pack.monsters.Count() > 0 && player.hitPoints >= 0 && !stopCombat && !packRetreated)
                 doCombatRound(pack, player, automatic);
             
             if(pack.monsters.Count() == 0)
@@ -52,8 +52,26 @@ namespace Opdracht1
                 this.stopCombat = false;
                 player.timeCrystalActive = false;
             }
+            if (this.packRetreated)
+            {
+                this.retreatPackToNeighbour(pack);
+                this.packRetreated = false;
+                player.timeCrystalActive = false;
+            }
 
             
+        }
+        public void retreatPackToNeighbour(Pack pack)
+        {
+            List<Node> neighbours = pack.node.neighbours;
+            for(int i = 0; i < neighbours.Count();i++)
+            {
+                if (neighbours[i].zone != pack.node.zone)
+                    neighbours.Remove(neighbours[i]);
+            }
+            Random random = new Random(90);
+            int index = random.Next(0, neighbours.Count() - 1);
+            pack.move(neighbours[index]);
         }
 
         public void retreatingToNeighbour(Player player)
@@ -136,13 +154,14 @@ namespace Opdracht1
             {
                 player.attack(p.monsters[0]);
                 p.attack(player);
+                //packAttack(p, player);
             }
 
 
 
         }
 
-        /*void packAttack(Pack p, Player player)
+        void packAttack(Pack p, Player player)
         {
             int totalHealth = 0;
             foreach(Monster monster in p.monsters)
@@ -151,10 +170,10 @@ namespace Opdracht1
             }
             if(totalHealth < player.hitPoints)
             {
-                stopCombat = true;
+                packRetreated = true;
                 Console.WriteLine("Pack retreated");
             }
             else p.attack(player);
-        }*/
+        }
     }
 }

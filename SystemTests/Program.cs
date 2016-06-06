@@ -18,26 +18,23 @@ namespace SystemTests
 
         public void run()
         {
-            /*Random random = new Random(0);
 
-           List<ISpecification> specifications = new List<ISpecification>{
-               new MaxMonstersInNode(),
-               new MonsterDoesntLeaveZone()
-           };
+            Random random = new Random(0);
 
-           this.createGameStateDirs(specifications);
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            MonsterSpawner monsterSpawner = new MonsterSpawner(random);
+            ItemSpawner itemSpawner = new ItemSpawner(random);
+            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
 
-           GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
+            List<ISpecification> specifications = new List<ISpecification>();
+            MaxMonstersInNode spec = new MaxMonstersInNode();
+            specifications.Add(spec);
+            MonsterDoesntLeaveZone spec2 = new MonsterDoesntLeaveZone();
+            specifications.Add(spec2);
+            MonstersDontMoveAway spec3 = new MonstersDontMoveAway();
+            specifications.Add(spec3);
+            new TestGame(new GameSerializer(new BinaryFormatter()), gameBuilder, random, specifications).play();
 
-           foreach (ISpecification specification in specifications) {
-               DirectoryInfo directoryInfo = new DirectoryInfo(this.getGameStatesDir(specification));
-               FileInfo[] fileInfos = directoryInfo.GetFiles();
-               foreach (FileInfo fileInfo in fileInfos) {
-               }
-           }*/
-            GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
-            GameBuilder gameBuilder = new GameBuilder(new DungeonGenerator(new Random()), new MonsterSpawner(new Random()), new ItemSpawner(new Random()));
-            TestGame testGame = new TestGame(gameSerializer, gameBuilder, new Random());
         }
 
         private void createGameStateDirs(List<ISpecification> specifications)
