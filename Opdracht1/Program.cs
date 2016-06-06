@@ -19,7 +19,9 @@ namespace Rogue
             GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
 
 //            new Game(gameSerializer, gameBuilder,random).play();
-            new AutomaticGame(gameSerializer, gameBuilder, random).play();
+            Game game = new AutomaticGame(gameSerializer, gameBuilder, random);
+            game.initialize();
+            game.play();
         }
     }
 }
