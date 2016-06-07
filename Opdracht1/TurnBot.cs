@@ -47,7 +47,7 @@ namespace Opdracht1
         public int randomNeighbourNumber(List<Node> neighbours)
         {
             Node node = this.game.moveCreatureRandom(neighbours, this.player.currentNode.zone, null);
-            while(node.neighbours.Count < 2 || (this.player.currentNode.zone != null && this.player.currentNode.zone.endNode == this.player.currentNode && node.zone == this.player.currentNode.zone))
+            while(node.neighbours.Count < 2 || (this.player.currentNode.zone != null && this.player.currentNode.zone.endNode == this.player.currentNode && (node.zone == this.player.currentNode.zone || node.zone == null)))
             {
                 node = this.game.moveCreatureRandom(neighbours, this.player.currentNode.zone, null);
             }
@@ -86,12 +86,13 @@ namespace Opdracht1
 
                             Node neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                             int times = 0;
-                            while (!(neighbour.zone == zone) && times < 10)
+                            while (neighbour.zone != zone && times < 10)
                             {
                                 neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                                 times++;
                             }
-                            pack.move(neighbour);
+                            if(neighbour.zone == zone)
+                                pack.move(neighbour);
                         }
                     }
                 }
@@ -129,11 +130,11 @@ namespace Opdracht1
         {
             List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
             List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.node, zone.endNode);
-            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.player.currentNode)
+            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.player.currentNode && nodesToPlayer[1].zone == pack.node.zone)
             {
                 pack.move(nodesToPlayer[1]);
             }
-            else if (pack.node != zone.endNode)
+            else if (pack.node != zone.endNode && nodesToEndNode[1].zone == pack.node.zone)
                 pack.move(nodesToEndNode[1]);
         }
         public void checkIfCombat()

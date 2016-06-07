@@ -9,7 +9,7 @@ namespace Rogue
     {
         static void Main(string[] args)
         {
-            Random random = new Random(4018760);
+            Random random = new Random(401406456);
 
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
@@ -18,8 +18,11 @@ namespace Rogue
 
             GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
 
-            //new Game(gameSerializer, gameBuilder,random).play();
-            new AutomaticGame(gameSerializer, gameBuilder, random).play();
+
+//            new Game(gameSerializer, gameBuilder,random).play();
+            Game game = new AutomaticGame(gameSerializer, gameBuilder, random);
+            game.initialize();
+            game.play();
         }
     }
 }

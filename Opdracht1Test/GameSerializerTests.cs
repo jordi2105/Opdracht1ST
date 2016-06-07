@@ -15,8 +15,9 @@ namespace Opdracht1Test
         public void creates_file_in_file_system()
         {
             Game game = this.createGame();
+            game.initialize();
 
-            string fileName = Directory.GetCurrentDirectory() + "/testsave.save";
+            string fileName = Directory.GetCurrentDirectory() + "\\testsave.save";
             game.save(fileName);
 
             FileInfo fileInfo = new FileInfo(fileName);
@@ -31,6 +32,7 @@ namespace Opdracht1Test
         public void game_get_loaded()
         {
             Game game = this.createGame();
+            game.initialize();
 
             string fileName = Directory.GetCurrentDirectory() + "/testsave.save";
             game.save(fileName);

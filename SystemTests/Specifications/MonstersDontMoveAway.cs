@@ -4,50 +4,72 @@ using Opdracht1;
 using Rogue;
 using Rogue.DomainObjects;
 using System;
+using System.Diagnostics;
+using SystemTests.Specifications;
 
 namespace SystemTests.Specifications
 {
     class MonstersDontMoveAway : ISpecification
     {
-        private Dictionary<Pack, int> packsDictionary;
+        private Dictionary<Pack, int[]> packsDictionary;
         Game game;
+        Zone currentZone;
 
         public MonstersDontMoveAway()
         {
-            this.packsDictionary = new Dictionary<Pack, int>();
+            //this.packsDictionary = new Dictionary<Pack, int>();
         }
 
         public bool validate(Game game)
         {
             this.game = game;
-            if (!this.packsDictionary.Any()) {
-                this.initialize(game.gameState.dungeon.zones);
-                return true;
+            if (currentZone == null)
+            {
+                this.currentZone = game.gameState.dungeon.zones[0];
+                this.initialize(currentZone);
+
+            }
+            else if(currentZone != game.gameState.player.currentNode.zone)
+            {
+                if(game.gameState.player.currentNode.zone == null)
+                {
+                    this.currentZone = game.gameState.dungeon.zones[0];
+                }
+                else currentZone = game.gameState.player.currentNode.zone;
+                this.initialize(this.currentZone);
+                
             }
 
-            foreach (KeyValuePair<Pack, int> pair in this.packsDictionary) {
+            bool bla = true;
+            foreach (KeyValuePair<Pack, int[]> pair in this.packsDictionary) {
                 List<Node> nodesToPlayer = shortestPath(pair.Key.node, game.gameState.player.currentNode);
-                List<Node> nodesToEndNode = shortestPath(pair.Key.node, pair.Key.node.zone.endNode);
-                int count = Math.Min(nodesToPlayer.Count(), nodesToEndNode.Count());
-                if (count > pair.Value)
-                    return false;
+                List<Node> nodesToEndNode = shortestPath(pair.Key.node, currentZone.endNode);
+                
+                if (nodesToPlayer.Count() > pair.Value[0] && nodesToEndNode.Count() > pair.Value[1])
+                {
+                    Debug.WriteLine("pair je moeder");
+                    bla = false;
+                    //return false;
+                   
+                }
+                   
             }
-
-            return true;
+            return bla;
+            
         }
 
-        private void initialize(List<Zone> zones)
+        private void initialize(Zone zone)
         {
-            foreach (Zone zone in zones) {
+            this.packsDictionary = new Dictionary<Pack, int[]>();
                 foreach (Node node in zone.nodes) {
                     foreach (Pack pack in node.packs) {
                         List<Node> nodesToPlayer = shortestPath(pack.node, game.gameState.player.currentNode);
                         List<Node> nodesToEndNode = shortestPath(pack.node, zone.endNode);
-                        int count = Math.Min(nodesToPlayer.Count(), nodesToEndNode.Count());
-                        this.packsDictionary.Add(pack, count);
+                        int[] counts = new int[] { nodesToPlayer.Count(), nodesToEndNode.Count() };
+                        this.packsDictionary.Add(pack, counts);
                     }
                 }
-            }
+            
         }
 
         public List<Node> shortestPath(Node startNode, Node endNode)

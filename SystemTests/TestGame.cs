@@ -18,7 +18,7 @@ namespace SystemTests
             this.specifications = specifications;
         }
 
-        protected override void initialize()
+        public override void initialize()
         {
             base.initialize();
             this.validateSpecifications();

@@ -24,7 +24,7 @@ namespace SystemTests.Specifications
             }
 
             foreach (KeyValuePair<Pack, Zone> pair in this.packs) {
-                if (!pair.Key.node.zone.Equals(pair.Value)) {
+                if (pair.Key.node.zone != null && (!pair.Key.node.zone.Equals(pair.Value))) {
                     return false;
                 }
             }

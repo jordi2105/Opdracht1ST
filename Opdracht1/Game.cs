@@ -24,8 +24,6 @@ namespace Rogue
 
         public void play()
         {
-            this.initialize();
-
             while (this.gameState.player.hitPoints > 0){
                 this.turn();
             }
@@ -33,7 +31,7 @@ namespace Rogue
             this.endOfGame();
         }
 
-        protected virtual void initialize()
+        public virtual void initialize()
         {
             this.nextDungeon();
         }

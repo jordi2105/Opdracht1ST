@@ -95,7 +95,8 @@ namespace Rogue
                                 neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                                 times++;
                             }
-                            pack.move(neighbour);
+                            if(neighbour.zone == zone)
+                                pack.move(neighbour);
                         }
                     }
                 }
@@ -133,11 +134,11 @@ namespace Rogue
         {
             List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
             List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.node, zone.endNode);
-            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node!= this.player.currentNode)
+            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.player.currentNode && nodesToPlayer[1].zone == pack.node.zone)
             {
                 pack.move(nodesToPlayer[1]);
             }
-            else if (pack.node!= zone.endNode)
+            else if (pack.node != zone.endNode && nodesToEndNode[1].zone == pack.node.zone)
                 pack.move(nodesToEndNode[1]);
         }
 
