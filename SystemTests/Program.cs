@@ -19,7 +19,7 @@ namespace SystemTests
         public void run()
         {
 
-            Random random = new Random(121);
+            Random random = new Random(1211);
 
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
@@ -33,6 +33,10 @@ namespace SystemTests
             specifications.Add(spec2);
             MonstersDontMoveAway spec3 = new MonstersDontMoveAway();
             specifications.Add(spec3);
+            KPAndNumberOfMonsterConstant spec4 = new KPAndNumberOfMonsterConstant();
+            specifications.Add(spec4);
+            GuaranteedNumberOfCombats spec5 = new GuaranteedNumberOfCombats();
+            specifications.Add(spec5);
             TestGame testGame = new TestGame(new GameSerializer(new BinaryFormatter()), gameBuilder, random, specifications);
             testGame.initialize();
             testGame.play();

@@ -34,8 +34,9 @@ namespace Rogue.Services
 
             gameState.player.dungeon = gameState.dungeon;
             gameState.player.move(gameState.dungeon.zones[0].startNode);
+            gameState.player.numberOfCombatsOfDungeon = 0;
 
-            this.monsterSpawner.spawn(gameState.dungeon);
+            this.monsterSpawner.spawnAssignment5(gameState.dungeon);
             this.itemSpawner.spawn(gameState.dungeon.zones, gameState.player.hitPoints);
 
         }

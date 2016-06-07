@@ -83,7 +83,7 @@ namespace Opdracht1
                         }
                         else
                         {
-
+                            /*
                             Node neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                             int times = 0;
                             while (neighbour.zone != zone && times < 10)
@@ -93,6 +93,7 @@ namespace Opdracht1
                             }
                             if(neighbour.zone == zone)
                                 pack.move(neighbour);
+                                */
                         }
                     }
                 }
@@ -147,10 +148,7 @@ namespace Opdracht1
                     this.player, 
                     true
                 );
-
-                if (this.player.hitPoints < 0){
-                    this.game.endOfGame();
-                }
+                
             }
         }
 

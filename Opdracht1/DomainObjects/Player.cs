@@ -8,7 +8,7 @@ namespace Rogue.DomainObjects
     [Serializable]
     public class Player : Creature
     {
-        public int maxHp = 1000;
+        public int maxHp = 10000;
 
         public int killPoints;
         public bool timeCrystalActive;
@@ -20,6 +20,8 @@ namespace Rogue.DomainObjects
         public bool isAlive = true;
 
         public Random random;
+
+        public int numberOfCombatsOfDungeon;
 
 
         public Player(Random random)

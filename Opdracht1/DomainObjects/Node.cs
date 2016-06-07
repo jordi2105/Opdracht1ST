@@ -31,6 +31,7 @@ namespace Opdracht1
         public void doCombat(Pack pack, Player player, bool automatic)
         {
             Console.WriteLine("Combat has begon");
+            player.numberOfCombatsOfDungeon++;
             while(pack.monsters.Count() > 0 && player.hitPoints >= 0 && !stopCombat && !packRetreated)
                 doCombatRound(pack, player, automatic);
             
@@ -42,7 +43,6 @@ namespace Opdracht1
 
             if(player.hitPoints <= 0)
             {
-                Console.WriteLine("Player is dead");
                 player.isAlive = false;
             }
 

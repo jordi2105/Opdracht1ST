@@ -84,8 +84,8 @@ namespace Rogue
             if (this.gameState == null) {
                 this.gameState = this.gameBuilder.buildNewGameState(random);
             }
-
-            this.gameBuilder.generateNewDungeon(this.gameState);
+            else
+                this.gameBuilder.generateNewDungeon(this.gameState);
         }
      
     }

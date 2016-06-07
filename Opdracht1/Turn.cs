@@ -87,7 +87,7 @@ namespace Rogue
                         }
                         else
                         {
-
+                            /*
                             Node neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
                             int times = 0;
                             while(neighbour.zone != zone && times < 10)
@@ -96,7 +96,7 @@ namespace Rogue
                                 times++;
                             }
                             if(neighbour.zone == zone)
-                                pack.move(neighbour);
+                                pack.move(neighbour);*/
                         }
                     }
                 }
