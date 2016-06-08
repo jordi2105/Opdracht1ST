@@ -25,11 +25,9 @@ namespace Rogue
             this.writeStatus();
             if (this.inCombat()) {
                 this.doCombat();
-            } else {
-                if (this.checkNode()) {
-                    this.playerTurn();
-                    this.packTurn();    
-                }
+            } else if (this.checkNode()) {
+                this.playerTurn();
+                this.packTurn();    
             }
         }
 
@@ -246,6 +244,7 @@ namespace Rogue
         {
             Player player = this.getPlayer();
 
+            Console.WriteLine("You're in node: " + player.node.number);
             Console.Write("Your HP: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(player.hitPoints);
@@ -290,12 +289,15 @@ namespace Rogue
                     foreach (Pack pack in node.packs) {
                         List<Node> nodes = pack.node.neighbours;
                         if (nodes.Any()) {
-                            if (zone.Equals(player.node.zone)) {
-                                if (zone.isEndZone()) {
-                                    this.chasePlayer(zone, pack);
-                                } else {
-                                    this.movePack(pack);
+                            if (zone.isEndZone()) {
+                                if (player.node.zone.number >= zone.dungeon.zones.Count - 2) {
+                                    this.moveTowardsShortestPath(pack);
                                 }
+                                else {
+                                    this.chasePlayer(pack);
+                                }
+                            } else {
+                                this.movePack(pack);  
                             }
                         }
                     }
@@ -308,15 +310,16 @@ namespace Rogue
             return this.game.state.dungeon;
         }
 
-        public void chasePlayer(Zone zone, Pack pack)
+        public void chasePlayer(Pack pack)
         {
             List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.getPlayer().node);
-            if(nodesToPlayer.Count > 0 &&nodesToPlayer[1].zone == zone)
+            if(nodesToPlayer.Count > 0 && nodesToPlayer[1].zone == pack.node.zone)
                 pack.move(nodesToPlayer[1]);
         }
 
-        public void moveTowardsShortestPath(Zone zone, Pack pack)
+        public void moveTowardsShortestPath(Pack pack)
         {
+            Zone zone = pack.node.zone;
             List<Node> nodesInPath = this.getNodesWithShortestPath(zone.startNode, zone.endNode);
 
             if (!nodesInPath.Contains(pack.node))
