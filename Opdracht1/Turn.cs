@@ -10,10 +10,10 @@ namespace Rogue
     class Turn
     {
         private readonly Game game;
-        private readonly PlayerInputReader inputReader;
+        private readonly IInputReader inputReader;
         private readonly InputLogger inputLogger;
 
-        public Turn(Game game, PlayerInputReader inputReader, InputLogger inputLogger)
+        public Turn(Game game, IInputReader inputReader, InputLogger inputLogger)
         {
             this.inputReader = inputReader;
             this.inputLogger = inputLogger;
@@ -41,20 +41,23 @@ namespace Rogue
             Console.WriteLine("What action do you want to do?");
             string input = this.inputReader.readInput();
 
-            if (input == "record start") {
-                string fileName = this.inputLogger.startLogging();
-                this.game.save(fileName.Split('.')[0] + ".save");
-                Console.WriteLine("Started recording!");
-                this.playerTurn();
-                return;
-            }
+            if (this.inputLogger != null) {
+                if (input == "record start") {
+                    string fileName = this.inputLogger.startLogging();
+                    this.game.save(fileName.Split('.')[0] + ".save");
+                    Console.WriteLine("Started recording!");
+                    this.playerTurn();
+                    return;
+                }
 
-            if (input == "record stop") {
-                this.inputLogger.stopLogging();
-                Console.WriteLine("Stopped recording!");
-                this.playerTurn();
-                return;
+                if (input == "record stop") {
+                    this.inputLogger.stopLogging();
+                    Console.WriteLine("Stopped recording!");
+                    this.playerTurn();
+                    return;
+                }   
             }
+            
 
             this.inputLogger.log(input);
 
@@ -67,7 +70,7 @@ namespace Rogue
 
             string command = temp[0];
             string argument = temp[1];
-            
+
             Player player = this.getPlayer();
             int newNodeNumber;
             if (command == "move" && int.TryParse(argument, out newNodeNumber)) {
@@ -142,7 +145,7 @@ namespace Rogue
             return true;
         }
 
-        public void doCombat()
+        private void doCombat()
         {
             Player player = this.getPlayer();
             Node node = player.node;
@@ -170,13 +173,13 @@ namespace Rogue
             }
 
             if(node.stopCombat) {
-                node.retreatingToNeighbour(player);
+                this.retreatPlayer();
                 node.stopCombat = false;
                 player.timeCrystalActive = false;
             }
 
             if (node.packRetreated) {
-                node.retreatPackToNeighbour(pack);
+                this.retreatPack(pack);
                 node.packRetreated = false;
                 player.timeCrystalActive = false;
             }
@@ -210,6 +213,49 @@ namespace Rogue
             if (input == "timecrystal"){
                 this.useTimeCrystal(true);
             }
+        }
+
+         private void retreatPlayer()
+         {
+            Player player = this.getPlayer();
+            List<Node> neighbours = player.node.neighbours;
+            Console.Write("To which node playerTurn you want to go: ");
+            bool first = true;
+
+            foreach (Node neighbour in neighbours)
+            {
+                if (first)
+                    Console.Write(neighbour.number);
+                else
+                    Console.Write(", " + neighbour.number);
+                first = false;
+            }
+            Console.WriteLine("?");
+             
+            int output;
+            string[] temp = this.inputReader.readInput().Split();
+            while (temp.Length != 1 || (!int.TryParse(temp[0], out output)) || !neighbours.Exists(item => item.number == int.Parse(temp[0])))
+            {
+                Console.WriteLine("Action is not valid, try another command");
+                temp = this.inputReader.readInput().Split();
+            }
+            
+            Node node = neighbours.Find(item => item.number == int.Parse(temp[0]));
+            player.move(node);
+            
+        }
+
+        public void retreatPack(Pack pack)
+        {
+            List<Node> neighbours = pack.node.neighbours;
+            for(int i = 0; i < neighbours.Count();i++)
+            {
+                if (neighbours[i].zone != pack.node.zone)
+                    neighbours.Remove(neighbours[i]);
+            }
+            Random random = new Random(90);
+            int index = random.Next(0, neighbours.Count() - 1);
+            pack.move(neighbours[index]);
         }
 
         private void printCombatStatus(Player player, Pack pack)

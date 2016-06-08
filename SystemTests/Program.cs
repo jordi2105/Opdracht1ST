@@ -20,7 +20,7 @@ namespace SystemTests
 
             Random random = new Random(1211);
 
-            PlayerInputReader playerInputReader = new PlayerInputReader();
+            IInputReader playerInputReader = new PlayerInputReader();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
             ItemSpawner itemSpawner = new ItemSpawner(random);

@@ -9,7 +9,7 @@ namespace Rogue
 {
     public class Game
     {
-        private readonly PlayerInputReader playerInputReader;
+        private readonly IInputReader playerInputReader;
         private readonly GameSerializer gameSerializer;
         private readonly GameBuilder gameBuilder;
         private readonly Random random;
@@ -17,7 +17,7 @@ namespace Rogue
 
         public GameState state { get; private set; }
 
-        public Game(PlayerInputReader playerInputReader, GameSerializer gameSerializer, GameBuilder gameBuilder, Random random, InputLogger inputLogger)
+        public Game(IInputReader playerInputReader, GameSerializer gameSerializer, GameBuilder gameBuilder, Random random, InputLogger inputLogger)
         {
             this.playerInputReader = playerInputReader;
             this.gameSerializer = gameSerializer;

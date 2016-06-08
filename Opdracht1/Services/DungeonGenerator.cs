@@ -75,7 +75,7 @@ namespace Rogue.Services
 
         private Node createNodeTree(bool first)
         {
-            Node node = new Node(this.number, this.playerInputReader);
+            Node node = new Node(this.number);
 
             return this.createNodeTree(node, first);
         }
