@@ -9,7 +9,7 @@ namespace Rogue
     {
         static void Main(string[] args)
         {
-            Random random = new Random();
+            Random random = new Random(12111);
             IInputReader playerInputReader = new PlayerInputReader();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);

@@ -9,6 +9,7 @@ namespace Rogue.Services
         private readonly DungeonGenerator dungeonGenerator;
         private readonly MonsterSpawner monsterSpawner;
         private readonly ItemSpawner itemSpawner;
+        private Random random;
 
         public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner, IInputReader playerInputReader)
         {
@@ -20,8 +21,9 @@ namespace Rogue.Services
 
         public GameState buildNewGameState(Random random)
         {
-//            PlayerInputReader inputReader = this.playerInputReader;
-            Player player = new Player(random);
+            //            PlayerInputReader inputReader = this.playerInputReader;
+            this.random = random;
+            Player player = new Player(this.random);
             GameState gameState = new GameState(player);
             this.generateNewDungeon(gameState);
 

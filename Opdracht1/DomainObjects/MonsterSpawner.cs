@@ -82,8 +82,11 @@ namespace Rogue.DomainObjects
                 int counter = 0;
                 foreach(Node neighbour in neighbours)
                 {
-                    neighbour.packs.Add(new Pack(1, neighbour));
-                    counter++;
+                    if (neighbour.zone != null)
+                    {
+                        neighbour.packs.Add(new Pack(1, neighbour));
+                        counter++;
+                    }
                 }
                 this.spawnMonstersInZone(zone, dungeon, counter);
             }

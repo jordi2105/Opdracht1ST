@@ -18,7 +18,7 @@ namespace SystemTests
         public void run()
         {
 
-            Random random = new Random(1211);
+            Random random = new Random(121135371);
 
             IInputReader playerInputReader = new PlayerInputReader();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
