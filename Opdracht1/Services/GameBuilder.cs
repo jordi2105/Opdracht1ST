@@ -8,6 +8,7 @@ namespace Rogue.Services
         private readonly DungeonGenerator dungeonGenerator;
         private readonly MonsterSpawner monsterSpawner;
         private readonly ItemSpawner itemSpawner;
+        private Random random;
 
         public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner)
         {

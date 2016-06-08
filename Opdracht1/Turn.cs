@@ -408,7 +408,7 @@ namespace Rogue
                     " (end of dungeon with level: " + dungeon.level + ")");
                 this.game.nextDungeon();
                 dungeon = this.game.state.dungeon;
-                this.getPlayer().move(dungeon.zones[0].startNode);
+                //this.getPlayer().move(dungeon.zones[0].startNode);
 
                 return false;
             }

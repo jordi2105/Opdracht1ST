@@ -18,7 +18,7 @@ namespace SystemTests
         public void run()
         {
 
-            Random random = new Random(1211);
+            Random random = new Random(121135371);
 
             RecordingLoader recordingLoader = new RecordingLoader(Directory.GetCurrentDirectory() + "\\..\\..\\..\\replays");
             GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());

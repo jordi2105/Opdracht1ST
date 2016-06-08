@@ -39,7 +39,5 @@ namespace Opdracht1
         {
             return this.isEndNode() && this.zone.isEndZone();
         }
-
-        
     }
 }
