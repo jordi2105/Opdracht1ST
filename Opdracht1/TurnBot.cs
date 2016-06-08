@@ -16,30 +16,30 @@ namespace Opdracht1
 
         public TurnBot(Game game)
         {
-            this.player = game.gameState.player;
+            player = game.gameState.player;
             this.dungeon = game.gameState.dungeon;
             this.game = game;
         }
 
         public void doTurnPlayer(int counter)
         {
-            if(counter > 500 && this.player.currentNode.zone != null)
+            if(counter > 500 && player.currentNode.zone != null)
             {
                 List<Node> nodes;
-                if (this.player.currentNode == this.player.currentNode.zone.endNode)
+                if (player.currentNode == player.currentNode.zone.endNode)
                 {
                     nodes = this.getNodesWithShortestPath(
-                        this.player.currentNode, 
-                        this.game.gameState.dungeon.zones[this.player.currentNode.zone.number + 1].endNode);
+                        player.currentNode, 
+                        this.game.gameState.dungeon.zones[player.currentNode.zone.number + 1].endNode);
                 }
-                else nodes = this.getNodesWithShortestPath(this.player.currentNode, this.player.currentNode.zone.endNode);
-                this.player.getCommand("move" + " " + nodes[1].number.ToString());
-                Console.WriteLine("player teleported to end node: " + nodes[1].number.ToString());
+                else nodes = this.getNodesWithShortestPath(player.currentNode, player.currentNode.zone.endNode);
+                player.getCommand();
+                Console.WriteLine("playerTurn teleported to end node: " + nodes[1].number.ToString());
             }
             else
             {
-                List<Node> neighbours = this.player.currentNode.neighbours;
-                this.player.getCommand("move" + " " + this.randomNeighbourNumber(neighbours).ToString());
+                List<Node> neighbours = player.currentNode.neighbours;
+                player.getCommand();
             }
            
         }
@@ -49,7 +49,7 @@ namespace Opdracht1
             Node node = this.game.moveCreatureRandom(neighbours, this.player.currentNode.zone, null);
             while(node.neighbours.Count < 2 || (this.player.currentNode.zone != null && this.player.currentNode.zone.endNode == this.player.currentNode && (node.zone == this.player.currentNode.zone || node.zone == null)))
             {
-                node = this.game.moveCreatureRandom(neighbours, this.player.currentNode.zone, null);
+                node = this.game.moveCreatureRandom(neighbours, player.currentNode.zone, null);
             }
             return node.number;
         }
@@ -66,9 +66,9 @@ namespace Opdracht1
                         List<Node> nodes = pack.node.neighbours;
                         if (nodes.Count() == 0)
                             continue;
-                        else if (zone == this.dungeon.zones[this.dungeon.zones.Count - 1] && this.player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 2])
+                        else if (zone == this.dungeon.zones[this.dungeon.zones.Count - 1] && player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 2])
                         {
-                            if (zone == this.player.currentNode.zone)
+                            if (zone == player.currentNode.zone)
                             {
                                 this.chasePlayer(zone, pack);
                             }
@@ -77,7 +77,7 @@ namespace Opdracht1
                                 this.moveTowardsShortestPath(zone, pack);
                             }
                         }
-                        else if (zone == this.player.currentNode.zone)
+                        else if (zone == player.currentNode.zone)
                         {
                             this.moveMonster(zone, pack);
                         }
@@ -102,7 +102,7 @@ namespace Opdracht1
 
         public void chasePlayer(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, player.currentNode);
             if (nodesToPlayer[1].zone == zone)
                 pack.move(nodesToPlayer[1]);
         }
@@ -129,7 +129,7 @@ namespace Opdracht1
 
         public void moveMonster(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, player.currentNode);
             List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.node, zone.endNode);
             if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.player.currentNode && nodesToPlayer[1].zone == pack.node.zone)
             {
@@ -140,12 +140,12 @@ namespace Opdracht1
         }
         public void checkIfCombat()
         {
-            if (this.player.currentNode.packs.Count() > 0)
+            if (player.currentNode.packs.Count() > 0)
             {
                 //game.useTimeCrystalOrNot();
-                this.player.currentNode.doCombat(
-                    this.player.currentNode.packs[0], 
-                    this.player, 
+                player.currentNode.doCombat(
+                    player.currentNode.packs[0], 
+                    player, 
                     true
                 );
                 
@@ -154,12 +154,12 @@ namespace Opdracht1
 
         public bool checkNode()
         {
-            if (this.player.currentNode.zone != null && this.player.currentNode == this.player.currentNode.zone.endNode)
+            if (player.currentNode.zone != null && player.currentNode == player.currentNode.zone.endNode)
             {
-                if (this.player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 1])
+                if (player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 1])
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.WriteLine("This is the exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
+                    Console.WriteLine("This is the exit node of zone:" + player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
                     Console.ResetColor();
                     this.game.nextDungeon();
                     this.dungeon = this.game.gameState.dungeon;
@@ -172,8 +172,8 @@ namespace Opdracht1
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.WriteLine("This is the end node (bridge) of zone: " + this.player.currentNode.zone.number + " in dungeon with level: " + this.dungeon.level);
-                    //this.player.useTimeCrystal(true, null);
+                    Console.WriteLine("This is the end node (bridge) of zone: " + player.currentNode.zone.number + " in dungeon with level: " + this.dungeon.level);
+                    //playerTurn.useTimeCrystal(true, null);
                     Console.ResetColor();
 
                 }

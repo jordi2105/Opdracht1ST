@@ -9,18 +9,17 @@ namespace Rogue
     {
         static void Main(string[] args)
         {
-            Random random = new Random(401406456);
-
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            Random random = new Random();
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
             ItemSpawner itemSpawner = new ItemSpawner(random);
-            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
+            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner, playerInputReader);
 
             GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
 
-
-//            new Game(gameSerializer, gameBuilder,random).play();
-            Game game = new AutomaticGame(gameSerializer, gameBuilder, random);
+            Game game = new Game(playerInputReader, gameSerializer, gameBuilder, random);
+//            Game game = new AutomaticGame(gameSerializer, gameBuilder, random);
             game.initialize();
             game.play();
         }

@@ -1,5 +1,6 @@
 using System;
 using Rogue.DomainObjects;
+using Rogue.Services;
 
 namespace Rogue
 {
@@ -12,10 +13,10 @@ namespace Rogue
         public bool turnPlayer { get; set; }
         public int teller { get; set; }
 
-        public GameState(Random random)
+        public GameState(Player player)
         {
             this.teller = 0;
-            this.player = new Player(random);
+            this.player = player;
             this.isAlive = true;
             this.turnPlayer = true;
         }

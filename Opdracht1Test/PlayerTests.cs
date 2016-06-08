@@ -13,7 +13,7 @@ namespace Opdracht1Test
         [TestMethod]
         public void healing_potion_heals_player()
         {
-            Player player = new Player();
+            Player player = new Player(new PlayerInputReader());
             player.hitPoints = 10;
 //            player.getCommand("use-potion", null, new HealingPotion(45), false);
             Assert.AreEqual(55, player.hitPoints); 
@@ -22,7 +22,7 @@ namespace Opdracht1Test
         [TestMethod]
         public void healing_potion_does_make_player_hp_exceed_max()
         {
-            Player player = new Player();
+            Player player = new Player(new PlayerInputReader());
             player.hitPoints = 990;
 //            player.getCommand("use-potion", null, new HealingPotion(45), false);
             Assert.AreEqual(player.maxHp, player.hitPoints); 
@@ -32,9 +32,10 @@ namespace Opdracht1Test
         public void player_moves_to_right_node()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             Dungeon dungeon = dungeonGenerator.generate(3);
-            Player player = new Player();
+            Player player = new Player(playerInputReader);
             player.move(dungeon.zones[0].startNode);
             List<Node> allNeigbours = new List<Node>();
             foreach (Node neigbours in player.currentNode.neighbours)
@@ -49,9 +50,11 @@ namespace Opdracht1Test
         public void time_crystal_used_on_bridge()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             Dungeon dungeon = dungeonGenerator.generate(3);
-            Player player = new Player();
+            Player player = new Player(playerInputReader);
             player.dungeon = dungeon;
             Node node = dungeon.zones[0].endNode;
             player.currentNode = dungeon.zones[0].endNode;
@@ -62,9 +65,11 @@ namespace Opdracht1Test
         public void time_crystal_not_used_on_bridge()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             Dungeon dungeon = dungeonGenerator.generate(3);
-            Player player = new Player();
+            Player player = new Player(playerInputReader);
             player.dungeon = dungeon;
             TimeCrystal timecrystal = new TimeCrystal();
 //            player.getCommand("use-potion", null, timecrystal, false);
@@ -74,9 +79,11 @@ namespace Opdracht1Test
         public void attack_a_pack_player_wins()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             Dungeon dungeon = dungeonGenerator.generate(3);
-            Player player = new Player();
+            Player player = new Player(playerInputReader);
             player.hitPoints = player.maxHp;
             player.dungeon = dungeon;
             player.move(dungeon.zones[0].nodes[1]);
@@ -89,9 +96,10 @@ namespace Opdracht1Test
         {
 
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             Dungeon dungeon = dungeonGenerator.generate(3);
-            Player player = new Player();
+            Player player = new Player(playerInputReader);
             player.hitPoints = 1;
             player.dungeon = dungeon;
             player.currentNode = dungeon.zones[0].nodes[1];
@@ -105,9 +113,10 @@ namespace Opdracht1Test
         public void player_picks_up_item_if_there_is_one()
         {
             Random random = new Random();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             Dungeon dungeon = dungeonGenerator.generate(3);
-            Player player = new Player();
+            Player player = new Player(playerInputReader);
             List<Node> nodes = dungeon.zones[1].nodes;
             int index = random.Next(0, nodes.Count);
             Node node = nodes[index];

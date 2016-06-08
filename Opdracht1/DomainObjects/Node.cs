@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rogue.DomainObjects;
+using Rogue.Services;
 
 namespace Opdracht1
 {
     [Serializable]
     public class Node
     {
+        [NonSerialized] private readonly PlayerInputReader inputReader;
+
         public int number;
         public Zone zone;
         public List<Pack> packs;
@@ -15,17 +18,13 @@ namespace Opdracht1
         public List<Item> items;
         private bool stopCombat = false, packRetreated = false;
 
-        public Node(int number)
+        public Node(int number, PlayerInputReader inputReader)
         {
             this.number = number;
+            this.inputReader = inputReader;
             this.packs = new List<Pack>();
             this.items = new List<Item>();
             this.neighbours = new List<Node>();
-        }
-
-        public void use(Item item)
-        {
-            
         }
 
         public void doCombat(Pack pack, Player player, bool automatic)
@@ -35,7 +34,7 @@ namespace Opdracht1
             while(pack.monsters.Count() > 0 && player.hitPoints >= 0 && !stopCombat && !packRetreated)
                 doCombatRound(pack, player, automatic);
             
-            if(pack.monsters.Count() == 0)
+            if(!pack.monsters.Any())
             {
                 Console.WriteLine("Pack is dead");
                 this.packs.Remove(pack);
@@ -77,7 +76,7 @@ namespace Opdracht1
         public void retreatingToNeighbour(Player player)
         {
             List<Node> neighbours = player.currentNode.neighbours;
-            Console.Write("To which node do you want to go: ");
+            Console.Write("To which node playerTurn you want to go: ");
             bool first = true;
             foreach (Node neighbour in neighbours)
             {
@@ -90,11 +89,11 @@ namespace Opdracht1
             Console.WriteLine("?");
              
             int output;
-            string[] temp = Console.ReadLine().Split();
+            string[] temp = this.inputReader.readInput().Split();
             while (temp.Length != 1 || (!int.TryParse(temp[0], out output)) || !neighbours.Exists(item => item.number == int.Parse(temp[0])))
             {
                 Console.WriteLine("Action is not valid, try another command");
-                temp = Console.ReadLine().Split();
+                temp = this.inputReader.readInput().Split();
             }
             
             Node node = neighbours.Find(item => item.number == int.Parse(temp[0]));
@@ -130,23 +129,23 @@ namespace Opdracht1
                 {
                     Console.WriteLine("retreat or continue the combat?");
                 }
-                string input = Console.ReadLine();
+                string input = this.inputReader.readInput();
                 while (input != "continue" && input != "retreat" && input != "timecrystal" && input != "TimeCrystal")
                 {
                     Console.WriteLine("This is not an option!");
-                    input = Console.ReadLine();
+                    input = this.inputReader.readInput();
                 }
                 if (input == "continue")
                 {
                     player.attack(p.monsters[0]);
                     p.attack(player);
-                    //packAttack(p, player);
+                    //packAttack(p, playerTurn);
                 }
                 else if (input == "retreat")
                     stopCombat = true;
                 else if (input == "timecrystal" || input == "TimeCrystal")
                 {
-                    player.getCommand("use-potion timecrystal1");
+                    player.getCommand();
 
                 }
             }
@@ -156,9 +155,6 @@ namespace Opdracht1
                 p.attack(player);
                 //packAttack(p, player);
             }
-
-
-
         }
 
         void packAttack(Pack p, Player player)
@@ -168,7 +164,7 @@ namespace Opdracht1
             {
                 totalHealth += monster.hitPoints;
             }
-            if(totalHealth < player.hitPoints)
+            if(totalHealth < playerTurn.hitPoints)
             {
                 packRetreated = true;
                 Console.WriteLine("Pack retreated");

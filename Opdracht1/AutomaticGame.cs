@@ -9,8 +9,8 @@ namespace Rogue
     {
         private int counter;
         
-        public AutomaticGame(GameSerializer gameSerializer, GameBuilder gameBuilder,Random random) 
-            : base(gameSerializer,gameBuilder,random) { }
+        public AutomaticGame(PlayerInputReader playerInputReader, GameSerializer gameSerializer, GameBuilder gameBuilder, Random random) 
+            : base(playerInputReader, gameSerializer,gameBuilder,random) { }
 
         public override void turn()
         {
@@ -40,7 +40,7 @@ namespace Rogue
                     int timeCrystal = 1;//this.random.Next(0, 4);
                     if (timeCrystal == 1)
                     {
-                        //this.player.useTimeCrystal(false, (TimeCrystal)item);
+                        //playerTurn.useTimeCrystal(false, (TimeCrystal)item);
                         break;
                     }
 

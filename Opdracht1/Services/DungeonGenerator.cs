@@ -8,15 +8,16 @@ namespace Rogue.Services
 {
     public class DungeonGenerator
     {
+        private readonly PlayerInputReader playerInputReader;
         private readonly Random random;
         private List<Node> nodes;
         public int number;
         private int zoneCounter;
 
-        public DungeonGenerator(Random random)
+        public DungeonGenerator(Random random, PlayerInputReader playerInputReader)
         {
             this.random = random;
-            
+            this.playerInputReader = playerInputReader;
         }
 
         public Dungeon generate(int level)
@@ -76,7 +77,7 @@ namespace Rogue.Services
 
         private Node createNodeTree(bool first)
         {
-            Node node = new Node(this.number);
+            Node node = new Node(this.number, this.playerInputReader);
 
             return this.createNodeTree(node, first);
         }

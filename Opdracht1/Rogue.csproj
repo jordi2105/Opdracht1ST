@@ -61,6 +61,7 @@
     <Compile Include="Services\DungeonGenerator.cs" />
     <Compile Include="Services\GameBuilder.cs" />
     <Compile Include="Services\GameSerializer.cs" />
+    <Compile Include="Services\PlayerInputReader.cs" />
     <Compile Include="Turn.cs" />
     <Compile Include="TurnBot.cs" />
   </ItemGroup>

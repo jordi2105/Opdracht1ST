@@ -21,10 +21,12 @@ namespace SystemTests
 
             Random random = new Random(1211);
 
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            Random random = new Random(0);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
             ItemSpawner itemSpawner = new ItemSpawner(random);
-            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
+            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner, playerInputReader);
 
             List<ISpecification> specifications = new List<ISpecification>();
             MaxMonstersInNode spec = new MaxMonstersInNode();

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using Opdracht1;
+using Rogue.Services;
 
 namespace Rogue.DomainObjects
 {
     [Serializable]
     public class Player : Creature
     {
-        public int maxHp = 10000;
+        private readonly PlayerInputReader inputReader;
+
+        public int maxHp = 1000;
 
         public int killPoints;
         public bool timeCrystalActive;
@@ -16,7 +19,7 @@ namespace Rogue.DomainObjects
         public Node currentNode { get; set; }
         public Dungeon dungeon;
         private List<Node> visitedNodes;
-        private bool safe = false;
+        private bool safe;
         public bool isAlive = true;
 
         public Random random;
@@ -26,12 +29,18 @@ namespace Rogue.DomainObjects
 
         public Player(Random random)
         {
+            this.inputReader = inputReader;
             this.killPoints = 0;
             this.attackRating = 5;
             this.hitPoints = this.maxHp;
             this.bag = new List<Item>();
             this.timeCrystalActive = false;
             this.random = random;
+        }
+
+        public string getCommand()
+        {
+            return this.inputReader.readInput().Trim();
         }
 
         public void move(Node node)
@@ -72,54 +81,6 @@ namespace Rogue.DomainObjects
             
         }
 
-        public void getCommand(string command/*string command, Node node, Item item, bool usedOnBridge*/)
-        {
-            int output;
-            string[] temp = command.Split();
-            if(temp.Length != 2 || temp[1] == "" || (temp[0] == "move" && !int.TryParse(temp[1], out output)))
-            {
-                Console.WriteLine("Action is not valid, try another command");
-                this.getCommand(Console.ReadLine());
-            }
-            else
-            {
-                
-                switch (temp[0])
-                {
-                    case "move":
-                        this.tryMove(int.Parse(temp[1]));
-                        break;
-                    case "use-potion":
-                        if (temp[1] == "healingpotion" || temp[1] == "HealingPotion")
-                            this.useHealingPotion();
-                        else if (temp[1] == "timecrystal" || temp[1] == "TimeCrystal" || temp[1] == "timecrystal1")
-                        {
-                            if(temp[1] == "timecrystal1")
-                            {
-                                this.useTimeCrystal(true);
-                            }
-                            else
-                            {
-                                this.useTimeCrystal(false);
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("I can't drink a " + temp[1] + ", try again");
-                            this.getCommand(Console.ReadLine());
-                        }
-
-                        break;
-                    default:
-                        {
-                            Console.WriteLine("Action is not valid, try another command");
-                            this.getCommand(Console.ReadLine());
-                        }
-                        break;
-                }
-            }
-        }
-
         public void tryMove(int number)
         {
             int oldNumber = this.currentNode.number;
@@ -128,7 +89,7 @@ namespace Rogue.DomainObjects
                 if (!this.currentNode.neighbours.Exists(item => item.number == number) && number != this.currentNode.number)
                 {
                     Console.WriteLine("Node is not a neighbour, try again");
-                    this.getCommand(Console.ReadLine());
+                    this.getCommand();
                 }
                 else if (number != this.currentNode.number)
                 {
@@ -146,26 +107,26 @@ namespace Rogue.DomainObjects
 
        
 
-        void useHealingPotion()
+        public void useHealingPotion()
         {
             if (!this.bag.Exists(item => item.GetType() == typeof(HealingPotion)))
             {
                 Console.WriteLine("You have no healingpotions, try another command");
-                this.getCommand(Console.ReadLine());
+                this.getCommand();
             }
             else
             {
-                Console.WriteLine("Which healingpotion do you want?");
+                Console.WriteLine("Which healingpotion playerTurn you want?");
                 int i = 0;
                 foreach(HealingPotion hp in this.bag)
                 {
                     Console.WriteLine(i + ". " + "hp: " + hp.hitPoints);
                     i++;
                 }
-                int number = int.Parse(Console.ReadLine());
+                int number = int.Parse(this.inputReader.readInput());
                 while(number < 0 || number >= i)
                 {
-                    number = int.Parse(Console.ReadLine());
+                    number = int.Parse(this.inputReader.readInput());
                 }
 
                 int j = 0;
@@ -187,7 +148,7 @@ namespace Rogue.DomainObjects
             if(!this.bag.Exists(item => item.GetType() == typeof(TimeCrystal)))
             {
                 Console.WriteLine("You have no timecrystal, try another command");
-                this.getCommand(Console.ReadLine());
+                this.getCommand();
             }
 
             else if(this.currentNode.zone != null && this.currentNode == this.currentNode.zone.endNode)
@@ -195,11 +156,11 @@ namespace Rogue.DomainObjects
                 if(!inBattle)
                 {
                     Console.WriteLine("Do you want to use this timecrystal on this bridge? (yes/no)");
-                    string input = Console.ReadLine();
+                    string input = this.inputReader.readInput();
                     while (input != "yes" && input != "no")
                     {
                         Console.WriteLine("This is not an option, try again (yes/no)");
-                        input = Console.ReadLine();
+                        input = this.inputReader.readInput();
                     }
 
                     if (input == "yes")
@@ -229,7 +190,7 @@ namespace Rogue.DomainObjects
             }
         }
 
-        void teleportToSaveNeighbour()
+        public void teleportToSaveNeighbour()
         {
             //Random random = new Random(13423);
             List<Node> nodesList = new List<Node>();

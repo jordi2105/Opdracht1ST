@@ -3,50 +3,127 @@ using System.Collections.Generic;
 using System.Linq;
 using Opdracht1;
 using Rogue.DomainObjects;
+using Rogue.Services;
 
 namespace Rogue
 {
     class Turn
     {
-        private readonly Player player;
-        private Dungeon dungeon;
         private readonly Game game;
+        private readonly PlayerInputReader playerInputReader;
 
-        public Turn(Game game, bool automatic)
+        public Turn(Game game, PlayerInputReader playerInputReader)
         {
-            this.player = game.gameState.player;
-            this.dungeon = game.gameState.dungeon;
             this.game = game;
+            this.playerInputReader = playerInputReader;
+        }
+
+        public void exec()
+        {
+            this.writeStatus();
+            this.playerTurn();
+            this.checkIfCombat();
+            if (this.checkNode()) {
+                this.packsTurn();
+                this.checkIfCombat();
+            }
         }
 
         public void playerTurn()
         {
+            Console.WriteLine("What action do you want to do?");
+            Player player = this.getPlayer();
+            string command = player.getCommand();
+
+            if (command == "record start") {
+                string fileName = this.playerInputReader.startLogging();
+                this.game.save(fileName.Split('.')[0] + ".save");
+                Console.WriteLine("Started recording!");
+                this.playerTurn();
+                return;
+            } else if (command == "record stop") {
+                this.playerInputReader.stopLogging();
+                Console.WriteLine("Stopped recording!");
+            }
+
+            string[] temp = command.Split();
+
+            int output;
+            if(temp.Length < 2 || temp[1] == "" || (temp[0] == "move" && !int.TryParse(temp[1], out output)))
+            {
+                Console.WriteLine("Action is not valid, try another command");
+                player.getCommand();
+                return;
+            }
+           
+
+            switch (temp[0])
+            {
+                case "move":
+                    player.tryMove(int.Parse(temp[1]));
+                    break;
+                case "use-potion":
+                    if (temp[1] == "healingpotion" || temp[1] == "HealingPotion")
+                        player.useHealingPotion();
+                    else if (temp[1] == "timecrystal" || temp[1] == "TimeCrystal" || temp[1] == "timecrystal1")
+                    {
+                        if(temp[1] == "timecrystal1")
+                        {
+                            player.useTimeCrystal(true);
+                        }
+                        else
+                        {
+                            player.useTimeCrystal(false);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("I can't drink a " + temp[1] + ", try again");
+                        player.getCommand();
+                    }
+
+                    break;
+                default:
+                    {
+                        Console.WriteLine("Action is not valid, try another command");
+                        player.getCommand();
+                    }
+                    break;
+            }
+        }
+
+        private Player getPlayer()
+        {
+            return this.game.gameState.player;
+        }
+
+        private void writeStatus()
+        {
+            Player player = this.getPlayer();
+
             Console.Write("Your HP: ");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(this.player.hitPoints);
+            Console.Write(player.hitPoints);
             Console.ResetColor();
             Console.Write(" KP: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(this.player.killPoints);
+            Console.WriteLine(player.killPoints);
             Console.ResetColor();
             Console.Write("You've got in your bag: ");
             Console.ForegroundColor = ConsoleColor.Cyan;
-            if (this.player.bag.Count == 0)
+            if (player.bag.Count == 0)
                 Console.Write("empty");
-            foreach(Item item in this.player.bag)
-            {
+            foreach (Item item in player.bag) {
                 Console.Write(item.getItemType() + ", ");
-
             }
             Console.ResetColor();
             Console.WriteLine();
-            
-            List<Node> neighbours = this.player.currentNode.neighbours;
+
+            List<Node> neighbours = player.currentNode.neighbours;
             Console.Write("Your neighbours are: ");
             Console.ForegroundColor = ConsoleColor.DarkRed;
             bool first = true;
-            foreach(Node neighbour in neighbours)
-            {
+            foreach (Node neighbour in neighbours) {
                 if (first)
                     Console.Write(neighbour.number);
                 else
@@ -55,13 +132,15 @@ namespace Rogue
             }
             Console.ResetColor();
             Console.WriteLine();
-            Console.WriteLine("What action do you want to do?");
-            this.player.getCommand(Console.ReadLine());
+
         }
 
         public void packsTurn()
         {
-            foreach (Zone zone in this.dungeon.zones)
+            Dungeon dungeon = this.getDungeon();
+            Player player = this.getPlayer();
+
+            foreach (Zone zone in dungeon.zones)
             {
                 foreach (Node node in zone.nodes)
                 {
@@ -70,9 +149,9 @@ namespace Rogue
                         List<Node> nodes = pack.node.neighbours;
                         if (!nodes.Any())
                             continue;
-                        else if (zone == this.dungeon.zones[this.dungeon.zones.Count - 1] && this.player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 2])
+                        else if (zone == dungeon.zones[dungeon.zones.Count - 1] && player.currentNode.zone == dungeon.zones[dungeon.zones.Count - 2])
                         {
-                            if(zone == this.player.currentNode.zone)
+                            if(zone == player.currentNode.zone)
                             {
                                 this.chasePlayer(zone, pack);
                             }
@@ -81,7 +160,7 @@ namespace Rogue
                                 this.moveTowardsShortestPath(zone, pack);
                             }
                         }
-                        else if (zone == this.player.currentNode.zone)
+                        else if (zone == player.currentNode.zone)
                         {
                             this.moveMonster(zone, pack);
                         }
@@ -103,9 +182,14 @@ namespace Rogue
             }
         }
 
+        private Dungeon getDungeon()
+        {
+            return this.game.gameState.dungeon;
+        }
+
         public void chasePlayer(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.getPlayer().currentNode);
             if(nodesToPlayer[1].zone == zone)
                 pack.move(nodesToPlayer[1]);
         }
@@ -132,7 +216,8 @@ namespace Rogue
 
         public void moveMonster(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.player.currentNode);
+            Player player = this.getPlayer();
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, player.currentNode);
             List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.node, zone.endNode);
             if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.player.currentNode && nodesToPlayer[1].zone == pack.node.zone)
             {
@@ -144,11 +229,11 @@ namespace Rogue
 
         public void checkIfCombat()
         {
-            if (this.player.currentNode.packs.Count() > 0)
+            Player player = this.getPlayer();
+            if (player.currentNode.packs.Any())
             {
-                //game.useTimeCrystalOrNot();
-                this.player.currentNode.doCombat(this.player.currentNode.packs[0], this.player, false);
-                if (this.player.hitPoints < 0)
+                player.currentNode.doCombat(player.currentNode.packs[0], player, false);
+                if (player.hitPoints < 0)
                 {
                     this.game.endOfGame();
                 }
@@ -157,28 +242,26 @@ namespace Rogue
 
         public bool checkNode()
         {
-            if (this.player.currentNode == this.player.currentNode.zone.endNode)
+            Player player = this.getPlayer();
+            Dungeon dungeon = this.getDungeon();
+            if (player.currentNode == player.currentNode.zone.endNode)
             {
-                if (this.player.currentNode.zone == this.dungeon.zones[this.dungeon.zones.Count - 1])
+                if (player.currentNode.zone == dungeon.zones[dungeon.zones.Count - 1])
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.WriteLine("This is the exit node of zone:" + this.player.currentNode.zone.number + " (end of dungeon with level: " + this.dungeon.level + ")");
+                    Console.WriteLine("This is the exit node of zone:" + player.currentNode.zone.number + " (end of dungeon with level: " + dungeon.level + ")");
                     Console.ResetColor();
                     this.game.nextDungeon();
-                    this.dungeon = this.game.gameState.dungeon;
-                    this.player.move(this.dungeon.zones[0].startNode);
+                    dungeon = this.game.gameState.dungeon;
+                    player.move(dungeon.zones[0].startNode);
                     return false;
 
                 }
 
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.WriteLine("This is the end node (bridge) of zone: " + this.player.currentNode.zone.number + " in dungeon with level: " + this.dungeon.level);
-                    //this.player.useTimeCrystal(true, null);
-                    Console.ResetColor();
-
-                }
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine("This is the end node (bridge) of zone: " + player.currentNode.zone.number + " in dungeon with level: " + dungeon.level);
+                //player.useTimeCrystal(true, null);
+                Console.ResetColor();
             }
             return true;
         }

@@ -80,16 +80,16 @@ namespace Opdracht1Test
         private AutomaticGame createGame()
         {
             Random random = new Random();
-
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random);
+            PlayerInputReader playerInputReader = new PlayerInputReader();
+            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
             ItemSpawner itemSpawner = new ItemSpawner(random);
-            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
+            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner, playerInputReader);
 
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             GameSerializer gameSerializer = new GameSerializer(binaryFormatter);
 
-            return new AutomaticGame(gameSerializer,gameBuilder,random);
+            return new AutomaticGame(playerInputReader, gameSerializer,gameBuilder,random);
         }
     }
 }

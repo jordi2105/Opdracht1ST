@@ -9,14 +9,17 @@ namespace Rogue
 {
     public class Game
     {
+//        private readonly  L
+        private readonly PlayerInputReader playerInputReader;
         private readonly GameSerializer gameSerializer;
         private readonly GameBuilder gameBuilder;
         private readonly Random random;
 
         public GameState gameState { get; private set; }
 
-        public Game(GameSerializer gameSerializer, GameBuilder gameBuilder, Random random)
+        public Game(PlayerInputReader playerInputReader, GameSerializer gameSerializer, GameBuilder gameBuilder, Random random)
         {
+            this.playerInputReader = playerInputReader;
             this.gameSerializer = gameSerializer;
             this.gameBuilder = gameBuilder;
             this.random = random;
@@ -38,15 +41,7 @@ namespace Rogue
 
         public virtual void turn()
         {
-            Turn turn = new Turn(this, false);
-            turn.playerTurn();
-            turn.checkIfCombat();
-
-            if (turn.checkNode()) {
-                turn = new Turn(this, false);
-                turn.packsTurn();
-                turn.checkIfCombat();
-            }
+            new Turn(this, this.playerInputReader).exec();
         }
 
         public void endOfGame()
