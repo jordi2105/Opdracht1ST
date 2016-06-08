@@ -8,13 +8,13 @@ namespace Rogue.Services
 {
     public class DungeonGenerator
     {
-        private readonly PlayerInputReader playerInputReader;
+        private readonly IInputReader playerInputReader;
         private readonly Random random;
         private List<Node> nodes;
         public int number;
         private int zoneCounter;
 
-        public DungeonGenerator(Random random, PlayerInputReader playerInputReader)
+        public DungeonGenerator(Random random, IInputReader playerInputReader)
         {
             this.random = random;
             this.playerInputReader = playerInputReader;
@@ -27,19 +27,17 @@ namespace Rogue.Services
             Dungeon dungeon = new Dungeon(level);
 
             int numZones = level + 1;
-            Zone[] zones = new Zone[numZones];
             Zone zone = null;
-            for (int i = 0; i < numZones; i++)
-            {
-                zone = this.createNewZone(zone);
-                this.removeDoubles(dungeon, zone);
+            for (int i = 0; i < numZones; i++) {
+                zone = this.createNewZone(dungeon, zone);
+                this.removeDoubles(zone);
                 dungeon.zones.Add(zone);
             }
 
             return dungeon;
         }
 
-        private void removeDoubles(Dungeon dungeon, Zone zone)
+        private void removeDoubles(Zone zone)
         {
             foreach (Node node in zone.nodes) {
                 List<Node> newNeighbours = node.neighbours.Distinct().ToList();
@@ -57,14 +55,14 @@ namespace Rogue.Services
             }
         }
 
-        private Zone createNewZone(Zone previousZone)
+        private Zone createNewZone(Dungeon dungeon, Zone previousZone)
         {
             this.nodes = new List<Node>();
 
             Node startNode = this.getStartingNode(previousZone, true);
             Node endNode = this.chooseEndNode(startNode);
             this.zoneCounter++;
-            return new Zone(this.nodes, startNode, endNode, this.zoneCounter);
+            return new Zone(dungeon, this.nodes, startNode, endNode, this.zoneCounter);
         }
 
         private Node getStartingNode(Zone previousZone, bool first)

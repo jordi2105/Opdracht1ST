@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using SystemTests.Specifications;
-using Rogue;
 using Rogue.DomainObjects;
 using Rogue.Services;
 
@@ -21,7 +20,6 @@ namespace SystemTests
 
             Random random = new Random(1211);
 
-            Random random = new Random(0);
             PlayerInputReader playerInputReader = new PlayerInputReader();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
@@ -39,7 +37,8 @@ namespace SystemTests
             specifications.Add(spec4);
             GuaranteedNumberOfCombats spec5 = new GuaranteedNumberOfCombats();
             specifications.Add(spec5);
-            TestGame testGame = new TestGame(new GameSerializer(new BinaryFormatter()), gameBuilder, random, specifications);
+            GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
+            TestGame testGame = new TestGame(playerInputReader, gameSerializer, gameBuilder, random, specifications);
             testGame.initialize();
             testGame.play();
 

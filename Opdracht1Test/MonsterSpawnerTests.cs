@@ -60,7 +60,7 @@ namespace Opdracht1Test
         private Dungeon createNewDungeon()
         {
             Random random = new Random();
-            PlayerInputReader playerInputReader = new PlayerInputReader();
+            IInputReader playerInputReader = new PlayerInputReader();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
 

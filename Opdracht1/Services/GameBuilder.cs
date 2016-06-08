@@ -5,12 +5,12 @@ namespace Rogue.Services
 {
     public class GameBuilder
     {
-        private readonly PlayerInputReader playerInputReader;
+        private readonly IInputReader playerInputReader;
         private readonly DungeonGenerator dungeonGenerator;
         private readonly MonsterSpawner monsterSpawner;
         private readonly ItemSpawner itemSpawner;
 
-        public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner, PlayerInputReader playerInputReader)
+        public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner, IInputReader playerInputReader)
         {
             this.dungeonGenerator = dungeonGenerator;
             this.monsterSpawner = monsterSpawner;
@@ -20,8 +20,8 @@ namespace Rogue.Services
 
         public GameState buildNewGameState(Random random)
         {
-            PlayerInputReader inputReader = this.playerInputReader;
-            Player player = new Player(inputReader);
+//            PlayerInputReader inputReader = this.playerInputReader;
+            Player player = new Player(random);
             GameState gameState = new GameState(player);
             this.generateNewDungeon(gameState);
 

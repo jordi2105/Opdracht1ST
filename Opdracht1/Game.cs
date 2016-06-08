@@ -9,25 +9,40 @@ namespace Rogue
 {
     public class Game
     {
-//        private readonly  L
         private readonly PlayerInputReader playerInputReader;
         private readonly GameSerializer gameSerializer;
         private readonly GameBuilder gameBuilder;
         private readonly Random random;
+        private readonly InputLogger inputLogger;
 
-        public GameState gameState { get; private set; }
+        public GameState state { get; private set; }
 
-        public Game(PlayerInputReader playerInputReader, GameSerializer gameSerializer, GameBuilder gameBuilder, Random random)
+        public Game(PlayerInputReader playerInputReader, GameSerializer gameSerializer, GameBuilder gameBuilder, Random random, InputLogger inputLogger)
         {
             this.playerInputReader = playerInputReader;
             this.gameSerializer = gameSerializer;
             this.gameBuilder = gameBuilder;
             this.random = random;
+            this.inputLogger = inputLogger;
         }
 
         public void play()
         {
-            while (this.gameState.player.hitPoints > 0){
+            
+
+            while (this.state.player.hitPoints > 0) {
+                foreach (Zone zone in this.state.dungeon.zones) {
+                    foreach (Node node in zone.nodes) {
+                        int numMonsters = 0;
+                        foreach (Pack pack in node.packs) {
+                            numMonsters += pack.monsters.Count;
+                        }
+                        Console.WriteLine(node.number + ": " + numMonsters);
+                    }
+                }
+
+                Console.WriteLine();
+
                 this.turn();
             }
 
@@ -41,12 +56,12 @@ namespace Rogue
 
         public virtual void turn()
         {
-            new Turn(this, this.playerInputReader).exec();
+            new Turn(this, this.playerInputReader, this.inputLogger).exec();
         }
 
         public void endOfGame()
         {
-            this.gameState.isAlive = false;
+            this.state.isAlive = false;
             Console.WriteLine("Player died");
             Console.ReadLine();
         }
@@ -58,7 +73,7 @@ namespace Rogue
 
         public void save(string fileName)
         {
-            this.gameSerializer.save(this.gameState, fileName);
+            this.gameSerializer.save(this.state, fileName);
         }
 
         public bool load(string fileName)
@@ -69,18 +84,18 @@ namespace Rogue
                 return false;
             }
 
-            this.gameState = state;
+            this.state = state;
 
             return true;
         }
 
         public void nextDungeon()
         {
-            if (this.gameState == null) {
-                this.gameState = this.gameBuilder.buildNewGameState(random);
+            if (this.state == null) {
+                this.state = this.gameBuilder.buildNewGameState(this.random);
             }
             else
-                this.gameBuilder.generateNewDungeon(this.gameState);
+                this.gameBuilder.generateNewDungeon(this.state);
         }
      
     }

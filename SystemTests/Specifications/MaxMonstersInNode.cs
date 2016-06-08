@@ -9,13 +9,13 @@ namespace SystemTests.Specifications
     {
         public bool validate(Game game)
         {
-            foreach (Zone zone in game.gameState.dungeon.zones) {
+            foreach (Zone zone in game.state.dungeon.zones) {
                 foreach (Node node in zone.nodes) {
                     int monsterCount = 0;
                     foreach (Pack pack in node.packs) {
                         monsterCount += pack.monsters.Count;
                     }
-                    if (this.tooManyMonsters(game.gameState.dungeon.level, monsterCount)) {
+                    if (this.tooManyMonsters(game.state.dungeon.level, monsterCount)) {
                         return false;
                     }
                 }

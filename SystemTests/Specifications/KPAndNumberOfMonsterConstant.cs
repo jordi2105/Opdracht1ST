@@ -13,10 +13,10 @@ namespace SystemTests.Specifications
         public bool validate(Game game)
         {
             this.game = game;
-            if (value == 0 || this.dungeonLevel != game.gameState.dungeon.level)
+            if (value == 0 || this.dungeonLevel != game.state.dungeon.level)
             {
                 value = calculateValue();
-                this.dungeonLevel = game.gameState.dungeon.level;
+                this.dungeonLevel = game.state.dungeon.level;
             }
             else if (value != calculateValue())
                 return false;
@@ -25,9 +25,9 @@ namespace SystemTests.Specifications
 
         int calculateValue()
         {
-            int count = game.gameState.player.killPoints;
+            int count = game.state.player.killPoints;
             int temp = 0;
-            foreach (Zone zone in game.gameState.dungeon.zones)
+            foreach (Zone zone in game.state.dungeon.zones)
             {
                 foreach (Node node in zone.nodes)
                 {

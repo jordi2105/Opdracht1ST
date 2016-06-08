@@ -85,7 +85,7 @@ namespace Rogue.DomainObjects
                     neighbour.packs.Add(new Pack(1, neighbour));
                     counter++;
                 }
-                spawnMonstersInZone(zone, dungeon, counter);
+                this.spawnMonstersInZone(zone, dungeon, counter);
             }
             
         }

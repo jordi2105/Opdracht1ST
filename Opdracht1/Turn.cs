@@ -10,91 +10,236 @@ namespace Rogue
     class Turn
     {
         private readonly Game game;
-        private readonly PlayerInputReader playerInputReader;
+        private readonly PlayerInputReader inputReader;
+        private readonly InputLogger inputLogger;
 
-        public Turn(Game game, PlayerInputReader playerInputReader)
+        public Turn(Game game, PlayerInputReader inputReader, InputLogger inputLogger)
         {
+            this.inputReader = inputReader;
+            this.inputLogger = inputLogger;
             this.game = game;
-            this.playerInputReader = playerInputReader;
         }
 
         public void exec()
         {
             this.writeStatus();
-            this.playerTurn();
-            this.checkIfCombat();
-            if (this.checkNode()) {
-                this.packsTurn();
-                this.checkIfCombat();
+            if (this.inCombat()) {
+                this.doCombat();
+            } else {
+                if (this.checkNode()) {
+                    this.playerTurn();
+                    this.packTurn();    
+                }
             }
+        }
+
+        private bool inCombat()
+        {
+            return this.getPlayer().node.doCombat(this.getPlayer());
         }
 
         public void playerTurn()
         {
             Console.WriteLine("What action do you want to do?");
-            Player player = this.getPlayer();
-            string command = player.getCommand();
+            string input = this.inputReader.readInput();
 
-            if (command == "record start") {
-                string fileName = this.playerInputReader.startLogging();
+            if (input == "record start") {
+                string fileName = this.inputLogger.startLogging();
                 this.game.save(fileName.Split('.')[0] + ".save");
                 Console.WriteLine("Started recording!");
                 this.playerTurn();
                 return;
-            } else if (command == "record stop") {
-                this.playerInputReader.stopLogging();
-                Console.WriteLine("Stopped recording!");
             }
 
-            string[] temp = command.Split();
-
-            int output;
-            if(temp.Length < 2 || temp[1] == "" || (temp[0] == "move" && !int.TryParse(temp[1], out output)))
-            {
-                Console.WriteLine("Action is not valid, try another command");
-                player.getCommand();
+            if (input == "record stop") {
+                this.inputLogger.stopLogging();
+                Console.WriteLine("Stopped recording!");
+                this.playerTurn();
                 return;
             }
-           
 
-            switch (temp[0])
-            {
-                case "move":
-                    player.tryMove(int.Parse(temp[1]));
-                    break;
-                case "use-potion":
-                    if (temp[1] == "healingpotion" || temp[1] == "HealingPotion")
-                        player.useHealingPotion();
-                    else if (temp[1] == "timecrystal" || temp[1] == "TimeCrystal" || temp[1] == "timecrystal1")
-                    {
-                        if(temp[1] == "timecrystal1")
-                        {
-                            player.useTimeCrystal(true);
-                        }
-                        else
-                        {
-                            player.useTimeCrystal(false);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("I can't drink a " + temp[1] + ", try again");
-                        player.getCommand();
-                    }
+            this.inputLogger.log(input);
 
-                    break;
-                default:
-                    {
-                        Console.WriteLine("Action is not valid, try another command");
-                        player.getCommand();
-                    }
-                    break;
+            string[] temp = input.ToLower().Split();
+            if (temp.Length < 2) {
+                Console.WriteLine("Action is not valid, try another command");
+                this.playerTurn();
+                return;
             }
+
+            string command = temp[0];
+            string argument = temp[1];
+            
+            Player player = this.getPlayer();
+            int newNodeNumber;
+            if (command == "move" && int.TryParse(argument, out newNodeNumber)) {
+                if (player.tryMove(newNodeNumber)) return;
+                this.playerTurn();
+                return;
+            }
+
+            if (command == "use-potion") {
+                if (argument == "healingpotion" && this.useHealingPotion()) {
+                    return;
+                }
+                if (argument == "timecrystal" && this.useTimeCrystal(false)) {
+                    return;
+                }
+
+                Console.WriteLine("I can't drink a " + argument + ", try again");
+                this.playerTurn();
+                return;
+            }
+
+            Console.WriteLine("Action is not valid, try another command");
+            this.playerTurn();
+        }
+
+        private bool useTimeCrystal(bool inBattle)
+        {
+            Player player = this.getPlayer();
+            Node node = player.node;
+            TimeCrystal timeCrystal = player.getTimeCrystal();
+
+            if (timeCrystal == null) {
+                Console.WriteLine("You have no timecrystal, try another command");
+                return false;
+            }
+
+            if (inBattle) {
+                player.useTimeCrystal(timeCrystal, true);
+                return true;
+            }
+
+            if (node.zone != null && node.isEndNode()) {
+                player.useTimeCrystal(timeCrystal, false);
+                return true;
+            }
+
+            Console.WriteLine("You're neither in combat nor on a bridge, try doing something else!");
+            return false;
+        }
+
+        private bool useHealingPotion()
+        {
+            Player player = this.getPlayer();
+            List<HealingPotion> healingPotions = player.getHealingPotions();
+            if (!healingPotions.Any()) {
+                Console.WriteLine("You have no healingpotions, try another command");
+                return false;
+            }
+
+            Console.WriteLine("Which healingpotion do you want to use?");
+            for (int i = 0; i < healingPotions.Count; i++) {
+                Console.WriteLine(i + ". " + "hp: " + healingPotions[i].hitPoints);
+            }
+
+            int number = int.Parse(this.inputReader.readInput());
+            while (0 <= number || number < healingPotions.Count) {
+                number = int.Parse(this.inputReader.readInput());
+            }
+
+            player.useHealingPotion(healingPotions[number]);
+
+            return true;
+        }
+
+        public void doCombat()
+        {
+            Player player = this.getPlayer();
+            Node node = player.node;
+            Pack pack = node.packs.First();
+
+            Console.WriteLine("Combat has begon");
+            player.numberOfCombatsOfDungeon++;
+            while (
+                pack.monsters.Any() && 
+                player.hitPoints >= 0 && 
+                !node.stopCombat && 
+                !node.packRetreated
+            ){
+                this.doCombatRound(player, pack);
+            }
+            
+            if(!pack.monsters.Any()) {
+                Console.WriteLine("Pack is dead");
+                node.packs.Remove(pack);
+            }
+
+            if(player.hitPoints <= 0) {
+                player.isAlive = false;
+                this.game.endOfGame();
+            }
+
+            if(node.stopCombat) {
+                node.retreatingToNeighbour(player);
+                node.stopCombat = false;
+                player.timeCrystalActive = false;
+            }
+
+            if (node.packRetreated) {
+                node.retreatPackToNeighbour(pack);
+                node.packRetreated = false;
+                player.timeCrystalActive = false;
+            }
+        }
+
+        private void doCombatRound(Player player, Pack pack)
+        {
+            this.printCombatStatus(player, pack);
+
+            string input = this.inputReader.readInput();
+            while (
+                input != "continue" && 
+                input != "retreat" && 
+                input != "timecrystal"
+            ){
+                Console.WriteLine("This is not an option!");
+                input = this.inputReader.readInput();
+            }
+
+            if (input == "continue"){
+                player.attack(pack.monsters[0]);
+                pack.attack(player);
+                return;
+            }
+
+            if (input == "retreat") {
+                player.node.stopCombat = true;
+                return;
+            }
+
+            if (input == "timecrystal"){
+                this.useTimeCrystal(true);
+            }
+        }
+
+        private void printCombatStatus(Player player, Pack pack)
+        {
+            Console.Write("Your health is: ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(player.hitPoints);
+            Console.ResetColor();
+            int totalHealth = 0;
+            foreach (Monster monster in pack.monsters)
+                totalHealth += monster.hitPoints;
+            Console.Write("Enemy has ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(pack.monsters.Count);
+            Console.ResetColor();
+            Console.Write(" monsters left with a total health of: ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(totalHealth);
+            Console.ResetColor();
+
+            Console.WriteLine(player.bag.Exists(item => item.GetType() == typeof(TimeCrystal))
+                ? "retreat or continue the combat? Or use a TimeCrystal?"
+                : "retreat or continue the combat?");
         }
 
         private Player getPlayer()
         {
-            return this.game.gameState.player;
+            return this.game.state.player;
         }
 
         private void writeStatus()
@@ -119,7 +264,7 @@ namespace Rogue
             Console.ResetColor();
             Console.WriteLine();
 
-            List<Node> neighbours = player.currentNode.neighbours;
+            List<Node> neighbours = player.node.neighbours;
             Console.Write("Your neighbours are: ");
             Console.ForegroundColor = ConsoleColor.DarkRed;
             bool first = true;
@@ -135,47 +280,23 @@ namespace Rogue
 
         }
 
-        public void packsTurn()
+        public void packTurn()
         {
             Dungeon dungeon = this.getDungeon();
             Player player = this.getPlayer();
 
-            foreach (Zone zone in dungeon.zones)
-            {
-                foreach (Node node in zone.nodes)
-                {
-                    foreach (Pack pack in node.packs)
-                    {
+            foreach (Zone zone in dungeon.zones) {
+                foreach (Node node in zone.nodes) {
+                    foreach (Pack pack in node.packs) {
                         List<Node> nodes = pack.node.neighbours;
-                        if (!nodes.Any())
-                            continue;
-                        else if (zone == dungeon.zones[dungeon.zones.Count - 1] && player.currentNode.zone == dungeon.zones[dungeon.zones.Count - 2])
-                        {
-                            if(zone == player.currentNode.zone)
-                            {
-                                this.chasePlayer(zone, pack);
+                        if (nodes.Any()) {
+                            if (zone.Equals(player.node.zone)) {
+                                if (zone.isEndZone()) {
+                                    this.chasePlayer(zone, pack);
+                                } else {
+                                    this.movePack(pack);
+                                }
                             }
-                            else
-                            {
-                                this.moveTowardsShortestPath(zone, pack);
-                            }
-                        }
-                        else if (zone == player.currentNode.zone)
-                        {
-                            this.moveMonster(zone, pack);
-                        }
-                        else
-                        {
-                            /*
-                            Node neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
-                            int times = 0;
-                            while(neighbour.zone != zone && times < 10)
-                            {
-                                neighbour = this.game.moveCreatureRandom(nodes, zone, pack);
-                                times++;
-                            }
-                            if(neighbour.zone == zone)
-                                pack.move(neighbour);*/
                         }
                     }
                 }
@@ -184,13 +305,13 @@ namespace Rogue
 
         private Dungeon getDungeon()
         {
-            return this.game.gameState.dungeon;
+            return this.game.state.dungeon;
         }
 
         public void chasePlayer(Zone zone, Pack pack)
         {
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.getPlayer().currentNode);
-            if(nodesToPlayer[1].zone == zone)
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.getPlayer().node);
+            if(nodesToPlayer.Count > 0 &&nodesToPlayer[1].zone == zone)
                 pack.move(nodesToPlayer[1]);
         }
 
@@ -214,55 +335,44 @@ namespace Rogue
             }
         }
 
-        public void moveMonster(Zone zone, Pack pack)
+        public void movePack(Pack pack)
         {
             Player player = this.getPlayer();
-            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, player.currentNode);
+            Zone zone = pack.node.zone;
+
+            List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, player.node);
             List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.node, zone.endNode);
-            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.player.currentNode && nodesToPlayer[1].zone == pack.node.zone)
+            if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.game.state.player.node && nodesToPlayer[1].zone == zone)
             {
                 pack.move(nodesToPlayer[1]);
             }
-            else if (pack.node != zone.endNode && nodesToEndNode[1].zone == pack.node.zone)
+            else if (pack.node != zone.endNode && nodesToEndNode[1].zone == zone)
                 pack.move(nodesToEndNode[1]);
         }
 
-        public void checkIfCombat()
-        {
-            Player player = this.getPlayer();
-            if (player.currentNode.packs.Any())
-            {
-                player.currentNode.doCombat(player.currentNode.packs[0], player, false);
-                if (player.hitPoints < 0)
-                {
-                    this.game.endOfGame();
-                }
-            }
-        }
+   
 
         public bool checkNode()
         {
-            Player player = this.getPlayer();
             Dungeon dungeon = this.getDungeon();
-            if (player.currentNode == player.currentNode.zone.endNode)
-            {
-                if (player.currentNode.zone == dungeon.zones[dungeon.zones.Count - 1])
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.WriteLine("This is the exit node of zone:" + player.currentNode.zone.number + " (end of dungeon with level: " + dungeon.level + ")");
-                    Console.ResetColor();
-                    this.game.nextDungeon();
-                    dungeon = this.game.gameState.dungeon;
-                    player.move(dungeon.zones[0].startNode);
-                    return false;
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            if (this.game.state.player.node.isExitNode()) {
+                Console.WriteLine(
+                    "This is the exit node of zone:" + 
+                    this.getPlayer().node.zone.number +
+                    " (end of dungeon with level: " + dungeon.level + ")");
+                this.game.nextDungeon();
+                dungeon = this.game.state.dungeon;
+                this.getPlayer().move(dungeon.zones[0].startNode);
 
-                }
-
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine("This is the end node (bridge) of zone: " + player.currentNode.zone.number + " in dungeon with level: " + dungeon.level);
-                //player.useTimeCrystal(true, null);
-                Console.ResetColor();
+                return false;
             }
+
+            if (this.game.state.player.node.isEndNode()) {
+                Console.WriteLine("This is the end node (bridge) of zone: " + this.getPlayer().node.zone.number + " in dungeon with level: " + dungeon.level);
+            }
+            Console.ResetColor();
+
             return true;
         }
 

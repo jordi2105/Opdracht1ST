@@ -37,18 +37,18 @@ namespace Opdracht1Test
             string fileName = Directory.GetCurrentDirectory() + "/testsave.save";
             game.save(fileName);
 
-            bool isAlive = game.gameState.isAlive;
-            bool turnPlayer = game.gameState.turnPlayer;
-            int teller = game.gameState.teller;
+            bool isAlive = game.state.isAlive;
+            bool turnPlayer = game.state.turnPlayer;
+            int teller = game.state.teller;
 
             FileInfo fileInfo = new FileInfo(fileName);
             if (fileInfo.Exists) {
                 game.load(fileName);
-                Assert.IsNotNull(game.gameState.player);
-                Assert.IsNotNull(game.gameState.dungeon);
-                Assert.AreEqual(isAlive, game.gameState.isAlive);
-                Assert.AreEqual(turnPlayer, game.gameState.turnPlayer);
-                Assert.AreEqual(teller, game.gameState.teller);
+                Assert.IsNotNull(game.state.player);
+                Assert.IsNotNull(game.state.dungeon);
+                Assert.AreEqual(isAlive, game.state.isAlive);
+                Assert.AreEqual(turnPlayer, game.state.turnPlayer);
+                Assert.AreEqual(teller, game.state.teller);
                 fileInfo.Delete();
             }
         }
@@ -73,7 +73,8 @@ namespace Opdracht1Test
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             GameSerializer gameSerializer = new GameSerializer(binaryFormatter);
 
-            return new Game(playerInputReader, gameSerializer,gameBuilder,random);
+            InputLogger inputLogger = new InputLogger();
+            return new Game(playerInputReader, gameSerializer,gameBuilder,random, inputLogger);
         }
     }
 }

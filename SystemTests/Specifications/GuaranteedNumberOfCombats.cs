@@ -14,15 +14,15 @@ namespace SystemTests.Specifications
         {
             this.game = game;
             
-            if (this.dungeonLevel != game.gameState.dungeon.level)
+            if (this.dungeonLevel != game.state.dungeon.level)
             {
                 if(dungeonLevel > 0 && numberOfCombatsTemp < dungeonLevel + 1)
                 {
                     return false;
                 }
-                this.dungeonLevel = game.gameState.dungeon.level;
+                this.dungeonLevel = game.state.dungeon.level;
             }
-            numberOfCombatsTemp = game.gameState.player.numberOfCombatsOfDungeon;
+            numberOfCombatsTemp = game.state.player.numberOfCombatsOfDungeon;
             return true;
         }
     }

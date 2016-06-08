@@ -25,24 +25,24 @@ namespace SystemTests.Specifications
             this.game = game;
             if (currentZone == null)
             {
-                this.currentZone = game.gameState.dungeon.zones[0];
+                this.currentZone = game.state.dungeon.zones[0];
                 this.initialize(currentZone);
 
             }
-            else if(currentZone != game.gameState.player.currentNode.zone)
+            else if(currentZone != game.state.player.node.zone)
             {
-                if(game.gameState.player.currentNode.zone == null)
+                if(game.state.player.node.zone == null)
                 {
-                    this.currentZone = game.gameState.dungeon.zones[0];
+                    this.currentZone = game.state.dungeon.zones[0];
                 }
-                else currentZone = game.gameState.player.currentNode.zone;
+                else currentZone = game.state.player.node.zone;
                 this.initialize(this.currentZone);
                 
             }
 
             bool bla = true;
             foreach (KeyValuePair<Pack, int[]> pair in this.packsDictionary) {
-                List<Node> nodesToPlayer = shortestPath(pair.Key.node, game.gameState.player.currentNode);
+                List<Node> nodesToPlayer = shortestPath(pair.Key.node, game.state.player.node);
                 List<Node> nodesToEndNode = shortestPath(pair.Key.node, currentZone.endNode);
                 
                 if (nodesToPlayer.Count() > pair.Value[0] && nodesToEndNode.Count() > pair.Value[1])
@@ -63,7 +63,7 @@ namespace SystemTests.Specifications
             this.packsDictionary = new Dictionary<Pack, int[]>();
                 foreach (Node node in zone.nodes) {
                     foreach (Pack pack in node.packs) {
-                        List<Node> nodesToPlayer = shortestPath(pack.node, game.gameState.player.currentNode);
+                        List<Node> nodesToPlayer = shortestPath(pack.node, game.state.player.node);
                         List<Node> nodesToEndNode = shortestPath(pack.node, zone.endNode);
                         int[] counts = new int[] { nodesToPlayer.Count(), nodesToEndNode.Count() };
                         this.packsDictionary.Add(pack, counts);

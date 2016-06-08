@@ -19,7 +19,7 @@ namespace SystemTests.Specifications
         public bool validate(Game game)
         {
             if (!this.packs.Any()) {
-                this.initialize(game.gameState.dungeon.zones);
+                this.initialize(game.state.dungeon.zones);
                 return true;
             }
 

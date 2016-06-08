@@ -108,7 +108,7 @@ namespace Opdracht1Test
 
         private DungeonGenerator createDungeonGenerator()
         {
-            PlayerInputReader playerInputReader = new PlayerInputReader();
+            IInputReader playerInputReader = new PlayerInputReader();
             DungeonGenerator dungeonGenerator = new DungeonGenerator(new Random(), playerInputReader);
             return dungeonGenerator;
         }

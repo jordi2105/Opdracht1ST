@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutomaticGame.cs" />
     <Compile Include="DomainObjects\Creature.cs" />
     <Compile Include="DomainObjects\Dungeon.cs" />
     <Compile Include="DomainObjects\HealingPotion.cs" />
@@ -61,9 +60,10 @@
     <Compile Include="Services\DungeonGenerator.cs" />
     <Compile Include="Services\GameBuilder.cs" />
     <Compile Include="Services\GameSerializer.cs" />
+    <Compile Include="Services\IInputReader.cs" />
+    <Compile Include="Services\InputLogger.cs" />
     <Compile Include="Services\PlayerInputReader.cs" />
     <Compile Include="Turn.cs" />
-    <Compile Include="TurnBot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
