@@ -59,7 +59,7 @@ namespace Rogue
             }
             
 
-            this.inputLogger.log(input);
+            //this.inputLogger.log(input);
 
             string[] temp = input.ToLower().Split();
             if (temp.Length < 2) {
