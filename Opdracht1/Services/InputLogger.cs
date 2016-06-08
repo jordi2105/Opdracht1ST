@@ -8,9 +8,8 @@ namespace Rogue.Services
     {
         private StreamWriter file;
 
-        public string startLogging()
+        public string start(string fileName)
         {
-            string fileName = this.getFileName();
             this.file = new StreamWriter(fileName);
 
             return fileName;
@@ -21,16 +20,13 @@ namespace Rogue.Services
             this.file?.WriteLine(text);
         }
 
-        public void stopLogging()
+        public void stop()
         {
             this.file.Flush();
             this.file.Close();
             this.file = null;
         }
 
-        private string getFileName()
-        {
-            return Directory.GetCurrentDirectory() + "\\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".log";
-        }
+       
     }
 }

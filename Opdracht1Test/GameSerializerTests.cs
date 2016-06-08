@@ -69,12 +69,13 @@ namespace Opdracht1Test
             DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
             MonsterSpawner monsterSpawner = new MonsterSpawner(random);
             ItemSpawner itemSpawner = new ItemSpawner(random);
-            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner, playerInputReader);
+            IGameProvider gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner);
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             GameSerializer gameSerializer = new GameSerializer(binaryFormatter);
 
             InputLogger inputLogger = new InputLogger();
-            return new Game(playerInputReader, gameSerializer,gameBuilder,random, inputLogger);
+            Recorder recorder = new Recorder(gameSerializer, inputLogger);
+            return new Game(playerInputReader, gameSerializer,gameBuilder,random, recorder);
         }
     }
 }

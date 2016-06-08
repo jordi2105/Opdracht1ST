@@ -3,24 +3,21 @@ using Rogue.DomainObjects;
 
 namespace Rogue.Services
 {
-    public class GameBuilder
+    public class GameBuilder : IGameProvider
     {
-        private readonly IInputReader playerInputReader;
         private readonly DungeonGenerator dungeonGenerator;
         private readonly MonsterSpawner monsterSpawner;
         private readonly ItemSpawner itemSpawner;
 
-        public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner, IInputReader playerInputReader)
+        public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner)
         {
             this.dungeonGenerator = dungeonGenerator;
             this.monsterSpawner = monsterSpawner;
             this.itemSpawner = itemSpawner;
-            this.playerInputReader = playerInputReader;
         }
 
-        public GameState buildNewGameState(Random random)
+        public GameState build(Random random)
         {
-//            PlayerInputReader inputReader = this.playerInputReader;
             Player player = new Player(random);
             GameState gameState = new GameState(player);
             this.generateNewDungeon(gameState);

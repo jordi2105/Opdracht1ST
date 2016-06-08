@@ -10,13 +10,13 @@ namespace Rogue
     class Turn
     {
         private readonly Game game;
+        private readonly Recorder recorder;
         private readonly IInputReader inputReader;
-        private readonly InputLogger inputLogger;
 
-        public Turn(Game game, IInputReader inputReader, InputLogger inputLogger)
+        public Turn(Game game, Recorder recorder, IInputReader inputReader)
         {
             this.inputReader = inputReader;
-            this.inputLogger = inputLogger;
+            this.recorder = recorder;
             this.game = game;
         }
 
@@ -41,25 +41,21 @@ namespace Rogue
             Console.WriteLine("What action do you want to do?");
             string input = this.inputReader.readInput();
 
-            if (this.inputLogger != null) {
+            if (this.recorder != null) {
                 if (input == "record start") {
-                    string fileName = this.inputLogger.startLogging();
-                    this.game.save(fileName.Split('.')[0] + ".save");
-                    Console.WriteLine("Started recording!");
+                    this.recorder.start(this.game.state);
                     this.playerTurn();
                     return;
                 }
 
                 if (input == "record stop") {
-                    this.inputLogger.stopLogging();
-                    Console.WriteLine("Stopped recording!");
+                    this.recorder.stop();
                     this.playerTurn();
                     return;
-                }   
+                }
             }
             
 
-            this.inputLogger.log(input);
 
             string[] temp = input.ToLower().Split();
             if (temp.Length < 2) {
