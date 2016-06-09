@@ -56,9 +56,6 @@ namespace Rogue
                 }
             }
             
-            
-            //this.inputLogger.log(input);
-
             string[] temp = input.ToLower().Split();
             if (temp.Length < 2) {
                 Console.WriteLine("Action is not valid, try another command");
@@ -260,7 +257,7 @@ namespace Rogue
 
         public void retreatPack(Pack pack)
         {
-            List<Node> neighbours = pack.node.neighbours;
+            List<Node> neighbours = new List<Node>(pack.node.neighbours);
             for(int i = 0; i < neighbours.Count();i++)
             {
                 if (neighbours[i].zone != pack.node.zone)
@@ -467,7 +464,6 @@ namespace Rogue
                     " (end of dungeon with level: " + dungeon.level + ")");
                 this.game.nextDungeon();
                 dungeon = this.game.state.dungeon;
-                //this.getPlayer().move(dungeon.zones[0].startNode);
                 Console.ResetColor();
                 return false;
             }

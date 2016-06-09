@@ -21,7 +21,6 @@ namespace Rogue
 
             Recorder recorder = new Recorder(gameSerializer, inputLogger);
             Game game = new Game(playerInputReader, gameSerializer, gameBuilder, random, recorder);
-//            Game game = new AutomaticGame(gameSerializer, gameBuilder, random);
             game.initialize();
             game.play();
         }

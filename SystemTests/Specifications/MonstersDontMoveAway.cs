@@ -17,7 +17,6 @@ namespace SystemTests.Specifications
 
         public MonstersDontMoveAway()
         {
-            //this.packsDictionary = new Dictionary<Pack, int>();
         }
 
         public bool validate(Game game)

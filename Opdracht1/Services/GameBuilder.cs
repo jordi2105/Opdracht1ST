@@ -25,7 +25,6 @@ namespace Rogue.Services
             this.generateNewDungeon(gameState);
 
             Console.WriteLine();
-            Console.WriteLine("New dungeon has been generated");
 
             return gameState;
         }

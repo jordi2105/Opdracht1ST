@@ -78,6 +78,7 @@ namespace Rogue
 
         public void nextDungeon()
         {
+            Console.WriteLine("New dungeon has been generated");
             if (this.state == null) {
                 this.state = this.gameBuilder.build(this.random);
             }

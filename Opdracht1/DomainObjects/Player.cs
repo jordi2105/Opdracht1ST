@@ -128,28 +128,6 @@ namespace Rogue.DomainObjects
                 node.neighbours.Remove(this.node);
             this.move(nodesToEndNode[1]);
             
-            /*
-            //Random random = new Random(13423);
-            List<Node> nodesList = new List<Node>();
-            
-            foreach(Node neighbour in this.node.neighbours)
-            {
-                if (neighbour.zone == this.node.zone || neighbour.zone == null)
-                    continue;
-                this.safe = false;
-                this.visitedNodes = new List<Node>();
-                this.saveNode(neighbour);
-                if(this.safe)
-                {
-                    nodesList.Add(neighbour);
-                }
-            }
-            int index = this.random.Next(0, nodesList.Count());
-            foreach(Node node in this.node.neighbours)
-                node.neighbours.Remove(this.node);
-            this.safe = false;
-
-            this.move(nodesList[index]);*/
 
         }
 
@@ -176,6 +154,7 @@ namespace Rogue.DomainObjects
             }
             return null;
         }
+
 
         void saveNode(Node node)
         {
