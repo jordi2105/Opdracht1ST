@@ -33,17 +33,13 @@ namespace Rogue.Services
         public void generateNewDungeon(GameState gameState)
         {
             gameState.dungeon = this.dungeonGenerator.generate(this.dungeonLevel(gameState));
-
             gameState.player.dungeon = gameState.dungeon;
-
             gameState.player.move(gameState.dungeon.zones[0].startNode);
-            //gameState.player.move(gameState.dungeon.zones[1].nodes[2]);
             
 
             gameState.player.numberOfCombatsOfDungeon = 0;
 
-            //this.monsterSpawner.spawnAssignment5(gameState.dungeon);
-            this.monsterSpawner.spawnManual(gameState.dungeon);
+            this.monsterSpawner.spawnAssignment5(gameState.dungeon);
             this.itemSpawner.spawn(gameState.dungeon.zones, gameState.player.hitPoints);
 
         }
@@ -51,7 +47,7 @@ namespace Rogue.Services
         private int dungeonLevel(GameState gameState)
         {
             if (gameState.dungeon == null) {
-                return 2;
+                return 1;
             }
 
             return gameState.dungeon.level + 1;

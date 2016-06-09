@@ -40,21 +40,18 @@ namespace SystemTests.Specifications
                 
             }
 
-            bool bla = true;
+            bool temp = true;
             foreach (KeyValuePair<Pack, int[]> pair in this.packsDictionary) {
                 List<Node> nodesToPlayer = shortestPath(pair.Key.node, game.state.player.node);
                 List<Node> nodesToEndNode = shortestPath(pair.Key.node, currentZone.endNode);
                 
                 if (nodesToPlayer.Count() > pair.Value[0] && nodesToEndNode.Count() > pair.Value[1])
                 {
-                    Debug.WriteLine("pair je moeder");
-                    bla = false;
-                    //return false;
-                   
+                    temp = false;
                 }
                    
             }
-            return bla;
+            return temp;
             
         }
 

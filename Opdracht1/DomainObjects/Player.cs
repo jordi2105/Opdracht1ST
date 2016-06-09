@@ -9,7 +9,7 @@ namespace Rogue.DomainObjects
     [Serializable]
     public class Player : Creature
     {
-        public int maxHp = 14;
+        public int maxHp = 1000;
 
         public int killPoints;
         public bool timeCrystalActive;
@@ -29,7 +29,7 @@ namespace Rogue.DomainObjects
         {
             this.random = random;
             this.killPoints = 0;
-            this.attackRating = 50;
+            this.attackRating = 5;
             this.hitPoints = this.maxHp;
             this.bag = new List<Item>();
             this.timeCrystalActive = false;

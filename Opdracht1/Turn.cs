@@ -39,12 +39,6 @@ namespace Rogue
 
         public void playerTurn()
         {
-            foreach(Zone zone in game.state.dungeon.zones)
-                foreach(Node node in zone.nodes)
-                    foreach(Pack pack in node.packs)
-                    {
-                        Console.WriteLine("Node" + node.number + ": " + pack.monsters.Count);
-                    }
             Console.WriteLine("What action do you want to do?");
             string input = this.inputReader.readInput();
 
@@ -238,7 +232,7 @@ namespace Rogue
          {
             Player player = this.getPlayer();
             List<Node> neighbours = player.node.neighbours;
-            Console.Write("To which node playerTurn you want to go: ");
+            Console.Write("To which node do you want to go: ");
             bool first = true;
 
             foreach (Node neighbour in neighbours)
@@ -401,8 +395,6 @@ namespace Rogue
         public void chasePlayer(Pack pack)
         {
             List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.getPlayer().node);
-            /*if (pack.node == this.getPlayer().node)
-                return;*/
             if(nodesToPlayer.Count > 1 && nodesToPlayer[1].zone == pack.node.zone)
                 pack.move(nodesToPlayer[1]);
         }
@@ -476,7 +468,7 @@ namespace Rogue
                 this.game.nextDungeon();
                 dungeon = this.game.state.dungeon;
                 //this.getPlayer().move(dungeon.zones[0].startNode);
-
+                Console.ResetColor();
                 return false;
             }
 

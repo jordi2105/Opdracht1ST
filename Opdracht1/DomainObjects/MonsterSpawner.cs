@@ -67,7 +67,7 @@ namespace Rogue.DomainObjects
             }
         }
 
-        public void spawnManual(Dungeon dungeon)
+        /*public void spawnManual(Dungeon dungeon)
         {
             //dungeon.zones[0].nodes[0].packs.Add(new Pack(1, dungeon.zones[0].nodes[0]));
             int maxMonstersInNode = M * (dungeon.level + 1);
@@ -77,7 +77,7 @@ namespace Rogue.DomainObjects
             node2.packs.Add(new Pack(1, node2));
             Node node3 = dungeon.zones[2].nodes[3];
             node3.packs.Add(new Pack(1, node2));
-        }
+        }*/
 
 
         public void spawnAssignment5(Dungeon dungeon)
