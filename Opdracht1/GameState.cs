@@ -13,10 +13,16 @@ namespace Rogue
         public bool turnPlayer { get; set; }
         public int teller { get; set; }
 
-        public GameState(Player player)
+        /*public GameState(Player player)
         {
             this.teller = 0;
             this.player = player;
+            this.isAlive = true;
+            this.turnPlayer = true;
+        }*/
+        public GameState()
+        {
+            this.teller = 0;
             this.isAlive = true;
             this.turnPlayer = true;
         }

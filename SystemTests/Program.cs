@@ -20,28 +20,25 @@ namespace SystemTests
 
             Random random = new Random(121135371);
 
-            IInputReader playerInputReader = new PlayerInputReader();
-            DungeonGenerator dungeonGenerator = new DungeonGenerator(random, playerInputReader);
-            MonsterSpawner monsterSpawner = new MonsterSpawner(random);
-            ItemSpawner itemSpawner = new ItemSpawner(random);
-            GameBuilder gameBuilder = new GameBuilder(dungeonGenerator, monsterSpawner, itemSpawner, playerInputReader);
-
-            List<ISpecification> specifications = new List<ISpecification>();
-            MaxMonstersInNode spec = new MaxMonstersInNode();
-            specifications.Add(spec);
-            MonsterDoesntLeaveZone spec2 = new MonsterDoesntLeaveZone();
-            specifications.Add(spec2);
-            MonstersDontMoveAway spec3 = new MonstersDontMoveAway();
-            specifications.Add(spec3);
-            KPAndNumberOfMonsterConstant spec4 = new KPAndNumberOfMonsterConstant();
-            specifications.Add(spec4);
-            GuaranteedNumberOfCombats spec5 = new GuaranteedNumberOfCombats();
-            specifications.Add(spec5);
+            RecordingLoader recordingLoader = new RecordingLoader(Directory.GetCurrentDirectory() + "\\..\\..\\..\\replays");
             GameSerializer gameSerializer = new GameSerializer(new BinaryFormatter());
-            TestGame testGame = new TestGame(playerInputReader, gameSerializer, gameBuilder, random, specifications);
-            testGame.initialize();
-            testGame.play();
 
+            while (recordingLoader.next()) {
+                IInputReader playerInputReader = new FileInputReader(recordingLoader);
+                IGameProvider gameBuilder = new GameLoader(new GameSerializer(new BinaryFormatter()), recordingLoader);
+
+                TestGame testGame = new TestGame(playerInputReader, gameSerializer, gameBuilder, random, new List<ISpecification> {
+                    new MaxMonstersInNode(),
+                    new MonsterDoesntLeaveZone(),
+                    new MonstersDontMoveAway(),
+                    new KPAndNumberOfMonsterConstant(),
+                    new GuaranteedNumberOfCombats()
+                });
+
+
+                testGame.initialize();
+                testGame.play();    
+            }
         }
 
         private void createGameStateDirs(List<ISpecification> specifications)

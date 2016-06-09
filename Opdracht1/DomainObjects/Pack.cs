@@ -9,6 +9,8 @@ namespace Rogue.DomainObjects
     {
         public List<Monster> monsters { get; set; }
         public Node node { get; private set; }
+
+        public bool isMoved;
         
         public Pack(int n, Node node)
         {
@@ -29,7 +31,10 @@ namespace Rogue.DomainObjects
 
         public void move(Node u) 
         {
+            this.node.packs.Remove(this);
             this.node = u;
+            u.packs.Add(this);
+            
         }
 
         public void attack(Player player)

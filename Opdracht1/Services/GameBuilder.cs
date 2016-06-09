@@ -3,28 +3,25 @@ using Rogue.DomainObjects;
 
 namespace Rogue.Services
 {
-    public class GameBuilder
+    public class GameBuilder : IGameProvider
     {
-        private readonly IInputReader playerInputReader;
         private readonly DungeonGenerator dungeonGenerator;
         private readonly MonsterSpawner monsterSpawner;
         private readonly ItemSpawner itemSpawner;
         private Random random;
 
-        public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner, IInputReader playerInputReader)
+        public GameBuilder(DungeonGenerator dungeonGenerator, MonsterSpawner monsterSpawner, ItemSpawner itemSpawner)
         {
             this.dungeonGenerator = dungeonGenerator;
             this.monsterSpawner = monsterSpawner;
             this.itemSpawner = itemSpawner;
-            this.playerInputReader = playerInputReader;
         }
 
-        public GameState buildNewGameState(Random random)
+        public GameState build(Random random)
         {
-            //            PlayerInputReader inputReader = this.playerInputReader;
-            this.random = random;
-            Player player = new Player(this.random);
-            GameState gameState = new GameState(player);
+            Player player = new Player(random);
+            GameState gameState = new GameState();
+            gameState.player = player;
             this.generateNewDungeon(gameState);
 
             Console.WriteLine();
@@ -38,10 +35,15 @@ namespace Rogue.Services
             gameState.dungeon = this.dungeonGenerator.generate(this.dungeonLevel(gameState));
 
             gameState.player.dungeon = gameState.dungeon;
+
             gameState.player.move(gameState.dungeon.zones[0].startNode);
+            //gameState.player.move(gameState.dungeon.zones[1].nodes[2]);
+            
+
             gameState.player.numberOfCombatsOfDungeon = 0;
 
-            this.monsterSpawner.spawnAssignment5(gameState.dungeon);
+            //this.monsterSpawner.spawnAssignment5(gameState.dungeon);
+            this.monsterSpawner.spawnManual(gameState.dungeon);
             this.itemSpawner.spawn(gameState.dungeon.zones, gameState.player.hitPoints);
 
         }
@@ -49,7 +51,7 @@ namespace Rogue.Services
         private int dungeonLevel(GameState gameState)
         {
             if (gameState.dungeon == null) {
-                return 1;
+                return 2;
             }
 
             return gameState.dungeon.level + 1;

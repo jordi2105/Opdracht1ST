@@ -10,13 +10,14 @@ namespace Rogue
     class Turn
     {
         private readonly Game game;
+        private readonly Recorder recorder;
         private readonly IInputReader inputReader;
-        private readonly InputLogger inputLogger;
+        public bool packRetreated;
 
-        public Turn(Game game, IInputReader inputReader, InputLogger inputLogger)
+        public Turn(Game game, Recorder recorder, IInputReader inputReader)
         {
             this.inputReader = inputReader;
-            this.inputLogger = inputLogger;
+            this.recorder = recorder;
             this.game = game;
         }
 
@@ -38,27 +39,30 @@ namespace Rogue
 
         public void playerTurn()
         {
+            foreach(Zone zone in game.state.dungeon.zones)
+                foreach(Node node in zone.nodes)
+                    foreach(Pack pack in node.packs)
+                    {
+                        Console.WriteLine("Node" + node.number + ": " + pack.monsters.Count);
+                    }
             Console.WriteLine("What action do you want to do?");
             string input = this.inputReader.readInput();
 
-            if (this.inputLogger != null) {
+            if (this.recorder != null) {
                 if (input == "record start") {
-                    string fileName = this.inputLogger.startLogging();
-                    this.game.save(fileName.Split('.')[0] + ".save");
-                    Console.WriteLine("Started recording!");
+                    this.recorder.start(this.game.state);
                     this.playerTurn();
                     return;
                 }
 
                 if (input == "record stop") {
-                    this.inputLogger.stopLogging();
-                    Console.WriteLine("Stopped recording!");
+                    this.recorder.stop();
                     this.playerTurn();
                     return;
-                }   
+                }
             }
             
-
+            
             //this.inputLogger.log(input);
 
             string[] temp = input.ToLower().Split();
@@ -157,8 +161,9 @@ namespace Rogue
                 pack.monsters.Any() && 
                 player.hitPoints >= 0 && 
                 !node.stopCombat && 
-                !node.packRetreated
-            ){
+                !packRetreated
+            )
+            {
                 this.doCombatRound(player, pack);
             }
             
@@ -178,9 +183,10 @@ namespace Rogue
                 player.timeCrystalActive = false;
             }
 
-            if (node.packRetreated) {
+            if (packRetreated) {
                 this.retreatPack(pack);
-                node.packRetreated = false;
+                Console.WriteLine("pack retreated");
+                packRetreated = false;
                 player.timeCrystalActive = false;
             }
         }
@@ -201,7 +207,20 @@ namespace Rogue
 
             if (input == "continue"){
                 player.attack(pack.monsters[0]);
-                pack.attack(player);
+                int totalHP = 0;
+                foreach(Monster monster in pack.monsters)
+                {
+                    totalHP += monster.hitPoints;
+                }
+                if(totalHP > 0 && totalHP < player.hitPoints)
+                {
+                    packRetreated = true;
+                }
+                else
+                {
+                    pack.attack(player);
+                }
+                
                 return;
             }
 
@@ -251,7 +270,12 @@ namespace Rogue
             for(int i = 0; i < neighbours.Count();i++)
             {
                 if (neighbours[i].zone != pack.node.zone)
+                {
                     neighbours.Remove(neighbours[i]);
+                    i--;
+                }
+                    
+                
             }
             Random random = new Random(90);
             int index = random.Next(0, neighbours.Count() - 1);
@@ -332,21 +356,39 @@ namespace Rogue
 
             foreach (Zone zone in dungeon.zones) {
                 foreach (Node node in zone.nodes) {
-                    foreach (Pack pack in node.packs) {
+                   for (int i = 0; i < node.packs.Count; i++)
+                    {
+                        
+                        Pack pack = node.packs[i];
+                        if (pack.isMoved)
+                            continue;
+
                         List<Node> nodes = pack.node.neighbours;
-                        if (nodes.Any()) {
-                            if (zone.isEndZone()) {
-                                if (player.node.zone.number >= zone.dungeon.zones.Count - 2) {
+                        if (nodes.Any())
+                        {
+                            if (zone == dungeon.zones[dungeon.zones.Count - 1])
+                            {
+                                if (player.node.zone == null || player.node.zone.number == zone.dungeon.zones.Count - 2)
+                                {
                                     this.moveTowardsShortestPath(pack);
                                 }
-                                else {
+                                else if(player.node.zone == zone)
+                                {
                                     this.chasePlayer(pack);
                                 }
-                            } else {
-                                this.movePack(pack);  
+                            }
+                            else
+                            {
+                                this.movePack(pack);
                             }
                         }
+                        pack.isMoved = true;
                     }
+                    foreach (Pack pack in node.packs)
+                        pack.isMoved = false;
+
+
+
                 }
             }
         }
@@ -359,7 +401,9 @@ namespace Rogue
         public void chasePlayer(Pack pack)
         {
             List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, this.getPlayer().node);
-            if(nodesToPlayer.Count > 0 && nodesToPlayer[1].zone == pack.node.zone)
+            /*if (pack.node == this.getPlayer().node)
+                return;*/
+            if(nodesToPlayer.Count > 1 && nodesToPlayer[1].zone == pack.node.zone)
                 pack.move(nodesToPlayer[1]);
         }
 
@@ -391,12 +435,31 @@ namespace Rogue
 
             List<Node> nodesToPlayer = this.getNodesWithShortestPath(pack.node, player.node);
             List<Node> nodesToEndNode = this.getNodesWithShortestPath(pack.node, zone.endNode);
+            int M = 3;
+            int maxMonstersInNode = M * (game.state.dungeon.level + 1);
+            int count = 0;
+
             if (nodesToEndNode.Count > nodesToPlayer.Count && pack.node != this.game.state.player.node && nodesToPlayer[1].zone == zone)
             {
-                pack.move(nodesToPlayer[1]);
+                foreach (Pack pack_in_node in nodesToPlayer[1].packs)
+                {
+                    count += pack_in_node.monsters.Count;
+                }
+                if (count + pack.monsters.Count <= maxMonstersInNode)
+                    pack.move(nodesToPlayer[1]);
             }
             else if (pack.node != zone.endNode && nodesToEndNode[1].zone == zone)
-                pack.move(nodesToEndNode[1]);
+            {
+                
+                foreach(Pack pack_in_node in nodesToEndNode[1].packs)
+                {
+                    count += pack_in_node.monsters.Count;
+                }
+                if(count + pack.monsters.Count <= maxMonstersInNode)
+                    pack.move(nodesToEndNode[1]);
+
+            }
+               
         }
 
    

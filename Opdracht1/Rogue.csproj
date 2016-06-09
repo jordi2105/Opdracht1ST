@@ -57,9 +57,11 @@
     <Compile Include="GameState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Recorder.cs" />
     <Compile Include="Services\DungeonGenerator.cs" />
     <Compile Include="Services\GameBuilder.cs" />
     <Compile Include="Services\GameSerializer.cs" />
+    <Compile Include="Services\IGameProvider.cs" />
     <Compile Include="Services\IInputReader.cs" />
     <Compile Include="Services\InputLogger.cs" />
     <Compile Include="Services\PlayerInputReader.cs" />

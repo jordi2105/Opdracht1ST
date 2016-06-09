@@ -9,41 +9,26 @@ namespace Rogue
 {
     public class Game
     {
-        private readonly IInputReader playerInputReader;
+        private readonly IInputReader inputReader;
+        private readonly IGameProvider gameBuilder;
+        private readonly Recorder recorder;
         private readonly GameSerializer gameSerializer;
-        private readonly GameBuilder gameBuilder;
         private readonly Random random;
-        private readonly InputLogger inputLogger;
 
         public GameState state { get; private set; }
 
-        public Game(IInputReader playerInputReader, GameSerializer gameSerializer, GameBuilder gameBuilder, Random random, InputLogger inputLogger)
+        public Game(IInputReader inputReader, GameSerializer gameSerializer, IGameProvider gameBuilder, Random random, Recorder recorder)
         {
-            this.playerInputReader = playerInputReader;
+            this.inputReader = inputReader;
             this.gameSerializer = gameSerializer;
             this.gameBuilder = gameBuilder;
             this.random = random;
-            this.inputLogger = inputLogger;
+            this.recorder = recorder;
         }
 
         public void play()
         {
-            
-
-            while (this.state.player.hitPoints > 0) {
-                foreach (Zone zone in this.state.dungeon.zones) {
-                    foreach (Node node in zone.nodes) {
-                        int numMonsters = 0;
-                        foreach (Pack pack in node.packs) {
-                            numMonsters += pack.monsters.Count;
-                        }
-                        Console.WriteLine(node.number + ": " + numMonsters);
-                    }
-                }
-
-                Console.WriteLine();
-
-                this.turn();
+            while (this.state.player.hitPoints > 0 && this.turn()) {
             }
 
             this.endOfGame();
@@ -54,9 +39,11 @@ namespace Rogue
             this.nextDungeon();
         }
 
-        public virtual void turn()
+        public virtual bool turn()
         {
-            new Turn(this, this.playerInputReader, this.inputLogger).exec();
+            new Turn(this, this.recorder, this.inputReader).exec();
+
+            return true;
         }
 
         public void endOfGame()
@@ -92,7 +79,7 @@ namespace Rogue
         public void nextDungeon()
         {
             if (this.state == null) {
-                this.state = this.gameBuilder.buildNewGameState(this.random);
+                this.state = this.gameBuilder.build(this.random);
             }
             else
                 this.gameBuilder.generateNewDungeon(this.state);

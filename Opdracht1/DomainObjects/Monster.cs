@@ -9,7 +9,7 @@ namespace Rogue.DomainObjects
         public Monster(Pack pack)
         {
             this.pack = pack;
-            this.attackRating = 5;
+            this.attackRating = 1;
             this.hitPoints = 14;
         }
     }

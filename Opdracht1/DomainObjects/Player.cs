@@ -9,7 +9,7 @@ namespace Rogue.DomainObjects
     [Serializable]
     public class Player : Creature
     {
-        public int maxHp = 1000;
+        public int maxHp = 14;
 
         public int killPoints;
         public bool timeCrystalActive;
@@ -29,7 +29,7 @@ namespace Rogue.DomainObjects
         {
             this.random = random;
             this.killPoints = 0;
-            this.attackRating = 5;
+            this.attackRating = 50;
             this.hitPoints = this.maxHp;
             this.bag = new List<Item>();
             this.timeCrystalActive = false;
@@ -105,13 +105,14 @@ namespace Rogue.DomainObjects
         {
             if (inBattle) {
                 this.timeCrystalActive = true;
-                this.bag.Remove(timeCrystal);
+                
             } else {
                 Zone zoneToBeDeleted = this.node.zone;
                 this.teleportToSaveNeighbour();
                 this.dungeon.zones.Remove(zoneToBeDeleted);
                 Console.WriteLine("Bridge and zone removed");
             }
+            this.bag.Remove(timeCrystal);
         }
 
         public TimeCrystal getTimeCrystal()
@@ -121,6 +122,13 @@ namespace Rogue.DomainObjects
 
         public void teleportToSaveNeighbour()
         {
+
+            List<Node> nodesToEndNode = getNodesWithShortestPath(this.node, dungeon.zones[this.node.zone.number].endNode);
+            foreach (Node node in this.node.neighbours)
+                node.neighbours.Remove(this.node);
+            this.move(nodesToEndNode[1]);
+            
+            /*
             //Random random = new Random(13423);
             List<Node> nodesList = new List<Node>();
             
@@ -141,7 +149,32 @@ namespace Rogue.DomainObjects
                 node.neighbours.Remove(this.node);
             this.safe = false;
 
-            this.move(nodesList[index]);
+            this.move(nodesList[index]);*/
+
+        }
+
+        public List<Node> getNodesWithShortestPath(Node startNode, Node endNode)
+        {
+            Queue<List<Node>> queue = new Queue<List<Node>>();
+            List<Node> nodeList = new List<Node>();
+            nodeList.Add(startNode);
+            queue.Enqueue(nodeList);
+            while (queue.Count > 0)
+            {
+                List<Node> current = queue.Dequeue();
+                if (current.Last() == endNode)
+                {
+                    return current;
+                }
+                List<Node> neighbours = current.Last().neighbours;
+                foreach (Node neighbour in neighbours)
+                {
+                    List<Node> nodes = new List<Node>(current);
+                    nodes.Add(neighbour);
+                    queue.Enqueue(nodes);
+                }
+            }
+            return null;
         }
 
         void saveNode(Node node)

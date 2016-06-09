@@ -1,5 +1,8 @@
 ﻿using System.IO;
 using System.Runtime.Serialization;
+using Rogue.DomainObjects;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Rogue.Services
 {
@@ -19,7 +22,9 @@ namespace Rogue.Services
             this.formatter.Serialize(stream, state);
             stream.Close();
         }
-        
+
+      
+
         public GameState load(string fileName)
         {
             FileInfo fileInfo = new FileInfo(fileName);
@@ -34,5 +39,6 @@ namespace Rogue.Services
 
             return state;
         }
+
     }
 }
